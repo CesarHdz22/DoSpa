@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 05-09-2025 a las 01:34:02
+-- Tiempo de generación: 19-09-2025 a las 20:49:01
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `instituto_do`
+-- Base de datos: `instituto_dos`
 --
 
 -- --------------------------------------------------------
@@ -37,6 +37,15 @@ CREATE TABLE `agenda` (
   `variacion` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `agenda`
+--
+
+INSERT INTO `agenda` (`id_agenda`, `id_taller`, `fecha`, `hora_inicio`, `hora_fin`, `ubicacion`, `variacion`) VALUES
+(1, 1, '2025-09-10', '10:00:00', '13:00:00', 'Aula 101', 'Matutino'),
+(2, 2, '2025-09-15', '15:00:00', '18:00:00', 'Sala Principal', 'Vespertino'),
+(3, 3, '2025-09-20', '09:00:00', '12:00:00', 'Salón Creativo', 'Fin de semana');
+
 -- --------------------------------------------------------
 
 --
@@ -53,6 +62,15 @@ CREATE TABLE `agenda_cursos` (
   `variacion` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `agenda_cursos`
+--
+
+INSERT INTO `agenda_cursos` (`id_agenda_curso`, `id_curso`, `fecha`, `hora_inicio`, `hora_fin`, `ubicacion`, `variacion`) VALUES
+(1, 1, '2025-09-25', '09:00:00', '12:00:00', 'Aula 201', 'Matutino'),
+(2, 2, '2025-09-30', '16:00:00', '19:00:00', 'Laboratorio A', 'Vespertino'),
+(3, 3, '2025-10-05', '10:00:00', '13:00:00', 'Sala B', 'Fin de semana');
+
 -- --------------------------------------------------------
 
 --
@@ -61,13 +79,50 @@ CREATE TABLE `agenda_cursos` (
 
 CREATE TABLE `alumnas` (
   `id_alumna` int(11) NOT NULL,
-  `nombre_completo` varchar(255) DEFAULT NULL,
+  `nombre` varchar(60) NOT NULL,
+  `apat` varchar(30) NOT NULL,
+  `amat` varchar(30) NOT NULL,
   `telefono` varchar(50) DEFAULT NULL,
   `correo` varchar(100) DEFAULT NULL,
   `direccion` text DEFAULT NULL,
   `descuento_aplicado` tinyint(1) DEFAULT 0,
   `tipo_descuento` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `alumnas`
+--
+
+INSERT INTO `alumnas` (`id_alumna`, `nombre`, `apat`, `amat`, `telefono`, `correo`, `direccion`, `descuento_aplicado`, `tipo_descuento`) VALUES
+(1, 'Laura', 'Sánchez', 'Perez', '555-123-4567', 'laura@example.com', 'Calle 1, Colonia Centro', 1, '10%'),
+(2, 'Mariana', 'Díaz', 'Martinez', '555-987-6543', 'mariana@example.com', 'Calle 2, Colonia Norte', 0, NULL),
+(3, 'Fernanda', 'Gómez', 'Farias', '555-321-7890', 'fernanda@example.com', 'Calle 3, Colonia Sur', 1, 'Estudiante');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `clientes`
+--
+
+CREATE TABLE `clientes` (
+  `id_cliente` int(11) NOT NULL,
+  `nombre` varchar(60) NOT NULL,
+  `apat` varchar(30) NOT NULL,
+  `amat` varchar(30) NOT NULL,
+  `correo` varchar(100) DEFAULT NULL,
+  `telefono` varchar(50) DEFAULT NULL,
+  `direccion` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `clientes`
+--
+
+INSERT INTO `clientes` (`id_cliente`, `nombre`, `apat`, `amat`, `correo`, `telefono`, `direccion`) VALUES
+(1, 'Juan', 'Perez', 'Hernandez', 'juan.perez@gmail.com', '5512345678', 'Av. Reforma #123, CDMX'),
+(2, 'María', 'Lopez', 'Marquez', 'maria.lopez@yahoo.com', '3322233344', 'Calle Hidalgo #45, Guadalajara'),
+(3, 'Carlos', 'Ramirez', 'Valdez', 'carlos.ramirez@hotmail.com', '8111122233', 'Col. Centro, Monterrey'),
+(4, 'Ana Maria', 'Torres', 'Rubio', 'ana.torres@outlook.com', '2223344556', 'Blvd. Díaz Ordaz #890, Puebla');
 
 -- --------------------------------------------------------
 
@@ -86,6 +141,15 @@ CREATE TABLE `cursos` (
   `precio_preferencial` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `cursos`
+--
+
+INSERT INTO `cursos` (`id_curso`, `nombre`, `fecha`, `costo_base`, `status`, `ingreso_bruto`, `gastos`, `precio_preferencial`) VALUES
+(1, 'Curso de Inglés', '2025-09-25', 2500.00, 'activo', 7500.00, 2000.00, 0),
+(2, 'Curso de Programación', '2025-09-30', 3000.00, 'activo', 9000.00, 3000.00, 1),
+(3, 'Curso de Fotografía', '2025-10-05', 2000.00, 'pendiente', 0.00, 0.00, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -98,6 +162,66 @@ CREATE TABLE `descuentos` (
   `porcentaje` decimal(5,2) DEFAULT NULL,
   `id_alumna` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `descuentos`
+--
+
+INSERT INTO `descuentos` (`id_descuento`, `tipo_descuento`, `porcentaje`, `id_alumna`) VALUES
+(1, '10% Descuento', 10.00, 1),
+(2, 'Estudiante', 20.00, 3),
+(3, 'Promoción especial', 15.00, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalle_venta`
+--
+
+CREATE TABLE `detalle_venta` (
+  `idDetalle` int(11) NOT NULL,
+  `idVenta` int(11) NOT NULL,
+  `id_producto` int(11) DEFAULT NULL,
+  `id_kit` int(11) DEFAULT NULL,
+  `cantidad` int(11) NOT NULL,
+  `precio_unitario` decimal(10,2) NOT NULL,
+  `subtotal` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `detalle_venta`
+--
+
+INSERT INTO `detalle_venta` (`idDetalle`, `idVenta`, `id_producto`, `id_kit`, `cantidad`, `precio_unitario`, `subtotal`) VALUES
+(1, 1, 1, NULL, 1, 500.00, 500.00),
+(2, 1, 2, NULL, 1, 800.00, 800.00),
+(3, 1, 3, NULL, 1, 300.00, 300.00),
+(4, 2, 1, NULL, 1, 500.00, 500.00),
+(5, 2, 3, NULL, 1, 300.00, 300.00),
+(6, 5, 1, NULL, 1, 500.00, 500.00),
+(7, 5, 2, NULL, 2, 800.00, 1600.00),
+(8, 5, 3, NULL, 1, 300.00, 300.00),
+(9, 5, NULL, 2, 1, 1500.00, 1500.00),
+(10, 6, 3, NULL, 1, 300.00, 300.00),
+(11, 6, 2, NULL, 1, 800.00, 800.00),
+(12, 6, 1, NULL, 5, 500.00, 2500.00),
+(13, 7, 1, NULL, 3, 500.00, 1500.00),
+(14, 8, 2, NULL, 1, 800.00, 800.00),
+(15, 8, 1, NULL, 1, 500.00, 500.00),
+(16, 8, NULL, 2, 1, 1500.00, 1500.00),
+(17, 8, NULL, 3, 1, 1000.00, 1000.00),
+(18, 9, 1, NULL, 1, 500.00, 500.00),
+(19, 9, 2, NULL, 1, 800.00, 800.00),
+(20, 9, 3, NULL, 1, 300.00, 300.00),
+(23, 10, 1, NULL, 1, 500.00, 500.00),
+(24, 10, NULL, 1, 1, 1200.00, 1200.00),
+(25, 10, NULL, 2, 1, 1500.00, 1500.00),
+(26, 10, NULL, 3, 1, 1000.00, 1000.00),
+(27, 11, 1, NULL, 3, 500.00, 1500.00),
+(28, 11, 3, NULL, 1, 300.00, 300.00),
+(29, 11, NULL, 3, 1, 1000.00, 1000.00),
+(30, 11, NULL, 1, 1, 1200.00, 1200.00),
+(31, 12, 2, NULL, 1, 800.00, 800.00);
 
 -- --------------------------------------------------------
 
@@ -113,6 +237,15 @@ CREATE TABLE `egresos_talleres` (
   `id_taller` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `egresos_talleres`
+--
+
+INSERT INTO `egresos_talleres` (`id_egreso`, `fecha`, `concepto`, `monto`, `id_taller`) VALUES
+(1, '2025-09-05', 'Materiales de repostería', 500.00, 1),
+(2, '2025-09-12', 'Maquillajes y brochas', 800.00, 2),
+(3, '2025-09-18', 'Papel y pinturas', 300.00, 3);
+
 -- --------------------------------------------------------
 
 --
@@ -121,15 +254,24 @@ CREATE TABLE `egresos_talleres` (
 
 CREATE TABLE `historial_pagos` (
   `id_pago` int(11) NOT NULL,
-  `id_alumna` int(11) DEFAULT NULL,
+  `idVenta` int(11) DEFAULT NULL,
   `id_agenda` int(11) DEFAULT NULL,
   `monto_pagado` decimal(10,2) DEFAULT NULL,
   `saldo_pendiente` decimal(10,2) DEFAULT NULL,
-  `fecha_pago` date DEFAULT NULL,
+  `fecha_pago` timestamp NULL DEFAULT NULL,
   `metodo_pago` enum('efectivo','tarjeta','transferencia','depósito','otros') DEFAULT 'efectivo',
   `tipo_servicio` enum('paquete','servicio','kit','producto','otro') DEFAULT 'servicio',
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
+  `comprobante` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `historial_pagos`
+--
+
+INSERT INTO `historial_pagos` (`id_pago`, `idVenta`, `id_agenda`, `monto_pagado`, `saldo_pendiente`, `fecha_pago`, `metodo_pago`, `tipo_servicio`, `comprobante`) VALUES
+(4, 1, NULL, 500.00, 1100.00, '2025-09-17 05:20:26', 'transferencia', 'producto', ''),
+(5, 1, NULL, 300.00, 800.00, '2025-09-18 05:20:26', 'transferencia', 'producto', ''),
+(6, 2, NULL, 300.00, 500.00, '2025-09-10 05:25:32', 'transferencia', 'producto', '');
 
 -- --------------------------------------------------------
 
@@ -148,6 +290,15 @@ CREATE TABLE `historial_pagos_cursos` (
   `tipo_servicio` enum('paquete','servicio','kit','producto','otro') DEFAULT 'servicio'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `historial_pagos_cursos`
+--
+
+INSERT INTO `historial_pagos_cursos` (`id_pago`, `id_alumna`, `id_agenda_curso`, `monto_pagado`, `saldo_pendiente`, `fecha_pago`, `metodo_pago`, `tipo_servicio`) VALUES
+(1, 1, 1, 1500.00, 1000.00, '2025-09-20', 'efectivo', 'servicio'),
+(2, 2, 2, 3000.00, 0.00, '2025-09-29', 'tarjeta', 'paquete'),
+(3, 3, 3, 1000.00, 1000.00, '2025-10-01', 'transferencia', 'kit');
+
 -- --------------------------------------------------------
 
 --
@@ -165,6 +316,15 @@ CREATE TABLE `historial_venta_productos` (
   `id_taller` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `historial_venta_productos`
+--
+
+INSERT INTO `historial_venta_productos` (`id_venta`, `id_producto`, `id_kit`, `cantidad`, `precio_total`, `comprador_tipo`, `id_comprador`, `id_taller`) VALUES
+(1, 1, NULL, 2, 1000.00, 'alumna', 1, 1),
+(2, NULL, 2, 1, 1500.00, 'externo', NULL, 2),
+(3, 3, NULL, 3, 900.00, 'alumna', 2, 3);
+
 -- --------------------------------------------------------
 
 --
@@ -181,6 +341,15 @@ CREATE TABLE `ingresos_talleres` (
   `costo` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `ingresos_talleres`
+--
+
+INSERT INTO `ingresos_talleres` (`id_ingreso`, `id_alumna`, `fecha`, `tipo_ingreso`, `metodo_pago`, `id_taller`, `costo`) VALUES
+(1, 1, '2025-09-06', 'Inscripción', 'efectivo', 1, 1500.00),
+(2, 2, '2025-09-13', 'Inscripción', 'tarjeta', 2, 2000.00),
+(3, 3, '2025-09-19', 'Inscripción', 'transferencia', 3, 1000.00);
+
 -- --------------------------------------------------------
 
 --
@@ -191,6 +360,15 @@ CREATE TABLE `institutos` (
   `id_instituto` int(11) NOT NULL,
   `nombre` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `institutos`
+--
+
+INSERT INTO `institutos` (`id_instituto`, `nombre`) VALUES
+(1, 'Instituto Central'),
+(2, 'Instituto del Norte'),
+(3, 'Instituto del Sur');
 
 -- --------------------------------------------------------
 
@@ -204,6 +382,15 @@ CREATE TABLE `inventario` (
   `id_producto` int(11) DEFAULT NULL,
   `cantidad_actual` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `inventario`
+--
+
+INSERT INTO `inventario` (`id_inventario`, `id_instituto`, `id_producto`, `cantidad_actual`) VALUES
+(1, 1, 1, 10),
+(2, 1, 2, 5),
+(3, 2, 3, 20);
 
 -- --------------------------------------------------------
 
@@ -221,6 +408,15 @@ CREATE TABLE `inventario_stock` (
   `fecha` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `inventario_stock`
+--
+
+INSERT INTO `inventario_stock` (`id`, `id_instituto`, `id_producto`, `movimiento`, `cantidad`, `motivo`, `fecha`) VALUES
+(1, 1, 1, 'entrada', 10, 'Compra inicial', '2025-09-01 10:00:00'),
+(2, 1, 2, 'salida', 2, 'Venta producto', '2025-09-05 12:00:00'),
+(3, 2, 3, 'ajuste', 5, 'Revisión de stock', '2025-09-07 15:00:00');
+
 -- --------------------------------------------------------
 
 --
@@ -229,9 +425,19 @@ CREATE TABLE `inventario_stock` (
 
 CREATE TABLE `kits_productos` (
   `id_kit` int(11) NOT NULL,
-  `nombre_kit` varchar(255) DEFAULT NULL,
-  `precio` decimal(10,2) DEFAULT NULL
+  `nombre` varchar(255) DEFAULT NULL,
+  `precio_unitario` decimal(10,2) DEFAULT NULL,
+  `Stock` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `kits_productos`
+--
+
+INSERT INTO `kits_productos` (`id_kit`, `nombre`, `precio_unitario`, `Stock`) VALUES
+(1, 'Kit Repostería', 1200.00, 3),
+(2, 'Kit Maquillaje', 1500.00, 4),
+(3, 'Kit Manualidades', 1000.00, 6);
 
 -- --------------------------------------------------------
 
@@ -248,6 +454,15 @@ CREATE TABLE `maestras` (
   `porcentaje_ganancia` decimal(5,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `maestras`
+--
+
+INSERT INTO `maestras` (`id_maestra`, `nombre`, `base`, `acuerdo`, `gastos`, `porcentaje_ganancia`) VALUES
+(1, 'María López', 'Base A', '50/50', 1200.50, 40.00),
+(2, 'Ana Martínez', 'Base B', '60/40', 800.00, 35.00),
+(3, 'Claudia Torres', 'Base C', '70/30', 950.75, 45.00);
+
 -- --------------------------------------------------------
 
 --
@@ -258,8 +473,17 @@ CREATE TABLE `productos` (
   `id_producto` int(11) NOT NULL,
   `nombre` varchar(255) DEFAULT NULL,
   `precio_unitario` decimal(10,2) DEFAULT NULL,
-  `es_kit` tinyint(1) DEFAULT 0
+  `Stock` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `productos`
+--
+
+INSERT INTO `productos` (`id_producto`, `nombre`, `precio_unitario`, `Stock`) VALUES
+(1, 'Libro de repostería', 500.00, 10),
+(2, 'Set de brochas', 800.00, 9),
+(3, 'Caja de pinturas', 300.00, 9);
 
 -- --------------------------------------------------------
 
@@ -271,6 +495,15 @@ CREATE TABLE `productos_kits` (
   `id_kit` int(11) DEFAULT NULL,
   `id_producto` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `productos_kits`
+--
+
+INSERT INTO `productos_kits` (`id_kit`, `id_producto`) VALUES
+(1, 1),
+(2, 2),
+(3, 3);
 
 -- --------------------------------------------------------
 
@@ -291,6 +524,72 @@ CREATE TABLE `talleres` (
   `porcentaje_caro` decimal(5,2) DEFAULT NULL,
   `precio_preferencial` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `talleres`
+--
+
+INSERT INTO `talleres` (`id_taller`, `nombre`, `id_maestra`, `fecha`, `costo_base`, `status`, `ingreso_bruto`, `gastos`, `porcentaje_delia`, `porcentaje_caro`, `precio_preferencial`) VALUES
+(1, 'Taller de Repostería', 1, '2025-09-10', 1500.00, 'activo', 5000.00, 2000.00, 40.00, 60.00, 0),
+(2, 'Taller de Maquillaje', 2, '2025-09-15', 2000.00, 'activo', 6000.00, 2500.00, 50.00, 50.00, 1),
+(3, 'Taller de Manualidades', 3, '2025-09-20', 1000.00, 'pendiente', 0.00, 0.00, 30.00, 70.00, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuarios`
+--
+
+CREATE TABLE `usuarios` (
+  `Id_Usuario` int(11) NOT NULL,
+  `Nombre` varchar(60) NOT NULL,
+  `Apat` varchar(30) NOT NULL,
+  `Amat` varchar(30) NOT NULL,
+  `Correo` varchar(60) NOT NULL,
+  `User` varchar(15) NOT NULL,
+  `Pass` varchar(15) NOT NULL,
+  `Cargo` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`Id_Usuario`, `Nombre`, `Apat`, `Amat`, `Correo`, `User`, `Pass`, `Cargo`) VALUES
+(1, 'Cesar Alejandro', 'Hernandez', 'Medina', 'cesarflow4k@gmail.com', 'Magik', '1234', 'Admin');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `venta`
+--
+
+CREATE TABLE `venta` (
+  `idVenta` int(11) NOT NULL,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp(),
+  `comprador_tipo` varchar(30) NOT NULL,
+  `id_alumna` int(11) DEFAULT NULL,
+  `id_cliente` int(11) DEFAULT NULL,
+  `id_taller` int(11) DEFAULT NULL,
+  `total` decimal(10,2) NOT NULL,
+  `estado` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `venta`
+--
+
+INSERT INTO `venta` (`idVenta`, `fecha`, `comprador_tipo`, `id_alumna`, `id_cliente`, `id_taller`, `total`, `estado`) VALUES
+(1, '2025-09-17 23:28:46', 'Cliente', NULL, 1, 2, 1600.00, 'Pendiente'),
+(2, '2025-09-18 04:00:31', 'Alumna', 1, NULL, 1, 800.00, 'Pendiente'),
+(5, '2025-09-19 15:25:27', 'Alumna', 3, NULL, NULL, 3900.00, 'Pendiente'),
+(6, '2025-09-19 16:07:47', 'alumna', 2, NULL, NULL, 3600.00, 'Pendiente'),
+(7, '2025-09-19 16:08:46', 'alumna', 1, NULL, NULL, 1500.00, 'Pendiente'),
+(8, '2025-09-19 16:09:34', 'alumna', 1, NULL, NULL, 3800.00, 'Pendiente'),
+(9, '2025-09-19 16:10:53', 'alumna', 2, NULL, NULL, 1600.00, 'Pendiente'),
+(10, '2025-09-19 16:14:14', 'alumna', 1, NULL, NULL, 4200.00, 'Pendiente'),
+(11, '2025-09-19 17:38:20', 'alumna', 3, NULL, NULL, 4000.00, 'Pendiente'),
+(12, '2025-09-19 18:08:25', 'alumna', 2, NULL, NULL, 800.00, 'Pendiente');
 
 --
 -- Índices para tablas volcadas
@@ -317,6 +616,12 @@ ALTER TABLE `alumnas`
   ADD PRIMARY KEY (`id_alumna`);
 
 --
+-- Indices de la tabla `clientes`
+--
+ALTER TABLE `clientes`
+  ADD PRIMARY KEY (`id_cliente`);
+
+--
 -- Indices de la tabla `cursos`
 --
 ALTER TABLE `cursos`
@@ -330,6 +635,15 @@ ALTER TABLE `descuentos`
   ADD KEY `id_alumna` (`id_alumna`);
 
 --
+-- Indices de la tabla `detalle_venta`
+--
+ALTER TABLE `detalle_venta`
+  ADD PRIMARY KEY (`idDetalle`),
+  ADD KEY `fk_detalle_venta_venta` (`idVenta`),
+  ADD KEY `fk_detalle_venta_producto` (`id_producto`),
+  ADD KEY `fk_detalle_venta_kit` (`id_kit`);
+
+--
 -- Indices de la tabla `egresos_talleres`
 --
 ALTER TABLE `egresos_talleres`
@@ -341,8 +655,8 @@ ALTER TABLE `egresos_talleres`
 --
 ALTER TABLE `historial_pagos`
   ADD PRIMARY KEY (`id_pago`),
-  ADD KEY `id_alumna` (`id_alumna`),
-  ADD KEY `id_agenda` (`id_agenda`);
+  ADD KEY `id_agenda` (`id_agenda`),
+  ADD KEY `idVenta` (`idVenta`);
 
 --
 -- Indices de la tabla `historial_pagos_cursos`
@@ -426,6 +740,21 @@ ALTER TABLE `talleres`
   ADD KEY `idx_talleres_id_maestra` (`id_maestra`);
 
 --
+-- Indices de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`Id_Usuario`);
+
+--
+-- Indices de la tabla `venta`
+--
+ALTER TABLE `venta`
+  ADD PRIMARY KEY (`idVenta`),
+  ADD KEY `fk_venta_taller` (`id_taller`),
+  ADD KEY `id_alumna` (`id_alumna`),
+  ADD KEY `id_cliente` (`id_cliente`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -433,103 +762,127 @@ ALTER TABLE `talleres`
 -- AUTO_INCREMENT de la tabla `agenda`
 --
 ALTER TABLE `agenda`
-  MODIFY `id_agenda` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_agenda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `agenda_cursos`
 --
 ALTER TABLE `agenda_cursos`
-  MODIFY `id_agenda_curso` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_agenda_curso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `alumnas`
 --
 ALTER TABLE `alumnas`
-  MODIFY `id_alumna` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_alumna` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `clientes`
+--
+ALTER TABLE `clientes`
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `cursos`
 --
 ALTER TABLE `cursos`
-  MODIFY `id_curso` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_curso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `descuentos`
 --
 ALTER TABLE `descuentos`
-  MODIFY `id_descuento` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_descuento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `detalle_venta`
+--
+ALTER TABLE `detalle_venta`
+  MODIFY `idDetalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `egresos_talleres`
 --
 ALTER TABLE `egresos_talleres`
-  MODIFY `id_egreso` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_egreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_pagos`
 --
 ALTER TABLE `historial_pagos`
-  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_pagos_cursos`
 --
 ALTER TABLE `historial_pagos_cursos`
-  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_venta_productos`
 --
 ALTER TABLE `historial_venta_productos`
-  MODIFY `id_venta` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_venta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `ingresos_talleres`
 --
 ALTER TABLE `ingresos_talleres`
-  MODIFY `id_ingreso` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_ingreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `institutos`
 --
 ALTER TABLE `institutos`
-  MODIFY `id_instituto` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_instituto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `inventario`
 --
 ALTER TABLE `inventario`
-  MODIFY `id_inventario` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_inventario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `inventario_stock`
 --
 ALTER TABLE `inventario_stock`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `kits_productos`
 --
 ALTER TABLE `kits_productos`
-  MODIFY `id_kit` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_kit` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `maestras`
 --
 ALTER TABLE `maestras`
-  MODIFY `id_maestra` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_maestra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `talleres`
 --
 ALTER TABLE `talleres`
-  MODIFY `id_taller` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_taller` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `Id_Usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `venta`
+--
+ALTER TABLE `venta`
+  MODIFY `idVenta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Restricciones para tablas volcadas
@@ -554,6 +907,14 @@ ALTER TABLE `descuentos`
   ADD CONSTRAINT `descuentos_ibfk_1` FOREIGN KEY (`id_alumna`) REFERENCES `alumnas` (`id_alumna`);
 
 --
+-- Filtros para la tabla `detalle_venta`
+--
+ALTER TABLE `detalle_venta`
+  ADD CONSTRAINT `fk_detalle_venta_kit` FOREIGN KEY (`id_kit`) REFERENCES `kits_productos` (`id_kit`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_detalle_venta_producto` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_detalle_venta_venta` FOREIGN KEY (`idVenta`) REFERENCES `venta` (`idVenta`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Filtros para la tabla `egresos_talleres`
 --
 ALTER TABLE `egresos_talleres`
@@ -563,8 +924,8 @@ ALTER TABLE `egresos_talleres`
 -- Filtros para la tabla `historial_pagos`
 --
 ALTER TABLE `historial_pagos`
-  ADD CONSTRAINT `historial_pagos_ibfk_1` FOREIGN KEY (`id_alumna`) REFERENCES `alumnas` (`id_alumna`),
-  ADD CONSTRAINT `historial_pagos_ibfk_2` FOREIGN KEY (`id_agenda`) REFERENCES `agenda` (`id_agenda`);
+  ADD CONSTRAINT `historial_pagos_ibfk_2` FOREIGN KEY (`id_agenda`) REFERENCES `agenda` (`id_agenda`),
+  ADD CONSTRAINT `historial_pagos_ibfk_3` FOREIGN KEY (`idVenta`) REFERENCES `venta` (`idVenta`);
 
 --
 -- Filtros para la tabla `historial_pagos_cursos`
@@ -614,6 +975,14 @@ ALTER TABLE `productos_kits`
 --
 ALTER TABLE `talleres`
   ADD CONSTRAINT `fk_talleres_maestras` FOREIGN KEY (`id_maestra`) REFERENCES `maestras` (`id_maestra`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `venta`
+--
+ALTER TABLE `venta`
+  ADD CONSTRAINT `fk_venta_taller` FOREIGN KEY (`id_taller`) REFERENCES `talleres` (`id_taller`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `venta_ibfk_1` FOREIGN KEY (`id_alumna`) REFERENCES `alumnas` (`id_alumna`),
+  ADD CONSTRAINT `venta_ibfk_2` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id_cliente`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
