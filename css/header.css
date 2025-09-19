@@ -1,0 +1,35 @@
+/* ====== Header / Topbar ====== */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 230px; /* igual al ancho del sidebar */
+  right: 0;
+  height: 60px;
+  background: #943154;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 25px;
+  border-bottom: 1px solid #e0e0e0;
+  box-sizing: border-box;
+  z-index: 1000;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 18px;
+  color: #333;
+}
+
+.user-info i {
+  font-size: 18px;
+  cursor: pointer;
+  color: #555;
+}
+
+.user-info span {
+  font-weight: 500;
+  color: #333;
+}

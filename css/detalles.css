@@ -1,0 +1,106 @@
+/* --- Área principal --- */
+.main {
+  margin-left: 230px; /* ancho sidebar */
+  margin-top: 60px;   /* altura header */
+  padding: 20px;
+  background: #f5f6fa;
+  min-height: calc(100vh - 60px);
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* --- Visibilidad SPA --- */
+.page { display: none; }
+.page.active { display: block; }
+
+
+.ventas-detalle {
+  flex: 1;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.ventas-detalle h3 {
+  margin-bottom: 8px;
+}
+
+.ventas-detalle .estado {
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Cliente */
+.ventas-detalle .cliente {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.ventas-detalle .cliente img {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+/* Productos */
+.ventas-detalle h4 {
+  margin-bottom: 8px;
+}
+
+.ventas-detalle .items {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 15px;
+}
+
+.ventas-detalle .items li {
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+}
+
+/* Total */
+.ventas-detalle .total {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Botones */
+.acciones {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  color: #fff;
+}
+
+.btn.seguimiento {
+  background: #007bff;
+}
+
+.btn.seguimiento:hover {
+  background: #0056b3;
+}
+
+.btn.reembolso {
+  background: #f0ad4e;
+}
+
+.btn.reembolso:hover {
+  background: #d68910;
+}
+
+

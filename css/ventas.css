@@ -1,0 +1,174 @@
+.main {
+  margin-left: 230px; /* ancho sidebar */
+  margin-top: 60px;   /* altura header */
+  padding: 20px;
+  background: #f5f6fa;
+  min-height: calc(100vh - 60px);
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+a{
+  text-decoration: none;
+  color: #000;
+}
+td{
+  text-align: center;
+}
+th{
+  text-align: center;
+}
+.amarillo{
+  background-color: lightyellow
+}
+.verde{
+  background-color: lightgreen;
+}
+
+/* --- Visibilidad SPA --- */
+#ventasPage {
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+}
+
+#ventasPage h2 {
+  margin-bottom: 15px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* ====== Contenedor principal ====== */
+.ventas-container {
+  display: flex;
+  gap: 20px;
+}
+
+/* ====== Lista de ventas (Tabla) ====== */
+.ventas-lista {
+  flex: 3;
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* Filtros */
+.ventas-filtros {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.ventas-filtros select,
+.ventas-filtros .ordenar {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ventas-filtros .ordenar {
+  background: #f5f5f5;
+}
+
+/* ====== Tabla ====== */
+.ventas-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+/* Encabezados */
+.ventas-tabla thead {
+  background: #f4f5f7;
+}
+
+.ventas-tabla th {
+  font-weight: 600;
+  color: #444 !important;
+  padding: 10px 12px;
+  border-bottom: 2px solid #e0e0e0;
+  text-decoration: none !important;
+}
+
+/* Evitar azul/subrayado en DataTables */
+.ventas-tabla th a {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+.ventas-tabla td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.ventas-tabla tbody tr {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ventas-tabla tbody tr:hover {
+  background: #E9C6C4;
+}
+
+.ventas-tabla td.pendiente {
+  background-color: rgb(255, 253, 149) !important;   /* Amarillo por defecto */
+}
+
+.ventas-tabla td.pagado {
+  background-color: #a4ff89 !important;  /* Azul claro */
+}
+
+/* ====== DataTables Overrides ====== */
+.dataTables_wrapper {
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.dataTables_length,
+.dataTables_filter {
+  margin: 8px 0;
+}
+/* Dropdown de resultados por página */
+.filtros select.resultados {
+  background-color: #f9fafb;
+  font-weight: 500;
+}
+.dataTables_filter input {
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.dataTables_paginate {
+  margin-top: 12px;
+}
+
+.dataTables_info {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #666;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.badge.pagado {
+  background: #00ACC8;
+}
+
+.badge.entregado {
+  background: #651E35;
+}
+
+/* ====== Panel de Detalles ====== */

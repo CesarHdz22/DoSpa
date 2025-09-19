@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel DO SPA</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/DO_SPA_logo.png" type="image/png">
+  <style>
+    .page { display: none; }
+    .page.active { display: block; }
+    .sidebar li.active { background: rgba(255,255,255,0.2); border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Barra lateral -->
+    <aside class="sidebar">
+      <div class="logo">DO SPA </div>
+      <ul id="menu">
+        <li class="active" data-page="dashboardPage"><i class="fas fa-home"></i> Panel</li>
+        <li data-page="ventasPage"><i class="fas fa-page"></i>Historial Ventas</li>
+        <li data-page="AgendaPage"><i class="fas fa-th-large"></i> Agenda</li>
+        <li data-page="uiPage"><i class="fas fa-layer-group"></i> Elementos UI</li>
+        <li data-page="advancedPage"><i class="fas fa-magic"></i> UI Avanzada</li>
+        <li data-page="formsPage"><i class="fas fa-wpforms"></i> Formularios</li>
+        <li data-page="editorsPage"><i class="fas fa-edit"></i> Editores</li>
+        <li data-page="chartsPage"><i class="fas fa-chart-pie"></i> Gráficas</li>
+        <li data-page="tablesPage"><i class="fas fa-table"></i> Tablas</li>
+        <li data-page="popupsPage"><i class="fas fa-window-restore"></i> Ventanas</li>
+        <li data-page="notiPage"><i class="fas fa-bell"></i> Notificaciones</li>
+        <li data-page="iconsPage"><i class="fas fa-icons"></i> Íconos</li>
+        <li data-page="mapsPage"><i class="fas fa-map"></i> Mapas</li>
+      </ul>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="main">
+      <!-- Barra superior -->
+      <header class="topbar">
+        <div class="search-box">
+          <input type="text" placeholder="Buscar">
+        </div>
+        <div class="user-info">
+          <i class="fas fa-bell"></i>
+          <img src="https://i.pravatar.cc/40" alt="usuario">
+          <span>Evan Morales</span>
+        </div>
+      </header>
+
+      <!-- Páginas -->
+      <section id="dashboardPage" class="page active">
+        <h2>Panel</h2>
+        <section class="cards">
+          <div class="card">
+            <h3>Clientes</h3>
+            <p class="number">45,679</p>
+            <small>Aumento del 20%</small>
+          </div>
+          <div class="card">
+            <h3>Pedidos</h3>
+            <p class="number">80,927</p>
+            <small>Aumento del 60%</small>
+          </div>
+          <div class="card">
+            <h3>Entregas</h3>
+            <p class="number">22,339</p>
+            <small>Disminución del 2%</small>
+          </div>
+          <div class="card">
+            <h3>Usuarios</h3>
+            <p class="number">+1,900</p>
+            <small>Crecimiento estable</small>
+          </div>
+          <div class="card revenue">
+            <h3>Ingresos</h3>
+            <p class="number">36,568</p>
+            <small>Ingresos totales</small>
+            <div class="stats">
+              <span class="growth">+40%</span>
+              <span class="refund">2.5%</span>
+              <span class="online">+23.6%</span>
+            </div>
+          </div>
+        </section>
+        <section class="graphs">
+          <div class="graph-card">
+            <h3>Categorías de productos</h3>
+            <canvas id="pieChart"></canvas>
+          </div>
+          <div class="graph-card">
+            <h3>Visitas a productos</h3>
+            <canvas id="lineChart"></canvas>
+          </div>
+        </section>
+      </section>
+
+      <!-- historial_venta_productos -->
+      <section id="ventasPage" class="page">
+        <h2>Ventas</h2>
+        <div class="ventas-container">
+            <!-- Tabla de pedidos -->
+            <div class="ventas-lista">
+            <div class="ventas-filtros">
+                <select>
+                <option>Cualquier estado</option>
+                <option>Pagado</option>
+                <option>Entregado</option>
+                <option>Completado</option>
+                </select>
+                <select>
+                <option>$0 — $500</option>
+                <option>$500 — $1000</option>
+                <option>$1000 — $2000</option>
+                </select>
+                <button class="ordenar">Ordenar por fecha</button>
+            </div>
+
+            <!-- Tabla con Table.js -->
+            <table id="ventasTabla" class="ventas-tabla display">
+                <thead>
+                <tr>
+                    <th>id venta</th>
+                    <th>id producto</th>
+                    <th>id kit</th>
+                    <th>Cantidad</th>
+                    <th>Precio total</th>
+                    <th>Tipo Comprador</th>
+                    <th>Comprador</th>
+                    <th>Taller</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr onclick="mostrarDetalle('#390561')">
+                    <td>#390561</td>
+                    <td>#43213</td>
+                    <td>12</td>
+                    <td>80</td>
+                    <td>800</td>
+                    <td>Alumno</td>
+                    <td>Juan mecanico</td>
+                    <td>2</td>
+                </tr>
+                <tr onclick="mostrarDetalle('#663334')">
+                    <td>#663334</td>
+                    <td>#4123</td>
+                    <td>5</td>
+                    <td>80</td>
+                    <td>$1,250.00</td>
+                    <td>Alumno</td>
+                    <td>Janice Chandler</td>
+                    <td>2</td>
+                </tr>
+                <tr onclick="mostrarDetalle('#418135')">
+                    <td>#418135</td>
+                    <td>#5434</td>
+                    <td>5</td>
+                    <td>30</td>
+                    <td>$540.95</td>
+                    <td>Alumno</td>
+                    <td>Mildred Hall</td>
+                    <td>1</td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+
+            <!-- Detalles del pedido -->
+            <div class="ventas-detalle" id="detallePedido">
+            <h3>Pedido #390561</h3>
+            <p class="estado"><span class="badge pagado">Pagado</span> — 8 Ene, 13:52</p>
+            <div class="cliente">
+                <img src="https://i.pravatar.cc/60?img=12" alt="cliente">
+                <div>
+                <strong>James Miller</strong><br>
+                <small>james.miller@email.com</small>
+                </div>
+            </div>
+
+            <h4>Productos</h4>
+            <ul class="items">
+                <li>Ryobi ONE taladro - $409.00</li>
+                <li>Socket Systeme Electric - $238.00</li>
+                <li>DVB-T2 receptor bbk - $139.00</li>
+                <li>Compresor de aire sin aceite - $135.00</li>
+                <li>Inversor de soldadura TIG-200 - $699.00</li>
+            </ul>
+
+            <div class="total">
+                <strong>Total:</strong> $1,620.00
+            </div>
+
+            <div class="acciones">
+                <button class="btn seguimiento">Rastrear</button>
+                <button class="btn reembolso">Reembolso</button>
+            </div>
+            </div>
+        </div>
+      </section>
+
+      <!-- Agenda -->
+      <section id="AgendaPage" class="page">
+
+        <div class="agenda-container">
+            <h3>Agenda</h3>
+          <!-- Tabla de agenda con Table.js -->
+          <table id="agendaTabla" class="agenda-table display">
+            <thead>
+              <tr>
+                <th>Id Agenda</th>
+                <th>Id Taller</th>
+                <th>Fecha</th>
+                <th>Hora Inicio</th>
+                <th>Hora Fin</th>
+                <th>Ubicacion</th>
+                <th>Variación</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>3607019</td>
+                <td>#14</td>
+                <td>10/01/2020</td>
+                <td><span class="status processed">10:30</span></td>
+                <td><span class="status to-process">12:00</span></td>
+                <td>Ciudad Victoria</td>
+                <td>✘</td>
+                
+              </tr>
+              <tr>
+                <td>1926674</td>
+                <td>#6</td>
+                <td>12/01/2020</td>
+                <td><span class="status processed">13:30</span></td>
+                <td><span class="status to-process">15:00</span></td>
+                <td>Zapopan</td>
+                <td>✘</td>
+                
+              </tr>
+              <tr>
+                <td>9239732</td>
+                <td>#14</td>
+                <td>15/01/2020</td>
+                <td><span class="status processed">14:30</span></td>
+                <td><span class="status to-process">16:00</span></td>
+                <td>Ciudad de México</td>
+                <td>✘</td>
+                
+              </tr>
+              <tr>
+                <td>6836863</td>
+                <td>#6</td>
+                <td>12/01/2020</td>
+                <td><span class="status processed">14:30</span></td>
+                <td><span class="status to-process">16:00</span></td>
+                <td>Zapopan</td>
+                <td>✘</td>
+               
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+
+
+      <section id="uiPage" class="page">
+        <h2>Elementos UI</h2>
+        <p>Contenido de elementos UI...</p>
+      </section>
+
+      <section id="advancedPage" class="page">
+        <h2>UI Avanzada</h2>
+        <p>Contenido de UI avanzada...</p>
+      </section>
+
+      <section id="formsPage" class="page">
+        <h2>Formularios</h2>
+        <p>Contenido de formularios...</p>
+      </section>
+
+      <section id="editorsPage" class="page">
+        <h2>Editores</h2>
+        <p>Contenido de editores...</p>
+      </section>
+
+      <section id="chartsPage" class="page">
+        <h2>Gráficas</h2>
+        <p>Aquí podrías poner otras gráficas...</p>
+      </section>
+
+      <section id="tablesPage" class="page">
+        <h2>Tablas</h2>
+        <p>Contenido de tablas...</p>
+      </section>
+
+      <section id="popupsPage" class="page">
+        <h2>Ventanas emergentes</h2>
+        <p>Contenido de ventanas...</p>
+      </section>
+
+      <section id="notiPage" class="page">
+        <h2>Notificaciones</h2>
+        <p>Contenido de notificaciones...</p>
+      </section>
+
+      <section id="iconsPage" class="page">
+        <h2>Íconos</h2>
+        <p>Galería de íconos...</p>
+      </section>
+
+      <section id="mapsPage" class="page">
+        <h2>Mapas</h2>
+        <p>Contenido de mapas...</p>
+      </section>
+
+      
+
+    </main>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Gráficas (solo cargan en el panel)
+    function initCharts() {
+      const pieCtx = document.getElementById("pieChart");
+      if (pieCtx) {
+        new Chart(pieCtx, {
+          type: "pie",
+          data: {
+            labels: ["Automóviles", "Maquinaria", "Decoración del hogar", "Químicos"],
+            datasets: [{
+              data: [40, 30, 20, 10],
+              backgroundColor: ["#ff7f50", "#6a0dad", "#9370db", "#ff6347"]
+            }]
+          }
+        });
+      }
+
+      const lineCtx = document.getElementById("lineChart");
+      if (lineCtx) {
+        new Chart(lineCtx, {
+          type: "line",
+          data: {
+            labels: ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+            datasets: [{
+              label: "Visitas",
+              data: [12, 19, 10, 15, 22, 18, 14],
+              borderColor: "#6a0dad",
+              backgroundColor: "rgba(106,13,173,0.2)",
+              tension: 0.4,
+              fill: true,
+              pointBackgroundColor: "#ff7f50"
+            }]
+          }
+        });
+      }
+    }
+
+    // Navegación lateral
+    const menuItems = document.querySelectorAll("#menu li");
+    const pages = document.querySelectorAll(".page");
+
+    menuItems.forEach(item => {
+      item.addEventListener("click", () => {
+        // Cambiar activo en menú
+        menuItems.forEach(i => i.classList.remove("active"));
+        item.classList.add("active");
+
+        // Mostrar la página seleccionada
+        const targetPage = item.getAttribute("data-page");
+        pages.forEach(p => p.classList.remove("active"));
+        document.getElementById(targetPage).classList.add("active");
+
+        // Reiniciar gráficas si es panel
+        if (targetPage === "dashboardPage") {
+          setTimeout(initCharts, 100); // delay para asegurar que los canvas estén visibles
+        }
+      });
+    });
+
+    // Iniciar gráficas al cargar
+    window.onload = initCharts;
+  </script>
+  <!-- Librería Simple-DataTables -->
+  <script src="librerias/tables.js"></script>
+  <script>
+    // Inicializar tabla de ventas con Simple-DataTables
+    const tablaVentas = new simpleDatatables.DataTable("#ventasTabla", {
+      searchable: true,
+      fixedHeight: true,
+      perPage: 5
+    });
+  </script>
+
+</body>
+</html>

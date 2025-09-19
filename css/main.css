@@ -1,0 +1,89 @@
+/* --- Área principal --- */
+.main {
+  margin-left: 230px; /* ancho sidebar */
+  margin-top: 60px;   /* altura header */
+  padding: 20px;
+  background: #f5f6fa;
+  min-height: calc(100vh - 60px);
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* --- Visibilidad SPA --- */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ====== Cards del dashboard ====== */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card h3 {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.card .number {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.card small {
+  color: gray;
+}
+
+.revenue .stats {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.stats span {
+  font-size: 14px;
+}
+
+.growth { color: green; }
+.refund { color: orange; }
+.online { color: purple; }
+
+/* Graphs */
+.graphs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.graph-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+
+/* --- Responsive --- */
+@media (max-width: 900px) {
+  .card.revenue { grid-column: span 1; }
+}
+
+@media (max-width: 760px) {
+  .main {
+    margin-left: 0;
+    margin-top: 56px;
+    padding: 14px;
+  }
+  .cards {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+}
