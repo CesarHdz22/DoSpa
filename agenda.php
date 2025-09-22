@@ -25,6 +25,8 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
   <!-- Reusamos inventario.css para look consistente -->
   <link rel="stylesheet" href="css/inventario.css">
   <link rel="icon" href="img/DO_SPA_logo.png" type="image/png">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -293,7 +295,6 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
     <div id="contenidoInscritas"></div>
   </div>
 </div>
-
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="librerias/tables.js"></script>
   <script src = "librerias/agenda.js"></script>
