@@ -1,0 +1,53 @@
+.main {
+  margin-left: 230px; /* ancho sidebar */
+  margin-top: 60px;   /* altura header */
+  padding: 20px;
+  background: #f5f6fa;
+  min-height: calc(100vh - 60px);
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+.inscripciones {
+  padding: 30px;
+  background: #f5f6fa; /* fondo suave gris */
+  display: flex;
+  justify-content: center;
+}
+
+.inscripciones-container {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  width: 90%;
+  max-width: 1000px;
+}
+
+.inscripciones-title {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: #333;
+  text-align: center;
+  font-weight: bold;
+}
+
+.tablaInscripciones {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tablaInscripciones thead {
+  background: #333;
+  color: #fff;
+}
+
+.tablaInscripciones th, 
+.tablaInscripciones td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.tablaInscripciones tr:hover {
+  background: #f0f0f0;
+}

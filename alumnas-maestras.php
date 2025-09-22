@@ -96,15 +96,17 @@ $maestras = mysqli_query($conexion, $sqlMaestras);
   </header>
 
   <aside class="sidebar">
-    <nav>
-      <ul>
-        <li><a href="main.php"><i class="fa fa-gauge"></i><span>Dashboard</span></a></li>
-        <li><a href="talleres-cursos.php"><i class="fa fa-chalkboard"></i><span>Talleres / Cursos</span></a></li>
+      <div class="logo">DO SPA</div>
+      <ul id="menu">
+        <li><a href="main.php"><i class="fas fa-home"></i> Panel</a></li>
+        <li><a href="ventas.php"><i class="fas fa-file-invoice-dollar"></i> Historial Ventas</a></li>
+        <li><a href="inscripciones.php"><i class="fas fa-clipboard-list"></i> Historial Inscripciones</a></li>
+        <li><a href="agenda.php"><i class="fas fa-calendar-days"></i> Agenda</a></li>
+        <li><a href="talleres-cursos.php"><i class="fas fa-chalkboard-teacher"></i>Talleres/Cursos</a></li> 
         <li class="active"><a href="alumnas-maestras.php"><i class="fa-solid fa-users"></i><span>Alumnas / Maestras</span></a></li>
-        <li><a href="ventas.php"><i class="fa fa-cart-shopping"></i><span>Ventas</span></a></li>
+        <li><a href="inventario.php"><i class="fas fa-layer-group"></i> Inventario</a></li>
       </ul>
-    </nav>
-  </aside>
+    </aside>
 
   <!-- Main -->
   <main class="main">
