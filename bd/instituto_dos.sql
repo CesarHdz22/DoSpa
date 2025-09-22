@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-09-2025 a las 04:50:06
+-- Tiempo de generación: 22-09-2025 a las 07:27:27
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -250,36 +250,13 @@ INSERT INTO `detalle_venta` (`idDetalle`, `idVenta`, `id_producto`, `id_kit`, `c
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `egresos_talleres`
---
-
-CREATE TABLE `egresos_talleres` (
-  `id_egreso` int(11) NOT NULL,
-  `fecha` date DEFAULT NULL,
-  `concepto` text DEFAULT NULL,
-  `monto` decimal(10,2) DEFAULT NULL,
-  `id_taller` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `egresos_talleres`
---
-
-INSERT INTO `egresos_talleres` (`id_egreso`, `fecha`, `concepto`, `monto`, `id_taller`) VALUES
-(1, '2025-09-05', 'Materiales de repostería', 500.00, 1),
-(2, '2025-09-12', 'Maquillajes y brochas', 800.00, 2),
-(3, '2025-09-18', 'Papel y pinturas', 300.00, 3);
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `historial_pagos`
 --
 
 CREATE TABLE `historial_pagos` (
   `id_pago` int(11) NOT NULL,
   `idVenta` int(11) DEFAULT NULL,
-  `id_agenda` int(11) DEFAULT NULL,
+  `id_intermedia` int(11) DEFAULT NULL,
   `monto_pagado` decimal(10,2) DEFAULT NULL,
   `saldo_pendiente` decimal(10,2) DEFAULT NULL,
   `fecha_pago` timestamp NULL DEFAULT NULL,
@@ -292,66 +269,10 @@ CREATE TABLE `historial_pagos` (
 -- Volcado de datos para la tabla `historial_pagos`
 --
 
-INSERT INTO `historial_pagos` (`id_pago`, `idVenta`, `id_agenda`, `monto_pagado`, `saldo_pendiente`, `fecha_pago`, `metodo_pago`, `tipo_servicio`, `comprobante`) VALUES
+INSERT INTO `historial_pagos` (`id_pago`, `idVenta`, `id_intermedia`, `monto_pagado`, `saldo_pendiente`, `fecha_pago`, `metodo_pago`, `tipo_servicio`, `comprobante`) VALUES
 (4, 1, NULL, 500.00, 1100.00, '2025-09-17 05:20:26', 'transferencia', 'producto', ''),
 (5, 1, NULL, 300.00, 800.00, '2025-09-18 05:20:26', 'transferencia', 'producto', ''),
 (6, 2, NULL, 300.00, 500.00, '2025-09-10 05:25:32', 'transferencia', 'producto', '');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `historial_pagos_cursos`
---
-
-CREATE TABLE `historial_pagos_cursos` (
-  `id_pago` int(11) NOT NULL,
-  `id_alumna` int(11) DEFAULT NULL,
-  `id_agenda_curso` int(11) DEFAULT NULL,
-  `monto_pagado` decimal(10,2) DEFAULT NULL,
-  `saldo_pendiente` decimal(10,2) DEFAULT NULL,
-  `fecha_pago` date DEFAULT NULL,
-  `metodo_pago` enum('efectivo','tarjeta','transferencia','depósito','otros') DEFAULT 'efectivo',
-  `tipo_servicio` enum('paquete','servicio','kit','producto','otro') DEFAULT 'servicio'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `historial_pagos_cursos`
---
-
-INSERT INTO `historial_pagos_cursos` (`id_pago`, `id_alumna`, `id_agenda_curso`, `monto_pagado`, `saldo_pendiente`, `fecha_pago`, `metodo_pago`, `tipo_servicio`) VALUES
-(1, 1, 1, 1500.00, 1000.00, '2025-09-20', 'efectivo', 'servicio'),
-(2, 2, 2, 3000.00, 0.00, '2025-09-29', 'tarjeta', 'paquete'),
-(3, 3, 3, 1000.00, 1000.00, '2025-10-01', 'transferencia', 'kit'),
-(4, 2, 3, 0.00, 0.00, '2025-09-21', 'otros', 'servicio');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `ingresos_talleres`
---
-
-CREATE TABLE `ingresos_talleres` (
-  `id_ingreso` int(11) NOT NULL,
-  `id_alumna` int(11) DEFAULT NULL,
-  `fecha` date DEFAULT NULL,
-  `tipo_ingreso` varchar(100) DEFAULT NULL,
-  `metodo_pago` varchar(100) DEFAULT NULL,
-  `id_taller` int(11) DEFAULT NULL,
-  `costo` decimal(10,2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `ingresos_talleres`
---
-
-INSERT INTO `ingresos_talleres` (`id_ingreso`, `id_alumna`, `fecha`, `tipo_ingreso`, `metodo_pago`, `id_taller`, `costo`) VALUES
-(1, 1, '2025-09-06', 'Inscripción', 'efectivo', 1, 1500.00),
-(2, 2, '2025-09-13', 'Inscripción', 'tarjeta', 2, 2000.00),
-(3, 3, '2025-09-19', 'Inscripción', 'transferencia', 3, 1000.00),
-(4, 1, '2025-09-21', 'inscripcion', 'otros', 3, 0.00),
-(5, 3, '2025-09-21', 'inscripcion', 'otros', 3, 0.00),
-(6, 1, '2025-09-21', 'inscripcion', 'otros', 3, 0.00),
-(7, 1, '2025-09-21', 'inscripcion', 'otros', 2, 0.00);
 
 -- --------------------------------------------------------
 
@@ -547,7 +468,8 @@ CREATE TABLE `maestras` (
 INSERT INTO `maestras` (`id_maestra`, `nombre`, `base`, `acuerdo`, `gastos`, `porcentaje_ganancia`) VALUES
 (1, 'María López', 'Base A', '50/50', 1200.50, 40.00),
 (2, 'Ana Martínez', 'Base B', '60/40', 800.00, 35.00),
-(3, 'Claudia Torres', 'Base C', '70/30', 950.75, 45.00);
+(3, 'Claudia Torres', 'Base C', '70/30', 950.75, 45.00),
+(4, 'sallva', 'A', 'sss', 12.00, 999.99);
 
 -- --------------------------------------------------------
 
@@ -768,35 +690,12 @@ ALTER TABLE `detalle_venta`
   ADD KEY `fk_detalle_venta_kit` (`id_kit`);
 
 --
--- Indices de la tabla `egresos_talleres`
---
-ALTER TABLE `egresos_talleres`
-  ADD PRIMARY KEY (`id_egreso`),
-  ADD KEY `id_taller` (`id_taller`);
-
---
 -- Indices de la tabla `historial_pagos`
 --
 ALTER TABLE `historial_pagos`
   ADD PRIMARY KEY (`id_pago`),
-  ADD KEY `id_agenda` (`id_agenda`),
-  ADD KEY `idVenta` (`idVenta`);
-
---
--- Indices de la tabla `historial_pagos_cursos`
---
-ALTER TABLE `historial_pagos_cursos`
-  ADD PRIMARY KEY (`id_pago`),
-  ADD KEY `id_alumna` (`id_alumna`),
-  ADD KEY `id_agenda_curso` (`id_agenda_curso`);
-
---
--- Indices de la tabla `ingresos_talleres`
---
-ALTER TABLE `ingresos_talleres`
-  ADD PRIMARY KEY (`id_ingreso`),
-  ADD KEY `id_alumna` (`id_alumna`),
-  ADD KEY `id_taller` (`id_taller`);
+  ADD KEY `idVenta` (`idVenta`),
+  ADD KEY `fk_historial_pagos_intermedia` (`id_intermedia`);
 
 --
 -- Indices de la tabla `institutos`
@@ -927,28 +826,10 @@ ALTER TABLE `detalle_venta`
   MODIFY `idDetalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
--- AUTO_INCREMENT de la tabla `egresos_talleres`
---
-ALTER TABLE `egresos_talleres`
-  MODIFY `id_egreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
 -- AUTO_INCREMENT de la tabla `historial_pagos`
 --
 ALTER TABLE `historial_pagos`
   MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT de la tabla `historial_pagos_cursos`
---
-ALTER TABLE `historial_pagos_cursos`
-  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT de la tabla `ingresos_talleres`
---
-ALTER TABLE `ingresos_talleres`
-  MODIFY `id_ingreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `institutos`
@@ -984,7 +865,7 @@ ALTER TABLE `kits_productos`
 -- AUTO_INCREMENT de la tabla `maestras`
 --
 ALTER TABLE `maestras`
-  MODIFY `id_maestra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_maestra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
@@ -1041,31 +922,11 @@ ALTER TABLE `detalle_venta`
   ADD CONSTRAINT `fk_detalle_venta_venta` FOREIGN KEY (`idVenta`) REFERENCES `venta` (`idVenta`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `egresos_talleres`
---
-ALTER TABLE `egresos_talleres`
-  ADD CONSTRAINT `egresos_talleres_ibfk_1` FOREIGN KEY (`id_taller`) REFERENCES `talleres` (`id_taller`);
-
---
 -- Filtros para la tabla `historial_pagos`
 --
 ALTER TABLE `historial_pagos`
-  ADD CONSTRAINT `historial_pagos_ibfk_2` FOREIGN KEY (`id_agenda`) REFERENCES `agenda` (`id_agenda`),
+  ADD CONSTRAINT `fk_historial_pagos_intermedia` FOREIGN KEY (`id_intermedia`) REFERENCES `intermedia_a` (`id_intermedia`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `historial_pagos_ibfk_3` FOREIGN KEY (`idVenta`) REFERENCES `venta` (`idVenta`);
-
---
--- Filtros para la tabla `historial_pagos_cursos`
---
-ALTER TABLE `historial_pagos_cursos`
-  ADD CONSTRAINT `fk_hist_pagos_cursos__agenda` FOREIGN KEY (`id_agenda_curso`) REFERENCES `agenda_cursos` (`id_agenda_curso`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_hist_pagos_cursos__alumnas` FOREIGN KEY (`id_alumna`) REFERENCES `alumnas` (`id_alumna`) ON DELETE SET NULL ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `ingresos_talleres`
---
-ALTER TABLE `ingresos_talleres`
-  ADD CONSTRAINT `ingresos_talleres_ibfk_1` FOREIGN KEY (`id_alumna`) REFERENCES `alumnas` (`id_alumna`),
-  ADD CONSTRAINT `ingresos_talleres_ibfk_2` FOREIGN KEY (`id_taller`) REFERENCES `talleres` (`id_taller`);
 
 --
 -- Filtros para la tabla `intermedia_a`
