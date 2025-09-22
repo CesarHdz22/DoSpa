@@ -266,7 +266,12 @@ document.querySelectorAll('.btn-editar').forEach(btn => {
 
         // Verificar que haya exactamente un producto seleccionado
         if (!carrito || carrito.length !== 1) {
-            alert("Selecciona exactamente un producto para editar.");
+            Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Selecciona exactamente un producto para editar.",
+            footer: '<a href="#">¿Por qué tengo este problema?</a>'
+            });
             return;
         }
 
@@ -307,8 +312,12 @@ document.querySelectorAll('.btn-eliminar').forEach(btn => {
 
         // Verificar que haya exactamente un producto seleccionado
         if (!carrito || carrito.length !== 1) {
-            alert("Selecciona exactamente un producto para eliminar.");
-            return;
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Selecciona exactamente un producto para eliminar.",
+          });
+          return; 
         }
 
         // Tipo del producto en el carrito
