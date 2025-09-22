@@ -1,6 +1,11 @@
 html{
   background: #f5f6fa;
 }
+
+#btn-logout{
+  cursor: pointer;
+  width: 25px;
+}
 /* ====== Header / Topbar ====== */
 .topbar {
   position: fixed;
