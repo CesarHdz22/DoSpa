@@ -17,9 +17,23 @@
               const tipo = btn.dataset.tipo; // 'taller'|'curso'
               const tableId = (tipo==='curso') ? '#TablaCursos' : '#TablaTalleres';
               const rowSel = document.querySelector(`${tableId} tbody tr.row-selected`);
-              if (!rowSel) { alert('Selecciona una fila primero.'); return; }
+              if (!rowSel) { 
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Selecciona una fila primero."
+                });
+                return;                
+              }
               const id = (rowSel.querySelector('td')||{}).innerText?.trim();
-              if (!id){ alert('No se pudo leer el ID.'); return; }
+              if (!id) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "No se pudo leer el ID."
+                });
+                return;
+              }
               window.location.href = `editar_agenda.php?type=${encodeURIComponent(tipo)}&id=${encodeURIComponent(id)}`;
             });
           });
@@ -129,22 +143,57 @@
           }
 
           // Validación simple antes de enviar
-          document.getElementById('formAgendar').addEventListener('submit', function(e){
-            const tipo = document.getElementById('typeField').value;
-            if (tipo==='taller' && !document.getElementById('id_taller').value){
-              alert('Selecciona un taller.'); e.preventDefault(); return;
-            }
-            if (tipo==='curso' && !document.getElementById('id_curso').value){
-              alert('Selecciona un curso.'); e.preventDefault(); return;
-            }
-            const hi = document.getElementById('hora_inicio').value;
-            const hf = document.getElementById('hora_fin').value;
-            if (hi && hf){
-              const di = new Date('1970-01-01T'+hi+':00');
-              const df = new Date('1970-01-01T'+hf+':00');
-              if (df <= di){ alert('La hora de fin debe ser mayor a la de inicio.'); e.preventDefault(); }
-            }
-          });
+                document.getElementById('formAgendar').addEventListener('submit', function(e){
+                e.preventDefault(); // Cortamos el submit al inicio
+
+                const tipo = document.getElementById('typeField').value;
+                const idTaller = document.getElementById('id_taller').value;
+                const idCurso = document.getElementById('id_curso').value;
+                const hi = document.getElementById('hora_inicio').value;
+                const hf = document.getElementById('hora_fin').value;
+
+                // Validación tipo
+                if (tipo === 'taller' && !idTaller) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Selecciona un taller.",
+                        confirmButtonColor: "#3085d6"
+                    });
+                    return;
+                }
+
+                if (tipo === 'curso' && !idCurso) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Selecciona un curso.",
+                        confirmButtonColor: "#3085d6"
+                    });
+                    return;
+                }
+
+                // Validación horas
+                if (hi && hf) {
+                    const di = new Date('1970-01-01T' + hi + ':00');
+                    const df = new Date('1970-01-01T' + hf + ':00');
+
+                    if (df <= di) {
+                        Swal.fire({
+                            title: "Hora inválida",
+                            text: "La hora de fin debe ser mayor a la de inicio.",
+                            icon: "warning",
+                            confirmButtonColor: "#3085d6",
+                            confirmButtonText: "Ok"
+                        });
+                        return;
+                    }
+                }
+
+                // Si todo está bien, enviamos el form manualmente
+                e.target.submit();
+            });
+
         });
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -171,7 +220,14 @@
     const tableId = (tipo === 'curso') ? '#TablaCursos' : '#TablaTalleres';
     const rowSel = document.querySelector(`${tableId} tbody tr.row-selected`);
 
-    if (!rowSel) { alert('Selecciona una fila primero.'); return; }
+    if (!rowSel) {
+      Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Selecciona una fila primero."
+      });
+      return;
+    }
 
     const id = rowSel.querySelector('td').innerText.trim();
 
