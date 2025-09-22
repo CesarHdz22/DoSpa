@@ -20,9 +20,14 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/detalles.css">
   <link rel="icon" href="img/DO_SPA_logo.png" type="image/png">
-  <!-- Iconos de FontAwesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css">
+
+  <!-- Librería SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Iconos de FontAwesome -->
+ 
 </head>
 <body>
   <div class="dashboard">
@@ -53,66 +58,69 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
 
         <section class="registro">
 
-            <form id="formPago" method="POST" onsubmit="validarPago(event)">
-    <div>
-        <label for="monto">Monto Pagado:</label>
-        <input type="text" id="monto" name="monto_pagado" required>
-    </div>
+          <form id="formPago" method="POST" onsubmit="validarPago(event)">
+              <div>
+                  <label for="monto">Monto Pagado:</label>
+                  <input type="text" id="monto" name="monto_pagado" required>
+              </div>
 
-    <div>
-        <label for="metodo">Método de Pago:</label>
-        <select id="metodo" name="metodo_pago" required>
-            <option value="">-- Selecciona --</option>
-            <option value="efectivo">Efectivo</option>
-            <option value="tarjeta">Tarjeta</option>
-            <option value="transferencia">Transferencia</option>
-            <option value="depósito">Depósito</option>
-            <option value="otros">Otros</option>
-        </select>
-    </div>
+              <div>
+                  <label for="metodo">Método de Pago:</label>
+                  <select id="metodo" name="metodo_pago" required>
+                      <option value="">-- Selecciona --</option>
+                      <option value="efectivo">Efectivo</option>
+                      <option value="tarjeta">Tarjeta</option>
+                      <option value="transferencia">Transferencia</option>
+                      <option value="depósito">Depósito</option>
+                      <option value="otros">Otros</option>
+                  </select>
+              </div>
 
-    <div>
-        <label for="comprobante">Comprobante (link de Drive):</label>
-        <input type="text" id="comprobante" name="comprobante" required>
-    </div>
+              <div>
+                  <label for="comprobante">Comprobante (link de Drive):</label>
+                  <input type="text" id="comprobante" name="comprobante" required>
+              </div>
 
-    <button type="submit">Registrar Pago</button>
-</form>
+              <button type="submit">Registrar Pago</button>
+          </form>
         </section>
-      
-      
-         
-            
-
+    
     </main>
   </div>
-  
+
 </body>
 <script>
-async function validarPago(event) {
-    event.preventDefault(); // detener envío automático
+ async function validarPago(event) {
+    event.preventDefault(); // Detener envío automático
 
     const monto = document.getElementById('monto').value.trim();
     const metodo = document.getElementById('metodo').value;
     const comprobante = document.getElementById('comprobante').value.trim();
-    const idI = <?= $idI ?>;  // se pasa desde PHP
-    const tipo = "<?= $tipo ?>"; // se pasa desde PHP
 
-    // Validación
+    // Variables pasadas desde PHP
+    const idI = <?= json_encode($idI) ?>;
+    const tipo = <?= json_encode($tipo) ?>;
+
+    // URL de la página anterior
+    const returnUrl = document.referrer || 'index.php'; // fallback en caso de no haber referrer
+
+    // Validación de los campos
     const regexMonto = /^[0-9]+(\.[0-9]{1,2})?$/;
-    const regexDrive = /^https?:\/\/(drive\.google\.com|docs\.google\.com)\/[^\s]+$/;
+    const regexDrive = /^https?:\/\/(drive\.google\.com|docs\.google\.com)\/.+$/;
 
     if (!regexMonto.test(monto)) {
         return Swal.fire("Monto inválido", "Ingresa un número válido con hasta 2 decimales", "error");
     }
+
     if (!metodo) {
         return Swal.fire("Método requerido", "Selecciona un método de pago", "error");
     }
+
     if (!regexDrive.test(comprobante)) {
         return Swal.fire("Enlace inválido", "El comprobante debe ser un enlace válido de Google Drive", "error");
     }
 
-    // Si todo está bien, enviar vía fetch y redirigir
+    // Preparar datos para enviar vía fetch
     const formData = new FormData();
     formData.append("monto_pagado", monto);
     formData.append("metodo_pago", metodo);
@@ -123,18 +131,20 @@ async function validarPago(event) {
             method: "POST",
             body: formData
         });
-        const result = await response.text();
 
-        // Mostrar alerta de éxito
+        if (!response.ok) throw new Error("Error en la petición");
+
         await Swal.fire("Pago registrado", "La información se guardó correctamente", "success");
 
-        // Redirigir a otra página
-        window.location.href = "historialPagos.php?id=" + idI;
+        // Redirigir a la página anterior
+        window.location.href = returnUrl;
+
     } catch (error) {
-        Swal.fire("Error", "No se pudo registrar el pago", "error");
         console.error(error);
+        Swal.fire("Error", "No se pudo registrar el pago", "error");
     }
 }
+
 </script>
 </html>
 <?php
