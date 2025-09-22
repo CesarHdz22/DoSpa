@@ -270,8 +270,7 @@ document.querySelectorAll('.btn-editar').forEach(btn => {
             Swal.fire({
             icon: "error",
             title: "Oops...",
-            text: "Selecciona exactamente un producto para editar.",
-            footer: '<a href="#">¿Por qué tengo este problema?</a>'
+            text: "Selecciona exactamente un producto para editar."
             });
             return;
         }
