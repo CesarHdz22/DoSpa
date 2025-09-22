@@ -37,6 +37,8 @@ function h($s){ return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/editarP.css">
   <link rel="icon" href="img/DO_SPA_logo.png" type="image/png">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 <body>
   <div class="dashboard">
@@ -64,7 +66,7 @@ function h($s){ return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
         </h2>
 
         <div class="edicion-wrapper">
-          <form action="eAgenda.php" method="post" class="edicion-form" onsubmit="return validarAgenda()">
+          <form action="eAgenda.php" method="post" class="edicion-form" onsubmit="return validarAgenda(event);">
             <input type="hidden" name="type" value="<?php echo h($type); ?>">
             <input type="hidden" name="id"   value="<?php echo (int)$row['id_agenda']; ?>">
 
@@ -115,18 +117,63 @@ function h($s){ return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
   </div>
 
   <script>
-  function validarAgenda(){
+  async function validarAgenda(event) {
+    event.preventDefault(); // detiene el envío por defecto
+    
     var f  = document.getElementById('fecha').value.trim();
     var hi = document.getElementById('hora_inicio').value.trim();
     var hf = document.getElementById('hora_fin').value.trim();
-    if(!f){ alert('La fecha es obligatoria.'); return false; }
-    if(!hi || !hf){ alert('Las horas de inicio y fin son obligatorias.'); return false; }
+
+    if (!f) {
+        await Swal.fire({
+            icon: "error",
+            title: "La fecha es obligatoria.",
+            text: "Ingresa una fecha válida"
+        });
+        return false;
+    }
+
+    if (!hi || !hf) {
+        await Swal.fire({
+            icon: "error",
+            title: "Verifica tus horarios",
+            text: "Las horas de inicio y fin son obligatorias."
+        });
+        return false;
+    }
+
     var di = new Date('1970-01-01T' + hi + ':00');
     var df = new Date('1970-01-01T' + hf + ':00');
-    if (isNaN(di.getTime()) || isNaN(df.getTime())) { alert('Hora inválida.'); return false; }
-    if (df <= di) { alert('La hora de fin debe ser mayor a la de inicio.'); return false; }
-    return true;
-  }
+
+    if (isNaN(di.getTime()) || isNaN(df.getTime())) {
+        await Swal.fire({
+            icon: "error",
+            title: "Hora inválida.",
+            text: "Revisa el formato de la hora"
+        });
+        return false;
+    }
+
+    if (df <= di) {
+        await Swal.fire({
+            icon: "error",
+            title: "Ajusta tus horarios",
+            text: "La hora de fin debe ser mayor a la de inicio."
+        });
+        return false;
+    }
+
+    await Swal.fire({
+        icon: "success",
+        title: "Perfecto!",
+        text: "Tu agenda ha sido validada correctamente."
+    });
+
+    // ✅ Aquí es donde se envía el formulario
+    event.target.submit();
+}
+
+
   </script>
 </body>
 </html>

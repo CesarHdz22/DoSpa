@@ -143,45 +143,57 @@
           }
 
           // Validación simple antes de enviar
-          document.getElementById('formAgendar').addEventListener('submit', function(e){
-            const tipo = document.getElementById('typeField').value;
-            if (tipo==='taller' && !document.getElementById('id_taller').value){
-              Swal.fire({
-                  icon: "error",
-                  title: "Oops...",
-                  text: "Selecciona un taller."
-              });
-              e.preventDefault();
-              return;
-            }
-            if (tipo==='curso' && !document.getElementById('id_curso').value){
-              Swal.fire({
-                  icon: "error",
-                  title: "Oops...",
-                  text: "Selecciona un curso."
-              });
-              e.preventDefault();
-              return;
-            }
-            const hi = document.getElementById('hora_inicio').value;
-            const hf = document.getElementById('hora_fin').value;
-            if (hi && hf) {
-                const di = new Date('1970-01-01T' + hi + ':00');
-                const df = new Date('1970-01-01T' + hf + ':00');
+                document.getElementById('formAgendar').addEventListener('submit', function(e){
+                e.preventDefault(); // Cortamos el submit al inicio
 
-                if (df <= di) {
-                    e.preventDefault(); // Esto evita que se envíe el formulario si aplica
+                const tipo = document.getElementById('typeField').value;
+                const idTaller = document.getElementById('id_taller').value;
+                const idCurso = document.getElementById('id_curso').value;
+                const hi = document.getElementById('hora_inicio').value;
+                const hf = document.getElementById('hora_fin').value;
 
+                // Validación tipo
+                if (tipo === 'taller' && !idTaller) {
                     Swal.fire({
-                        title: "Hora inválida",
-                        text: "La hora de fin debe ser mayor a la de inicio.",
-                        icon: "warning",
-                        confirmButtonColor: "#3085d6",
-                        confirmButtonText: "Ok"
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Selecciona un taller.",
+                        confirmButtonColor: "#3085d6"
                     });
+                    return;
                 }
-            }
-          });
+
+                if (tipo === 'curso' && !idCurso) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Selecciona un curso.",
+                        confirmButtonColor: "#3085d6"
+                    });
+                    return;
+                }
+
+                // Validación horas
+                if (hi && hf) {
+                    const di = new Date('1970-01-01T' + hi + ':00');
+                    const df = new Date('1970-01-01T' + hf + ':00');
+
+                    if (df <= di) {
+                        Swal.fire({
+                            title: "Hora inválida",
+                            text: "La hora de fin debe ser mayor a la de inicio.",
+                            icon: "warning",
+                            confirmButtonColor: "#3085d6",
+                            confirmButtonText: "Ok"
+                        });
+                        return;
+                    }
+                }
+
+                // Si todo está bien, enviamos el form manualmente
+                e.target.submit();
+            });
+
         });
 
         document.addEventListener("DOMContentLoaded", function () {
