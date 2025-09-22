@@ -48,6 +48,8 @@
   border-bottom: 1px solid #eee;
 }
 
-.tablaInscripciones tr:hover {
-  background: #f0f0f0;
+a{
+  color: #943154;
+  text-decoration: none;
+  font-weight: 500;
 }

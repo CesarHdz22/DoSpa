@@ -45,7 +45,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
       <header class="topbar">
         <div class="user-info">
           <span><?php echo $Nombre." ".$Apat." ".$Amat ?></span>
-          <a href="muerte.php"><img src="img/logout.png" width="20px"></a>
+          <a href="muerte.php"><img src="img/logout.png" id="btn-logout" alt="Salir"></a>
         </div>
       </header>
 

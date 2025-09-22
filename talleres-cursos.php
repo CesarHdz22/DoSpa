@@ -56,7 +56,7 @@ $optsMaestras = mysqli_query($conexion, "SELECT id_maestra, nombre FROM maestras
       <header class="topbar">
         <div class="user-info">
           <span><?php echo htmlspecialchars("$Nombre $Apat $Amat", ENT_QUOTES, 'UTF-8'); ?></span>
-          <a href="muerte.php"><img src="img/logout.png" width="20" alt="Salir"></a>
+          <a href="muerte.php"><img src="img/logout.png" id="btn-logout" alt="Salir"></a>
         </div>
       </header>
 
