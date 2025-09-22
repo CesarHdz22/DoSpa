@@ -328,8 +328,13 @@ document.querySelectorAll('.btn-eliminar').forEach(btn => {
         const tipoBtn = btn.dataset.tipo;
 
         if (tipoCarrito !== tipoBtn) {
-            alert(`Este botón solo funciona para ${tipoBtn}s.`);
-            return;
+
+          Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `Este botón solo funciona para ${tipoBtn}s.`
+          });
+          return;
         }
 
         // Confirmación
@@ -375,10 +380,25 @@ document.querySelectorAll('.btn-eliminar').forEach(btn => {
     const tipo = btn.dataset.tipo; // 'producto' | 'kit'
     const tableId = (tipo === 'kit') ? '#TablaKits' : '#TablaProductos';
     const rowSel = document.querySelector(`${tableId} tbody tr.row-selected`);
-    if (!rowSel) { alert('Selecciona una fila primero.'); return; }
+
+    if (!rowSel) {            
+      Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Selecciona una fila primero."
+      });
+      return;
+    }
 
     const id = (rowSel.querySelector('td') || {}).innerText?.trim();
-    if (!id) { alert('No se pudo leer el ID.'); return; }
+    if (!id) {
+      Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "No se pudo leer el ID."
+      });
+      return;
+    }
 
     if (!confirm(`¿Eliminar este ${tipo}?`)) return;
 
@@ -392,4 +412,5 @@ document.querySelectorAll('.btn-eliminar').forEach(btn => {
 </body>
 </html>
 <?php
+}
 ?>
