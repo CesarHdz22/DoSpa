@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-09-2025 a las 10:41:35
+-- Tiempo de generación: 22-09-2025 a las 22:00:46
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -264,7 +264,7 @@ CREATE TABLE `historial_pagos` (
   `saldo_pendiente` decimal(10,2) DEFAULT NULL,
   `fecha_pago` timestamp NULL DEFAULT NULL,
   `metodo_pago` enum('efectivo','tarjeta','transferencia','depósito','otros') DEFAULT 'efectivo',
-  `tipo_servicio` varchar(30),
+  `tipo_servicio` varchar(30) DEFAULT NULL,
   `comprobante` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -422,7 +422,10 @@ CREATE TABLE `kits_productos` (
 INSERT INTO `kits_productos` (`id_kit`, `nombre`, `precio_unitario`, `Stock`, `Activo`) VALUES
 (1, 'Kit Repostería', 1200.00, 3, 1),
 (2, 'Kit Maquillaje', 1500.00, 0, 0),
-(3, 'Kit Manualidades', 1000.00, 0, 0);
+(3, 'Kit Manualidades', 1000.00, 0, 0),
+(4, 'Kit completo', 1800.00, 5, 1),
+(5, 'Kit Principal', 1400.00, 2, 1),
+(6, 'Kit Beneficiario', 1200.00, 5, 1);
 
 --
 -- Disparadores `kits_productos`
@@ -532,17 +535,26 @@ DELIMITER ;
 
 CREATE TABLE `productos_kits` (
   `id_kit` int(11) DEFAULT NULL,
-  `id_producto` int(11) DEFAULT NULL
+  `id_producto` int(11) DEFAULT NULL,
+  `cantidad` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `productos_kits`
 --
 
-INSERT INTO `productos_kits` (`id_kit`, `id_producto`) VALUES
-(1, 1),
-(2, 2),
-(3, 3);
+INSERT INTO `productos_kits` (`id_kit`, `id_producto`, `cantidad`) VALUES
+(1, 1, 1),
+(2, 2, 1),
+(3, 3, 1),
+(4, 1, 1),
+(4, 2, 1),
+(4, 3, 1),
+(5, 1, 1),
+(5, 2, 1),
+(5, 3, 1),
+(6, 1, 4),
+(6, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -864,7 +876,7 @@ ALTER TABLE `inventario_stock`
 -- AUTO_INCREMENT de la tabla `kits_productos`
 --
 ALTER TABLE `kits_productos`
-  MODIFY `id_kit` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_kit` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `maestras`

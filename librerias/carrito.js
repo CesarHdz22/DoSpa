@@ -144,13 +144,28 @@
     }, true);
 
     // Vaciar carrito
-    const vacBtn = document.getElementById('vaciarCarritoBtn');
-    if (vacBtn) {
-      vacBtn.addEventListener('click', () => {
-        if (carrito.length === 0) return;
-        if (confirm('¿Vaciar carrito?')) vaciarCarrito();
-      });
-    }
+  const vacBtn = document.getElementById('vaciarCarritoBtn');
+if (vacBtn) {
+  vacBtn.addEventListener('click', () => {
+    if (carrito.length === 0) return;
+
+    Swal.fire({
+      title: '¿Vaciar carrito?',
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: 'Sí, vaciar',
+      denyButtonText: `No vaciar`
+    }).then((result) => {
+      if (result.isConfirmed) {
+        vaciarCarrito();
+        Swal.fire('¡Carrito vaciado!', '', 'success');
+      } else if (result.isDenied) {
+        Swal.fire('No se vació el carrito', '', 'info');
+      }
+
+    });
+  });
+}
   }); // DOMContentLoaded end
 
   // ------------------------------
