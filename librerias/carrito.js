@@ -148,25 +148,9 @@
     if (vacBtn) {
       vacBtn.addEventListener('click', () => {
         if (carrito.length === 0) return;
-
-        Swal.fire({
-          title: '¿Vaciar carrito?',
-          showDenyButton: true,
-          showCancelButton: true,
-          confirmButtonText: 'Sí, vaciar',
-          denyButtonText: `No vaciar`
-        }).then((result) => {
-          if (result.isConfirmed) {
-            vaciarCarrito();
-            Swal.fire('¡Carrito vaciado!', '', 'success');
-          } else if (result.isDenied) {
-            Swal.fire('No se vació el carrito', '', 'info');
-          }
-          // Si cancelas, simplemente no pasa nada
-        });
+        if (confirm('¿Vaciar carrito?')) vaciarCarrito();
       });
     }
-
   }); // DOMContentLoaded end
 
   // ------------------------------
@@ -180,7 +164,7 @@
       if (!row.hasAttribute('data-type') && type) row.setAttribute('data-type', type);
       row.style.cursor = 'pointer';
       row.addEventListener('click', function(ev) {
-        if (ev.target.closest('.accion-btn')) return; // botón acción -> no seleccionar
+        if (ev.target.closest('.btn-ver-productos')) return; // botón acción -> no seleccionar
         const cells  = row.children;
         const id     = row.getAttribute('data-id') || (cells[0]?.innerText.trim()) || '';
         const nombre = (cells[1]?.innerText.trim()) || '';
