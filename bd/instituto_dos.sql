@@ -264,7 +264,7 @@ CREATE TABLE `historial_pagos` (
   `saldo_pendiente` decimal(10,2) DEFAULT NULL,
   `fecha_pago` timestamp NULL DEFAULT NULL,
   `metodo_pago` enum('efectivo','tarjeta','transferencia','depósito','otros') DEFAULT 'efectivo',
-  `tipo_servicio` enum('paquete','servicio','kit','producto','otro') DEFAULT 'servicio',
+  `tipo_servicio` varchar(30),
   `comprobante` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

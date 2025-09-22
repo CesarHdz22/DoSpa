@@ -9,9 +9,18 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
   $idI = $_GET['id'];
   $tipo = $_GET['tipo'];
   $idA = $_GET['idC'];
+  $nombreAgenda = "";
 
-  
-    $sql = "SELECT id_agenda FROM intermedia_a WHERE id_intermedia = '$idI'";
+  if($tipo == "Taller"){
+    $sql = "SELECT nombre FROM talleres WHERE id_taller = (SELECT id_taller FROM agenda WHERE id_agenda = (SELECT id_agenda FROM intermedia_a WHERE id_intermedia = '$idI'))";
+  }else{
+    $sql = "SELECT nombre FROM cursos WHERE id_curso = (SELECT id_curso FROM agenda_cursos WHERE id_agenda_cursos = (SELECT id_agenda_cursos FROM intermedia_a WHERE id_intermedia = '$idI'))";
+  }
+    
+    $r1 = mysqli_query($conexion,$sql);
+    while($row=mysqli_fetch_array($r1)){
+        $nombreAgenda = $row['nombre'];
+    }
   
 
 ?>
@@ -36,8 +45,8 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
       <div class="logo">DO SPA</div>
       <ul id="menu">
         <li><a href="main.php"><i class="fas fa-home"></i> Panel</a></li>
-        <li class="active"><a href="ventas.php"><i class="fas fa-file-invoice-dollar"></i> Historial Ventas</a></li>
-        <li><a href="inscripciones.php"><i class="fas fa-clipboard-list"></i> Historial Inscripciones</a></li>
+        <li><a href="ventas.php"><i class="fas fa-file-invoice-dollar"></i> Historial Ventas</a></li>
+        <li class="active"><a href="inscripciones.php"><i class="fas fa-clipboard-list"></i> Historial Inscripciones</a></li>
         <li><a href="agenda.php"><i class="fas fa-calendar-days"></i> Agenda</a></li>
         <li><a href="talleres-cursos.php"><i class="fas fa-chalkboard-teacher"></i>Talleres/Cursos</a></li> 
         <li><a href="alumnas-maestras.php"><i class="fa-solid fa-users"></i><span>Alumnas / Maestras</span></a></li>
@@ -88,29 +97,27 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                     }
                 ?>
 
+                </div>
+
+                <h4><?php echo $tipo.":" ?></h4>
+                <ul class="items">
+                    
+                    <li><?php echo $nombreAgenda ?></li>
+                </ul>
+
+                <div class="total">
+                    <strong>Total:</strong> $1,620.00
+                </div>
+
+            
             </div>
 
-            <h4><?php echo $tipo.":" ?></h4>
-            <ul class="items">
-                
-                <li>Ryobi ONE taladro - $409.00</li>
-            </ul>
-
-            <div class="total">
-                <strong>Total:</strong> $1,620.00
-            </div>
-
-            <div class="acciones">
-                <button class="btn seguimiento">Rastrear</button>
-                <button class="btn reembolso">Reembolso</button>
-            </div>
-            </div>
-
-      
+      <br><br>
       
          
             <div class="ventas-detalle">
                 <h3>Historial de Pagos</h3>
+                <a href="agregarPago.php?tipo=inscripcion&idI=<?php echo $idI ?>"><img src="img/agregar.png" alt="Agregar" class="icon btn-agregar" width="20"></a>
                 <table class="display" id="historial">
                     <thead>
                         <tr>

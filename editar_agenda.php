@@ -120,61 +120,61 @@ function h($s){ return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
   </div>
 
   <script>
-  async function validarAgenda(event) {
-    event.preventDefault(); // detiene el envío por defecto
-    
-    var f  = document.getElementById('fecha').value.trim();
-    var hi = document.getElementById('hora_inicio').value.trim();
-    var hf = document.getElementById('hora_fin').value.trim();
+      async function validarAgenda(event) {
+        event.preventDefault(); // detiene el envío por defecto
+        
+        var f  = document.getElementById('fecha').value.trim();
+        var hi = document.getElementById('hora_inicio').value.trim();
+        var hf = document.getElementById('hora_fin').value.trim();
 
-    if (!f) {
+        if (!f) {
+            await Swal.fire({
+                icon: "error",
+                title: "La fecha es obligatoria.",
+                text: "Ingresa una fecha válida"
+            });
+            return false;
+        }
+
+        if (!hi || !hf) {
+            await Swal.fire({
+                icon: "error",
+                title: "Verifica tus horarios",
+                text: "Las horas de inicio y fin son obligatorias."
+            });
+            return false;
+        }
+
+        var di = new Date('1970-01-01T' + hi + ':00');
+        var df = new Date('1970-01-01T' + hf + ':00');
+
+        if (isNaN(di.getTime()) || isNaN(df.getTime())) {
+            await Swal.fire({
+                icon: "error",
+                title: "Hora inválida.",
+                text: "Revisa el formato de la hora"
+            });
+            return false;
+        }
+
+        if (df <= di) {
+            await Swal.fire({
+                icon: "error",
+                title: "Ajusta tus horarios",
+                text: "La hora de fin debe ser mayor a la de inicio."
+            });
+            return false;
+        }
+
         await Swal.fire({
-            icon: "error",
-            title: "La fecha es obligatoria.",
-            text: "Ingresa una fecha válida"
+            icon: "success",
+            title: "Perfecto!",
+            text: "Tu agenda ha sido validada correctamente."
         });
-        return false;
+
+        // ✅ Aquí es donde se envía el formulario
+        event.target.submit();
     }
-
-    if (!hi || !hf) {
-        await Swal.fire({
-            icon: "error",
-            title: "Verifica tus horarios",
-            text: "Las horas de inicio y fin son obligatorias."
-        });
-        return false;
-    }
-
-    var di = new Date('1970-01-01T' + hi + ':00');
-    var df = new Date('1970-01-01T' + hf + ':00');
-
-    if (isNaN(di.getTime()) || isNaN(df.getTime())) {
-        await Swal.fire({
-            icon: "error",
-            title: "Hora inválida.",
-            text: "Revisa el formato de la hora"
-        });
-        return false;
-    }
-
-    if (df <= di) {
-        await Swal.fire({
-            icon: "error",
-            title: "Ajusta tus horarios",
-            text: "La hora de fin debe ser mayor a la de inicio."
-        });
-        return false;
-    }
-
-    await Swal.fire({
-        icon: "success",
-        title: "Perfecto!",
-        text: "Tu agenda ha sido validada correctamente."
-    });
-
-    // ✅ Aquí es donde se envía el formulario
-    event.target.submit();
-}
 
 
   </script>

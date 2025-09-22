@@ -104,3 +104,27 @@
 }
 
 
+
+.ventas-detalle {
+  position: relative;
+  padding: 15px;
+}
+
+.ventas-detalle h3 {
+  display: inline-block;
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.ventas-detalle .btn-agregar {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.ventas-detalle .btn-agregar:hover {
+  transform: scale(1.2); /* se hace más grande */
+}
