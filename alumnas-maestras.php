@@ -3,6 +3,10 @@
 session_start();
 include_once("conexion.php");
 if (empty($_SESSION['Id_Usuario'])) { header("location: index.html"); exit; }
+
+$Nombre = $_SESSION['nombre'] ?? '';
+$Apat   = $_SESSION['apat']   ?? '';
+$Amat   = $_SESSION['amat']   ?? '';
 mysqli_set_charset($conexion, 'utf8mb4');
 
 function e($s){ return htmlspecialchars((string)($s ?? ''), ENT_QUOTES, 'UTF-8'); }
@@ -71,6 +75,7 @@ $sqlMaestras = "SELECT id_maestra, nombre, base, acuerdo, gastos, porcentaje_gan
 $alumnas  = mysqli_query($conexion, $sqlAlumnas);
 $maestras = mysqli_query($conexion, $sqlMaestras);
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -110,6 +115,15 @@ $maestras = mysqli_query($conexion, $sqlMaestras);
 
   <!-- Main -->
   <main class="main">
+     <!-- Topbar -->
+      <header class="topbar">
+        <div class="user-info">
+          <span><?php echo htmlspecialchars("$Nombre $Apat $Amat", ENT_QUOTES, 'UTF-8'); ?></span>
+          <a href="muerte.php"><img src="img/logout.png" id="btn-logout" alt="Salir"></a>
+        </div>
+      </header>
+
+
     <div class="inventario alumnas-maestras">
       <?php if (!empty($_SESSION['flash_ok'])): ?>
         <div class="alert alert-success"><?php echo e($_SESSION['flash_ok']); unset($_SESSION['flash_ok']); ?></div>
@@ -118,174 +132,178 @@ $maestras = mysqli_query($conexion, $sqlMaestras);
         <div class="alert alert-error"><?php echo e($_SESSION['flash_err']); unset($_SESSION['flash_err']); ?></div>
       <?php endif; ?>
 
-      <div class="page-title"><i class="fa-solid fa-users"></i> Alumnas / Maestras</div>
+      <center>
+          <div class="grid-2">
+                  <i class="fa-solid fa-users"></i> Alumnas / Maestras
+                  <!-- ================== Card Alumnas ================== -->
+                  <section class="card">
+                    <header>
+                      <h3>Alumnas</h3>
+                      <div class="section-actions">
+                        <img src="img/agregar.png" class="btn-mini btn-primary" alt="Agregar" id="btnNuevaAlumna" class="icon btn-agregar" width="20" data-tipo="curso" title="Agregar">
 
-      <div class="grid-2">
-        <!-- ================== Card Alumnas ================== -->
-        <section class="card">
-          <header>
-            <h3>Alumnas</h3>
-            <div class="section-actions">
-              <button class="btn-mini btn-primary" id="btnNuevaAlumna"><i class="fa fa-plus"></i> Agregar</button>
-            </div>
-          </header>
-          <div class="body">
-            <!-- Panel de formulario (toggle) -->
-            <div class="form-panel" id="panelFormAlumna">
-              <form method="post" autocomplete="off">
-                <input type="hidden" name="action" value="add_alumna">
-                <div class="form-grid">
-                  <div class="form-control">
-                    <label>Nombre *</label>
-                    <input type="text" name="nombre" required>
-                  </div>
-                  <div class="form-control">
-                    <label>Apellido paterno</label>
-                    <input type="text" name="apat">
-                  </div>
-                  <div class="form-control">
-                    <label>Apellido materno</label>
-                    <input type="text" name="amat">
-                  </div>
-                  <div class="form-control">
-                    <label>Teléfono</label>
-                    <input type="text" name="telefono">
-                  </div>
-                  <div class="form-control">
-                    <label>Correo</label>
-                    <input type="email" name="correo">
-                  </div>
-                  <div class="form-control" style="grid-column:1/-1;">
-                    <label>Dirección</label>
-                    <input type="text" name="direccion">
-                  </div>
-                  <div class="form-control">
-                    <label>Descuento aplicado</label>
-                    <select name="descuento_aplicado">
-                      <option value="0">No</option>
-                      <option value="1">Sí</option>
-                    </select>
-                    <div class="hint">Si es "Sí", especifica el tipo</div>
-                  </div>
-                  <div class="form-control">
-                    <label>Tipo de descuento</label>
-                    <input type="text" name="tipo_descuento" placeholder="10%, Estudiante, Promo, etc.">
-                  </div>
-                </div>
-                <div class="form-actions">
-                  <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Guardar alumna</button>
-                </div>
-              </form>
-            </div>
+                      </div>
+                    </header>
+                    <div class="body">
+                      <!-- Panel de formulario (toggle) -->
+                      <div class="form-panel" id="panelFormAlumna">
+                        <form method="post" autocomplete="off">
+                          <input type="hidden" name="action" value="add_alumna">
+                          <div class="form-grid">
+                            <div class="form-control">
+                              <label>Nombre *</label>
+                              <input type="text" name="nombre" required>
+                            </div>
+                            <div class="form-control">
+                              <label>Apellido paterno</label>
+                              <input type="text" name="apat">
+                            </div>
+                            <div class="form-control">
+                              <label>Apellido materno</label>
+                              <input type="text" name="amat">
+                            </div>
+                            <div class="form-control">
+                              <label>Teléfono</label>
+                              <input type="text" name="telefono">
+                            </div>
+                            <div class="form-control">
+                              <label>Correo</label>
+                              <input type="email" name="correo">
+                            </div>
+                            <div class="form-control" style="grid-column:1/-1;">
+                              <label>Dirección</label>
+                              <input type="text" name="direccion">
+                            </div>
+                            <div class="form-control">
+                              <label>Descuento aplicado</label>
+                              <select name="descuento_aplicado">
+                                <option value="0">No</option>
+                                <option value="1">Sí</option>
+                              </select>
+                              <div class="hint">Si es "Sí", especifica el tipo</div>
+                            </div>
+                            <div class="form-control">
+                              <label>Tipo de descuento</label>
+                              <input type="text" name="tipo_descuento" placeholder="10%, Estudiante, Promo, etc.">
+                            </div>
+                          </div>
+                          <div class="form-actions">
+                            <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Guardar alumna</button>
+                          </div>
+                        </form>
+                      </div>
 
-            <!-- Tabla -->
-            <div class="dataTable-container">
-              <table class="display" id="tablaAlumnas">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Apellidos</th>
-                    <th>Teléfono</th>
-                    <th>Correo</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php if ($alumnas === false): ?>
-                    <tr><td colspan="5">Error SQL (alumnas): <?php echo e(mysqli_error($conexion)); ?></td></tr>
-                  <?php elseif (mysqli_num_rows($alumnas) === 0): ?>
-                    <tr><td colspan="5">Sin alumnas</td></tr>
-                  <?php else: ?>
-                    <?php while ($a = mysqli_fetch_assoc($alumnas)): ?>
-                      <tr>
-                        <td><?php echo e($a['id_alumna']); ?></td>
-                        <td><?php echo e($a['nombre']); ?></td>
-                        <td><?php echo e(($a['apat'] ?? '').' '.($a['amat'] ?? '')); ?></td>
-                        <td><?php echo e($a['telefono']); ?></td>
-                        <td><?php echo e($a['correo']); ?></td>
-                      </tr>
-                    <?php endwhile; ?>
-                  <?php endif; ?>
-                </tbody>
-              </table>
-            </div>
+                      <!-- Tabla -->
+                      <div class="dataTable-container">
+                        <table class="display" id="tablaAlumnas">
+                          <thead>
+                            <tr>
+                              <th>ID</th>
+                              <th>Nombre</th>
+                              <th>Apellidos</th>
+                              <th>Teléfono</th>
+                              <th>Correo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php if ($alumnas === false): ?>
+                              <tr><td colspan="5">Error SQL (alumnas): <?php echo e(mysqli_error($conexion)); ?></td></tr>
+                            <?php elseif (mysqli_num_rows($alumnas) === 0): ?>
+                              <tr><td colspan="5">Sin alumnas</td></tr>
+                            <?php else: ?>
+                              <?php while ($a = mysqli_fetch_assoc($alumnas)): ?>
+                                <tr>
+                                  <td><?php echo e($a['id_alumna']); ?></td>
+                                  <td><?php echo e($a['nombre']); ?></td>
+                                  <td><?php echo e(($a['apat'] ?? '').' '.($a['amat'] ?? '')); ?></td>
+                                  <td><?php echo e($a['telefono']); ?></td>
+                                  <td><?php echo e($a['correo']); ?></td>
+                                </tr>
+                              <?php endwhile; ?>
+                            <?php endif; ?>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </section>
+
+                  <!-- ================== Card Maestras ================== -->
+                  <section class="card">
+                    <header>
+                      <h3>Maestras</h3>
+                      <div class="section-actions">
+                        <img src="img/agregar.png" class="btn-mini btn-primary" alt="Agregar" id="btnNuevaMaestra"class="icon btn-agregar" width="20" data-tipo="curso" title="Agregar sesión de curso">
+                       
+                      </div>
+                    </header>
+                    <div class="body">
+                      <!-- Panel de formulario (toggle) -->
+                      <div class="form-panel" id="panelFormMaestra">
+                        <form method="post" autocomplete="off">
+                          <input type="hidden" name="action" value="add_maestra">
+                          <div class="form-grid">
+                            <div class="form-control">
+                              <label>Nombre *</label>
+                              <input type="text" name="nombre" required>
+                            </div>
+                            <div class="form-control">
+                              <label>Base</label>
+                              <input type="text" name="base" placeholder="Localidad">
+                            </div>
+                            <div class="form-control">
+                              <label>Acuerdo</label>
+                              <input type="text" name="acuerdo" placeholder="comision, pago fijo, etc.">
+                            </div>
+
+                            <div class="form-control">
+                              <label>% Ganancia</label>
+                              <input type="number" step="0.01" name="porcentaje_ganancia" placeholder="0.00">
+                            </div>
+                          </div>
+                          <div class="form-actions">
+                            <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Guardar maestra</button>
+                          </div>
+                        </form>
+                      </div>
+
+                      <!-- Tabla -->
+                      <div class="dataTable-container">
+                        <table class="display" id="tablaMaestras">
+                          <thead>
+                            <tr>
+                              <th>ID</th>
+                              <th>Nombre</th>
+                              <th>Base</th>
+                              <th>Acuerdo</th>
+                              <th>Gastos</th>
+                              <th>% Ganancia</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php if ($maestras === false): ?>
+                              <tr><td colspan="6">Error SQL (maestras): <?php echo e(mysqli_error($conexion)); ?></td></tr>
+                            <?php elseif (mysqli_num_rows($maestras) === 0): ?>
+                              <tr><td colspan="6">Sin maestras</td></tr>
+                            <?php else: ?>
+                              <?php while ($m = mysqli_fetch_assoc($maestras)): ?>
+                                <tr>
+                                  <td><?php echo e($m['id_maestra']); ?></td>
+                                  <td><?php echo e($m['nombre']); ?></td>
+                                  <td><?php echo e($m['base']); ?></td>
+                                  <td><?php echo e($m['acuerdo']); ?></td>
+                                  <td><?php echo e(number_format((float)($m['gastos'] ?? 0), 2)); ?></td>
+                                  <td><?php echo e(number_format((float)($m['porcentaje_ganancia'] ?? 0), 2)); ?>%</td>
+                                </tr>
+                              <?php endwhile; ?>
+                            <?php endif; ?>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </section>
           </div>
-        </section>
-
-        <!-- ================== Card Maestras ================== -->
-        <section class="card">
-          <header>
-            <h3>Maestras</h3>
-            <div class="section-actions">
-              <button class="btn-mini btn-primary" id="btnNuevaMaestra"><i class="fa fa-plus"></i> Agregar</button>
-            </div>
-          </header>
-          <div class="body">
-            <!-- Panel de formulario (toggle) -->
-            <div class="form-panel" id="panelFormMaestra">
-              <form method="post" autocomplete="off">
-                <input type="hidden" name="action" value="add_maestra">
-                <div class="form-grid">
-                  <div class="form-control">
-                    <label>Nombre *</label>
-                    <input type="text" name="nombre" required>
-                  </div>
-                  <div class="form-control">
-                    <label>Base</label>
-                    <input type="text" name="base" placeholder="Localidad">
-                  </div>
-                  <div class="form-control">
-                    <label>Acuerdo</label>
-                    <input type="text" name="acuerdo" placeholder="comision, pago fijo, etc.">
-                  </div>
-
-                  <div class="form-control">
-                    <label>% Ganancia</label>
-                    <input type="number" step="0.01" name="porcentaje_ganancia" placeholder="0.00">
-                  </div>
-                </div>
-                <div class="form-actions">
-                  <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Guardar maestra</button>
-                </div>
-              </form>
-            </div>
-
-            <!-- Tabla -->
-            <div class="dataTable-container">
-              <table class="display" id="tablaMaestras">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Base</th>
-                    <th>Acuerdo</th>
-                    <th>Gastos</th>
-                    <th>% Ganancia</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php if ($maestras === false): ?>
-                    <tr><td colspan="6">Error SQL (maestras): <?php echo e(mysqli_error($conexion)); ?></td></tr>
-                  <?php elseif (mysqli_num_rows($maestras) === 0): ?>
-                    <tr><td colspan="6">Sin maestras</td></tr>
-                  <?php else: ?>
-                    <?php while ($m = mysqli_fetch_assoc($maestras)): ?>
-                      <tr>
-                        <td><?php echo e($m['id_maestra']); ?></td>
-                        <td><?php echo e($m['nombre']); ?></td>
-                        <td><?php echo e($m['base']); ?></td>
-                        <td><?php echo e($m['acuerdo']); ?></td>
-                        <td><?php echo e(number_format((float)($m['gastos'] ?? 0), 2)); ?></td>
-                        <td><?php echo e(number_format((float)($m['porcentaje_ganancia'] ?? 0), 2)); ?>%</td>
-                      </tr>
-                    <?php endwhile; ?>
-                  <?php endif; ?>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-      </div>
+      </center>
+     
     </div>
   </main>
 

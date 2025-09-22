@@ -5,6 +5,13 @@ html{
 #btn-logout{
   cursor: pointer;
   width: 25px;
+  transition: ease-in-out .15s;
+}
+#btn-logout:hover{
+  transition: ease-in-out .15s;
+  opacity: 0.5;
+  transform: translateX(1px);
+
 }
 /* ====== Header / Topbar ====== */
 .topbar {
