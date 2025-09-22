@@ -288,7 +288,7 @@ $maestras = mysqli_query($conexion, $sqlMaestras);
   </main>
 
   <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" defer></script>
+  <script src="librerias/tables.js" defer></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // Datatables
