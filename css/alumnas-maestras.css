@@ -19,11 +19,19 @@ main{
   position: relative;
   top: -40px; /* altura header */
     display: flex;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     background: white;
     gap: 18px;
-    width: 1000px;
+    margin: 20px;
     padding: 25px;
     flex-direction: column;
+}
+h2{
+  font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #333;
 }
 @media (max-width:1000px){
   .alumnas-maestras .grid-2{ grid-template-columns:1fr; }
@@ -76,7 +84,7 @@ main{
 }
 .alumnas-maestras .form-control input,
 .alumnas-maestras .form-control select{
-  width:100%; padding:10px 12px; border:1px solid #e5e7eb; border-radius:10px;
+  width: 250px; padding:10px 12px; border:1px solid #e5e7eb; border-radius:10px;
   background:#fff; color:#111827; outline:none;
   transition: box-shadow .15s ease, border-color .15s ease;
 }
@@ -91,7 +99,7 @@ main{
   padding:10px 14px; border:none; border-radius:10px; font-weight:700; cursor:pointer;
   transition: transform .05s ease, box-shadow .15s ease;
 }
-.alumnas-maestras .btn-primary{ background:#ffffff; color:#fff; }
+.alumnas-maestras .btn-primary{ background:#ffffff; color:black; font-size: 25px; }
 .alumnas-maestras .btn-primary:hover{ transform: translateY(-1px); }
 .alumnas-maestras .hint{ font-size:12px; color:#6b7280; margin-top:-6px; }
 
@@ -124,3 +132,49 @@ main{
 .alumnas-maestras table.display tbody tr:hover{ background:#f2f6ff; }
 
 
+/* ====== MODALES ====== */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  background: rgba(0,0,0,0.45);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.open { display: flex; }
+
+.modal-content {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.25);
+  padding: 5px;
+  width: 90%;
+  max-width: 600px;
+  animation: fadeInScale .25s ease;
+}
+
+.modal-content header {
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.modal-content header h3 {
+  margin:0;
+}
+
+.modal-content .close {
+  background:none;
+  border:none;
+  font-size:22px;
+  cursor:pointer;
+  line-height:1;
+}
+
+@keyframes fadeInScale {
+  from { opacity:0; transform:scale(0.9); }
+  to   { opacity:1; transform:scale(1); }
+}

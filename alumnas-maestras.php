@@ -134,7 +134,7 @@ $maestras = mysqli_query($conexion, $sqlMaestras);
 
       <center>
           <div class="grid-2">
-                  <i class="fa-solid fa-users"></i> Alumnas / Maestras
+                  <h2>Alumnas / Maestras</h2>
                   <!-- ================== Card Alumnas ================== -->
                   <section class="card">
                     <header>
@@ -145,52 +145,57 @@ $maestras = mysqli_query($conexion, $sqlMaestras);
                       </div>
                     </header>
                     <div class="body">
-                      <!-- Panel de formulario (toggle) -->
-                      <div class="form-panel" id="panelFormAlumna">
-                        <form method="post" autocomplete="off">
-                          <input type="hidden" name="action" value="add_alumna">
-                          <div class="form-grid">
-                            <div class="form-control">
-                              <label>Nombre *</label>
-                              <input type="text" name="nombre" required>
+                      <!-- Modal Alumna -->
+                      <div class="modal" id="modalAlumna">
+                        <div class="modal-content">
+                          <header>
+                            <h3>Nueva alumna</h3>
+                            <button class="close" data-close="#modalAlumna">&times;</button>
+                          </header>
+                          <form method="post" autocomplete="off">
+                            <input type="hidden" name="action" value="add_alumna">
+                            <div class="form-grid">
+                              <div class="form-control">
+                                <label>Nombre *</label>
+                                <input type="text" name="nombre" required>
+                              </div>
+                              <div class="form-control">
+                                <label>Apellido paterno</label>
+                                <input type="text" name="apat">
+                              </div>
+                              <div class="form-control">
+                                <label>Apellido materno</label>
+                                <input type="text" name="amat">
+                              </div>
+                              <div class="form-control">
+                                <label>Teléfono</label>
+                                <input type="text" name="telefono">
+                              </div>
+                              <div class="form-control">
+                                <label>Correo</label>
+                                <input type="email" name="correo">
+                              </div>
+                              <div class="form-control">
+                                <label>Dirección</label>
+                                <input type="text" name="direccion">
+                              </div>
+                              <div class="form-control">
+                                <label>Descuento aplicado</label>
+                                <select name="descuento_aplicado">
+                                  <option value="0">No</option>
+                                  <option value="1">Sí</option>
+                                </select>
+                              </div>
+                              <div class="form-control">
+                                <label>Tipo de descuento</label>
+                                <input type="text" name="tipo_descuento">
+                              </div>
                             </div>
-                            <div class="form-control">
-                              <label>Apellido paterno</label>
-                              <input type="text" name="apat">
+                            <div class="form-actions">
+                              <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i></button>
                             </div>
-                            <div class="form-control">
-                              <label>Apellido materno</label>
-                              <input type="text" name="amat">
-                            </div>
-                            <div class="form-control">
-                              <label>Teléfono</label>
-                              <input type="text" name="telefono">
-                            </div>
-                            <div class="form-control">
-                              <label>Correo</label>
-                              <input type="email" name="correo">
-                            </div>
-                            <div class="form-control" style="grid-column:1/-1;">
-                              <label>Dirección</label>
-                              <input type="text" name="direccion">
-                            </div>
-                            <div class="form-control">
-                              <label>Descuento aplicado</label>
-                              <select name="descuento_aplicado">
-                                <option value="0">No</option>
-                                <option value="1">Sí</option>
-                              </select>
-                              <div class="hint">Si es "Sí", especifica el tipo</div>
-                            </div>
-                            <div class="form-control">
-                              <label>Tipo de descuento</label>
-                              <input type="text" name="tipo_descuento" placeholder="10%, Estudiante, Promo, etc.">
-                            </div>
-                          </div>
-                          <div class="form-actions">
-                            <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Guardar alumna</button>
-                          </div>
-                        </form>
+                          </form>
+                        </div>
                       </div>
 
                       <!-- Tabla -->
@@ -238,32 +243,38 @@ $maestras = mysqli_query($conexion, $sqlMaestras);
                     </header>
                     <div class="body">
                       <!-- Panel de formulario (toggle) -->
-                      <div class="form-panel" id="panelFormMaestra">
-                        <form method="post" autocomplete="off">
-                          <input type="hidden" name="action" value="add_maestra">
-                          <div class="form-grid">
-                            <div class="form-control">
-                              <label>Nombre *</label>
-                              <input type="text" name="nombre" required>
+                     <!-- Modal Maestra -->
+                      <div class="modal" id="modalMaestra">
+                        <div class="modal-content">
+                          <header>
+                            <h3>Nueva maestra</h3>
+                            <button class="close" data-close="#modalMaestra">&times;</button>
+                          </header>
+                          <form method="post" autocomplete="off">
+                            <input type="hidden" name="action" value="add_maestra">
+                            <div class="form-grid">
+                              <div class="form-control">
+                                <label>Nombre *</label>
+                                <input type="text" name="nombre" required>
+                              </div>
+                              <div class="form-control">
+                                <label>Base</label>
+                                <input type="text" name="base">
+                              </div>
+                              <div class="form-control">
+                                <label>Acuerdo</label>
+                                <input type="text" name="acuerdo">
+                              </div>
+                              <div class="form-control">
+                                <label>% Ganancia</label>
+                                <input type="number" step="0.01" name="porcentaje_ganancia">
+                              </div>
                             </div>
-                            <div class="form-control">
-                              <label>Base</label>
-                              <input type="text" name="base" placeholder="Localidad">
+                            <div class="form-actions">
+                              <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i></button>
                             </div>
-                            <div class="form-control">
-                              <label>Acuerdo</label>
-                              <input type="text" name="acuerdo" placeholder="comision, pago fijo, etc.">
-                            </div>
-
-                            <div class="form-control">
-                              <label>% Ganancia</label>
-                              <input type="number" step="0.01" name="porcentaje_ganancia" placeholder="0.00">
-                            </div>
-                          </div>
-                          <div class="form-actions">
-                            <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i> Guardar maestra</button>
-                          </div>
-                        </form>
+                          </form>
+                        </div>
                       </div>
 
                       <!-- Tabla -->
@@ -310,38 +321,28 @@ $maestras = mysqli_query($conexion, $sqlMaestras);
   <!-- Scripts -->
   <script src="librerias/tables.js" defer></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Datatables
-      const DataTable = window.simpleDatatables?.DataTable;
-      if (DataTable) {
-        try { new DataTable('#tablaAlumnas',  { searchable: true, fixedHeight: true }); } catch(e){}
-        try { new DataTable('#tablaMaestras', { searchable: true, fixedHeight: true }); } catch(e){}
-      }
+ document.addEventListener('DOMContentLoaded', () => {
+  const openModal = (id) => document.querySelector(id)?.classList.add('open');
+  const closeModal = (id) => document.querySelector(id)?.classList.remove('open');
 
-      // Toggle formularios al darle "Agregar", como en taller/curso
-      const btnAl  = document.getElementById('btnNuevaAlumna');
-      const pnlAl  = document.getElementById('panelFormAlumna');
-      const btnMa  = document.getElementById('btnNuevaMaestra');
-      const pnlMa  = document.getElementById('panelFormMaestra');
+  document.getElementById('btnNuevaAlumna')?.addEventListener('click', () => openModal('#modalAlumna'));
+  document.getElementById('btnNuevaMaestra')?.addEventListener('click', () => openModal('#modalMaestra'));
 
-      btnAl?.addEventListener('click', () => {
-        pnlAl.classList.toggle('open');
-        if (pnlAl.classList.contains('open')) {
-          pnlMa.classList.remove('open');
-          pnlAl.querySelector('input[name="nombre"]')?.focus();
-          pnlAl.scrollIntoView({ behavior:'smooth', block:'start' });
-        }
-      });
-
-      btnMa?.addEventListener('click', () => {
-        pnlMa.classList.toggle('open');
-        if (pnlMa.classList.contains('open')) {
-          pnlAl.classList.remove('open');
-          pnlMa.querySelector('input[name="nombre"]')?.focus();
-          pnlMa.scrollIntoView({ behavior:'smooth', block:'start' });
-        }
-      });
+  document.querySelectorAll('.modal .close').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-close');
+      closeModal(target);
     });
+  });
+
+  // Cerrar al hacer clic fuera del contenido
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.remove('open');
+    });
+  });
+});
+
   </script>
 </body>
 </html>
