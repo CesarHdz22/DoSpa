@@ -1,8 +1,11 @@
+html{
+  background: #f5f6fa;
+}
 /* ====== Header / Topbar ====== */
 .topbar {
   position: fixed;
   top: 0;
-  left: 230px; /* igual al ancho del sidebar */
+  left: 220px; /* igual al ancho del sidebar */
   right: 0;
   height: 60px;
   background: #943154;
