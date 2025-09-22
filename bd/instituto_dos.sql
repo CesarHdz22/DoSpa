@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-09-2025 a las 20:49:01
+-- Tiempo de generación: 22-09-2025 a las 04:50:06
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -34,17 +34,19 @@ CREATE TABLE `agenda` (
   `hora_inicio` time DEFAULT NULL,
   `hora_fin` time DEFAULT NULL,
   `ubicacion` varchar(255) DEFAULT NULL,
-  `variacion` varchar(100) DEFAULT NULL
+  `variacion` varchar(100) DEFAULT NULL,
+  `cant_alum` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `agenda`
 --
 
-INSERT INTO `agenda` (`id_agenda`, `id_taller`, `fecha`, `hora_inicio`, `hora_fin`, `ubicacion`, `variacion`) VALUES
-(1, 1, '2025-09-10', '10:00:00', '13:00:00', 'Aula 101', 'Matutino'),
-(2, 2, '2025-09-15', '15:00:00', '18:00:00', 'Sala Principal', 'Vespertino'),
-(3, 3, '2025-09-20', '09:00:00', '12:00:00', 'Salón Creativo', 'Fin de semana');
+INSERT INTO `agenda` (`id_agenda`, `id_taller`, `fecha`, `hora_inicio`, `hora_fin`, `ubicacion`, `variacion`, `cant_alum`) VALUES
+(1, 1, '2025-09-10', '10:00:00', '13:00:00', 'Aula 101', 'Matutino', 1),
+(2, 2, '2025-09-15', '15:00:00', '18:00:00', 'Sala Principal', 'Vespertino', 1),
+(3, 3, '2025-09-20', '09:00:00', '12:00:00', 'Salón Creativo', 'Fin de semana', 3),
+(4, 3, '2025-12-02', '15:00:00', '18:00:00', 'Victoria', '', 3);
 
 -- --------------------------------------------------------
 
@@ -59,17 +61,18 @@ CREATE TABLE `agenda_cursos` (
   `hora_inicio` time DEFAULT NULL,
   `hora_fin` time DEFAULT NULL,
   `ubicacion` varchar(255) DEFAULT NULL,
-  `variacion` varchar(100) DEFAULT NULL
+  `variacion` varchar(100) DEFAULT NULL,
+  `cant_alum` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `agenda_cursos`
 --
 
-INSERT INTO `agenda_cursos` (`id_agenda_curso`, `id_curso`, `fecha`, `hora_inicio`, `hora_fin`, `ubicacion`, `variacion`) VALUES
-(1, 1, '2025-09-25', '09:00:00', '12:00:00', 'Aula 201', 'Matutino'),
-(2, 2, '2025-09-30', '16:00:00', '19:00:00', 'Laboratorio A', 'Vespertino'),
-(3, 3, '2025-10-05', '10:00:00', '13:00:00', 'Sala B', 'Fin de semana');
+INSERT INTO `agenda_cursos` (`id_agenda_curso`, `id_curso`, `fecha`, `hora_inicio`, `hora_fin`, `ubicacion`, `variacion`, `cant_alum`) VALUES
+(1, 1, '2025-09-25', '09:00:00', '12:00:00', 'Aula 201', 'Matutino', 1),
+(2, 2, '2025-09-30', '16:00:00', '19:00:00', 'Laboratorio A', 'Vespertino', 1),
+(3, 3, '2025-10-05', '10:00:00', '13:00:00', 'Sala B', 'Fin de semana', 2);
 
 -- --------------------------------------------------------
 
@@ -133,7 +136,7 @@ INSERT INTO `clientes` (`id_cliente`, `nombre`, `apat`, `amat`, `correo`, `telef
 CREATE TABLE `cursos` (
   `id_curso` int(11) NOT NULL,
   `nombre` varchar(255) DEFAULT NULL,
-  `fecha` date DEFAULT NULL,
+  `id_maestra` int(11) NOT NULL,
   `costo_base` decimal(10,2) DEFAULT NULL,
   `status` varchar(50) DEFAULT NULL,
   `ingreso_bruto` decimal(10,2) DEFAULT NULL,
@@ -145,10 +148,10 @@ CREATE TABLE `cursos` (
 -- Volcado de datos para la tabla `cursos`
 --
 
-INSERT INTO `cursos` (`id_curso`, `nombre`, `fecha`, `costo_base`, `status`, `ingreso_bruto`, `gastos`, `precio_preferencial`) VALUES
-(1, 'Curso de Inglés', '2025-09-25', 2500.00, 'activo', 7500.00, 2000.00, 0),
-(2, 'Curso de Programación', '2025-09-30', 3000.00, 'activo', 9000.00, 3000.00, 1),
-(3, 'Curso de Fotografía', '2025-10-05', 2000.00, 'pendiente', 0.00, 0.00, 0);
+INSERT INTO `cursos` (`id_curso`, `nombre`, `id_maestra`, `costo_base`, `status`, `ingreso_bruto`, `gastos`, `precio_preferencial`) VALUES
+(1, 'Curso de Inglés', 0, 2500.00, 'activo', 7500.00, 2000.00, 0),
+(2, 'Curso de Programación', 0, 3000.00, 'activo', 9000.00, 3000.00, 1),
+(3, 'Curso de Fotografía', 0, 2000.00, 'pendiente', 0.00, 0.00, 0);
 
 -- --------------------------------------------------------
 
@@ -221,7 +224,28 @@ INSERT INTO `detalle_venta` (`idDetalle`, `idVenta`, `id_producto`, `id_kit`, `c
 (28, 11, 3, NULL, 1, 300.00, 300.00),
 (29, 11, NULL, 3, 1, 1000.00, 1000.00),
 (30, 11, NULL, 1, 1, 1200.00, 1200.00),
-(31, 12, 2, NULL, 1, 800.00, 800.00);
+(31, 12, 2, NULL, 1, 800.00, 800.00),
+(58, 13, 1, NULL, 1, 500.00, 500.00),
+(59, 13, 2, NULL, 2, 800.00, 1600.00),
+(60, 14, 3, NULL, 1, 300.00, 300.00),
+(61, 14, 1, NULL, 1, 500.00, 500.00),
+(62, 15, 2, NULL, 1, 800.00, 800.00),
+(63, 15, 1, NULL, 1, 500.00, 500.00),
+(64, 16, 3, NULL, 1, 300.00, 300.00),
+(65, 16, 2, NULL, 2, 800.00, 1600.00),
+(66, 17, 1, NULL, 1, 500.00, 500.00),
+(67, 17, 3, NULL, 1, 300.00, 300.00),
+(68, 17, 2, NULL, 1, 800.00, 800.00),
+(69, 18, 1, NULL, 1, 500.00, 500.00),
+(70, 18, 2, NULL, 1, 800.00, 800.00),
+(71, 18, 3, NULL, 1, 300.00, 300.00),
+(72, 19, NULL, 3, 1, 1000.00, 1000.00),
+(73, 19, NULL, 2, 1, 1500.00, 1500.00),
+(74, 19, 3, NULL, 1, 300.00, 300.00),
+(75, 20, NULL, 2, 3, 1500.00, 4500.00),
+(76, 21, 2, NULL, 2, 800.00, 1600.00),
+(77, 22, 1, NULL, 1, 500.00, 500.00),
+(78, 23, 1, NULL, 1, 500.00, 500.00);
 
 -- --------------------------------------------------------
 
@@ -297,33 +321,8 @@ CREATE TABLE `historial_pagos_cursos` (
 INSERT INTO `historial_pagos_cursos` (`id_pago`, `id_alumna`, `id_agenda_curso`, `monto_pagado`, `saldo_pendiente`, `fecha_pago`, `metodo_pago`, `tipo_servicio`) VALUES
 (1, 1, 1, 1500.00, 1000.00, '2025-09-20', 'efectivo', 'servicio'),
 (2, 2, 2, 3000.00, 0.00, '2025-09-29', 'tarjeta', 'paquete'),
-(3, 3, 3, 1000.00, 1000.00, '2025-10-01', 'transferencia', 'kit');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `historial_venta_productos`
---
-
-CREATE TABLE `historial_venta_productos` (
-  `id_venta` int(11) NOT NULL,
-  `id_producto` int(11) DEFAULT NULL,
-  `id_kit` int(11) DEFAULT NULL,
-  `cantidad` int(11) DEFAULT NULL,
-  `precio_total` decimal(10,2) DEFAULT NULL,
-  `comprador_tipo` varchar(50) DEFAULT NULL,
-  `id_comprador` int(11) DEFAULT NULL,
-  `id_taller` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `historial_venta_productos`
---
-
-INSERT INTO `historial_venta_productos` (`id_venta`, `id_producto`, `id_kit`, `cantidad`, `precio_total`, `comprador_tipo`, `id_comprador`, `id_taller`) VALUES
-(1, 1, NULL, 2, 1000.00, 'alumna', 1, 1),
-(2, NULL, 2, 1, 1500.00, 'externo', NULL, 2),
-(3, 3, NULL, 3, 900.00, 'alumna', 2, 3);
+(3, 3, 3, 1000.00, 1000.00, '2025-10-01', 'transferencia', 'kit'),
+(4, 2, 3, 0.00, 0.00, '2025-09-21', 'otros', 'servicio');
 
 -- --------------------------------------------------------
 
@@ -348,7 +347,11 @@ CREATE TABLE `ingresos_talleres` (
 INSERT INTO `ingresos_talleres` (`id_ingreso`, `id_alumna`, `fecha`, `tipo_ingreso`, `metodo_pago`, `id_taller`, `costo`) VALUES
 (1, 1, '2025-09-06', 'Inscripción', 'efectivo', 1, 1500.00),
 (2, 2, '2025-09-13', 'Inscripción', 'tarjeta', 2, 2000.00),
-(3, 3, '2025-09-19', 'Inscripción', 'transferencia', 3, 1000.00);
+(3, 3, '2025-09-19', 'Inscripción', 'transferencia', 3, 1000.00),
+(4, 1, '2025-09-21', 'inscripcion', 'otros', 3, 0.00),
+(5, 3, '2025-09-21', 'inscripcion', 'otros', 3, 0.00),
+(6, 1, '2025-09-21', 'inscripcion', 'otros', 3, 0.00),
+(7, 1, '2025-09-21', 'inscripcion', 'otros', 2, 0.00);
 
 -- --------------------------------------------------------
 
@@ -369,6 +372,62 @@ INSERT INTO `institutos` (`id_instituto`, `nombre`) VALUES
 (1, 'Instituto Central'),
 (2, 'Instituto del Norte'),
 (3, 'Instituto del Sur');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `intermedia_a`
+--
+
+CREATE TABLE `intermedia_a` (
+  `id_intermedia` int(11) NOT NULL,
+  `id_alumna` int(11) NOT NULL,
+  `id_agenda` int(11) DEFAULT NULL,
+  `id_agenda_curso` int(11) DEFAULT NULL,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `intermedia_a`
+--
+
+INSERT INTO `intermedia_a` (`id_intermedia`, `id_alumna`, `id_agenda`, `id_agenda_curso`, `fecha`) VALUES
+(1, 1, 3, NULL, '2025-09-22 00:44:57'),
+(2, 2, NULL, 3, '2025-09-22 00:46:21'),
+(3, 2, 3, NULL, '2025-09-22 00:57:23'),
+(4, 2, 2, NULL, '2025-09-22 01:01:57'),
+(5, 3, 1, NULL, '2025-09-22 01:02:01'),
+(6, 3, 3, NULL, '2025-09-22 01:04:15'),
+(7, 1, 4, NULL, '2025-09-22 01:07:07'),
+(8, 3, NULL, 1, '2025-09-22 01:08:26'),
+(9, 3, NULL, 3, '2025-09-22 01:08:30'),
+(10, 2, NULL, 2, '2025-09-22 01:08:33'),
+(11, 2, 4, NULL, '2025-09-22 01:58:19'),
+(12, 3, 4, NULL, '2025-09-22 02:17:52');
+
+--
+-- Disparadores `intermedia_a`
+--
+DELIMITER $$
+CREATE TRIGGER `trg_intermedia_a_after_insert` AFTER INSERT ON `intermedia_a` FOR EACH ROW BEGIN
+  DECLARE cnt INT DEFAULT 0;
+
+  -- Si se insertó con id_agenda (taller)
+  IF NEW.id_agenda IS NOT NULL AND NEW.id_agenda <> 0 THEN
+    SELECT COUNT(*) INTO cnt FROM intermedia_a WHERE id_agenda = NEW.id_agenda;
+    UPDATE agenda
+      SET cant_alum = cnt
+      WHERE id_agenda = NEW.id_agenda;
+  -- Si se insertó con id_agenda_curso (curso)
+  ELSEIF NEW.id_agenda_curso IS NOT NULL AND NEW.id_agenda_curso <> 0 THEN
+    SELECT COUNT(*) INTO cnt FROM intermedia_a WHERE id_agenda_curso = NEW.id_agenda_curso;
+    UPDATE agenda_cursos
+      SET cant_alum = cnt
+      WHERE id_agenda_curso = NEW.id_agenda_curso;
+  END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -427,17 +486,44 @@ CREATE TABLE `kits_productos` (
   `id_kit` int(11) NOT NULL,
   `nombre` varchar(255) DEFAULT NULL,
   `precio_unitario` decimal(10,2) DEFAULT NULL,
-  `Stock` int(11) NOT NULL
+  `Stock` int(11) NOT NULL,
+  `Activo` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `kits_productos`
 --
 
-INSERT INTO `kits_productos` (`id_kit`, `nombre`, `precio_unitario`, `Stock`) VALUES
-(1, 'Kit Repostería', 1200.00, 3),
-(2, 'Kit Maquillaje', 1500.00, 4),
-(3, 'Kit Manualidades', 1000.00, 6);
+INSERT INTO `kits_productos` (`id_kit`, `nombre`, `precio_unitario`, `Stock`, `Activo`) VALUES
+(1, 'Kit Repostería', 1200.00, 3, 1),
+(2, 'Kit Maquillaje', 1500.00, 0, 0),
+(3, 'Kit Manualidades', 1000.00, 0, 0);
+
+--
+-- Disparadores `kits_productos`
+--
+DELIMITER $$
+CREATE TRIGGER `trg_kits_bi` BEFORE INSERT ON `kits_productos` FOR EACH ROW BEGIN
+  IF NEW.Stock IS NULL THEN SET NEW.Stock = 0; END IF;
+  IF NEW.Stock <= 0 THEN
+    SET NEW.Stock = 0, NEW.Activo = 0;
+  ELSE
+    SET NEW.Activo = 1;
+  END IF;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `trg_kits_bu` BEFORE UPDATE ON `kits_productos` FOR EACH ROW BEGIN
+  IF NEW.Stock IS NULL THEN SET NEW.Stock = 0; END IF;
+  IF NEW.Stock <= 0 THEN
+    SET NEW.Stock = 0, NEW.Activo = 0;
+  ELSE
+    SET NEW.Activo = 1;
+  END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -473,17 +559,44 @@ CREATE TABLE `productos` (
   `id_producto` int(11) NOT NULL,
   `nombre` varchar(255) DEFAULT NULL,
   `precio_unitario` decimal(10,2) DEFAULT NULL,
-  `Stock` int(11) NOT NULL
+  `Stock` int(11) NOT NULL,
+  `Activo` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `productos`
 --
 
-INSERT INTO `productos` (`id_producto`, `nombre`, `precio_unitario`, `Stock`) VALUES
-(1, 'Libro de repostería', 500.00, 10),
-(2, 'Set de brochas', 800.00, 9),
-(3, 'Caja de pinturas', 300.00, 9);
+INSERT INTO `productos` (`id_producto`, `nombre`, `precio_unitario`, `Stock`, `Activo`) VALUES
+(1, 'Libro de repostería', 500.00, 3, 1),
+(2, 'Set de brochas', 800.00, 10, 1),
+(3, 'Caja de pinturas', 300.00, 99, 1);
+
+--
+-- Disparadores `productos`
+--
+DELIMITER $$
+CREATE TRIGGER `trg_productos_bi` BEFORE INSERT ON `productos` FOR EACH ROW BEGIN
+  IF NEW.Stock IS NULL THEN SET NEW.Stock = 0; END IF;
+  IF NEW.Stock <= 0 THEN
+    SET NEW.Stock = 0, NEW.Activo = 0;
+  ELSE
+    SET NEW.Activo = 1;
+  END IF;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `trg_productos_bu` BEFORE UPDATE ON `productos` FOR EACH ROW BEGIN
+  IF NEW.Stock IS NULL THEN SET NEW.Stock = 0; END IF;
+  IF NEW.Stock <= 0 THEN
+    SET NEW.Stock = 0, NEW.Activo = 0;
+  ELSE
+    SET NEW.Activo = 1;
+  END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -515,7 +628,6 @@ CREATE TABLE `talleres` (
   `id_taller` int(11) NOT NULL,
   `nombre` varchar(255) DEFAULT NULL,
   `id_maestra` int(11) DEFAULT NULL,
-  `fecha` date DEFAULT NULL,
   `costo_base` decimal(10,2) DEFAULT NULL,
   `status` varchar(50) DEFAULT NULL,
   `ingreso_bruto` decimal(10,2) DEFAULT NULL,
@@ -529,10 +641,10 @@ CREATE TABLE `talleres` (
 -- Volcado de datos para la tabla `talleres`
 --
 
-INSERT INTO `talleres` (`id_taller`, `nombre`, `id_maestra`, `fecha`, `costo_base`, `status`, `ingreso_bruto`, `gastos`, `porcentaje_delia`, `porcentaje_caro`, `precio_preferencial`) VALUES
-(1, 'Taller de Repostería', 1, '2025-09-10', 1500.00, 'activo', 5000.00, 2000.00, 40.00, 60.00, 0),
-(2, 'Taller de Maquillaje', 2, '2025-09-15', 2000.00, 'activo', 6000.00, 2500.00, 50.00, 50.00, 1),
-(3, 'Taller de Manualidades', 3, '2025-09-20', 1000.00, 'pendiente', 0.00, 0.00, 30.00, 70.00, 0);
+INSERT INTO `talleres` (`id_taller`, `nombre`, `id_maestra`, `costo_base`, `status`, `ingreso_bruto`, `gastos`, `porcentaje_delia`, `porcentaje_caro`, `precio_preferencial`) VALUES
+(1, 'Taller de Repostería', 1, 1500.00, 'activo', 5000.00, 2000.00, 40.00, 60.00, 0),
+(2, 'Taller de Maquillaje', 2, 2000.00, 'activo', 6000.00, 2500.00, 50.00, 50.00, 1),
+(3, 'Taller de Manualidades', 3, 1000.00, 'pendiente', 0.00, 0.00, 30.00, 70.00, 0);
 
 -- --------------------------------------------------------
 
@@ -556,7 +668,8 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`Id_Usuario`, `Nombre`, `Apat`, `Amat`, `Correo`, `User`, `Pass`, `Cargo`) VALUES
-(1, 'Cesar Alejandro', 'Hernandez', 'Medina', 'cesarflow4k@gmail.com', 'Magik', '1234', 'Admin');
+(1, 'Cesar Alejandro', 'Hernandez', 'Medina', 'cesarflow4k@gmail.com', 'Magik', '1234', 'Admin'),
+(2, 'salvador', 'de la garza', 'cvazos', 'salba3@gmail.com', 'salba', '1232', 'admin');
 
 -- --------------------------------------------------------
 
@@ -589,7 +702,18 @@ INSERT INTO `venta` (`idVenta`, `fecha`, `comprador_tipo`, `id_alumna`, `id_clie
 (9, '2025-09-19 16:10:53', 'alumna', 2, NULL, NULL, 1600.00, 'Pendiente'),
 (10, '2025-09-19 16:14:14', 'alumna', 1, NULL, NULL, 4200.00, 'Pendiente'),
 (11, '2025-09-19 17:38:20', 'alumna', 3, NULL, NULL, 4000.00, 'Pendiente'),
-(12, '2025-09-19 18:08:25', 'alumna', 2, NULL, NULL, 800.00, 'Pendiente');
+(12, '2025-09-19 18:08:25', 'alumna', 2, NULL, NULL, 800.00, 'Pendiente'),
+(13, '2025-09-21 01:56:11', 'Alumna', 3, NULL, NULL, 2100.00, 'Pendiente'),
+(14, '2025-09-21 01:56:19', 'Cliente', NULL, 2, NULL, 800.00, 'Pendiente'),
+(15, '2025-09-21 02:20:00', 'Cliente', NULL, 2, NULL, 1300.00, 'Pendiente'),
+(16, '2025-09-21 02:20:17', 'Cliente', NULL, 1, NULL, 1900.00, 'Pendiente'),
+(17, '2025-09-21 02:20:35', 'Cliente', NULL, 1, NULL, 1600.00, 'Pendiente'),
+(18, '2025-09-21 02:20:52', 'Alumna', 2, NULL, NULL, 1600.00, 'Pendiente'),
+(19, '2025-09-21 02:21:06', 'Cliente', NULL, 1, NULL, 2800.00, 'Pendiente'),
+(20, '2025-09-21 07:04:33', 'Alumna', 1, NULL, NULL, 4500.00, 'Pendiente'),
+(21, '2025-09-21 07:05:18', 'Cliente', NULL, 1, NULL, 1600.00, 'Pendiente'),
+(22, '2025-09-21 07:14:52', 'cliente', NULL, 3, NULL, 500.00, 'Pendiente'),
+(23, '2025-09-22 02:02:00', 'alumna', 2, NULL, NULL, 500.00, 'Pendiente');
 
 --
 -- Índices para tablas volcadas
@@ -667,15 +791,6 @@ ALTER TABLE `historial_pagos_cursos`
   ADD KEY `id_agenda_curso` (`id_agenda_curso`);
 
 --
--- Indices de la tabla `historial_venta_productos`
---
-ALTER TABLE `historial_venta_productos`
-  ADD PRIMARY KEY (`id_venta`),
-  ADD KEY `id_producto` (`id_producto`),
-  ADD KEY `id_taller` (`id_taller`),
-  ADD KEY `id_kit` (`id_kit`);
-
---
 -- Indices de la tabla `ingresos_talleres`
 --
 ALTER TABLE `ingresos_talleres`
@@ -688,6 +803,15 @@ ALTER TABLE `ingresos_talleres`
 --
 ALTER TABLE `institutos`
   ADD PRIMARY KEY (`id_instituto`);
+
+--
+-- Indices de la tabla `intermedia_a`
+--
+ALTER TABLE `intermedia_a`
+  ADD PRIMARY KEY (`id_intermedia`),
+  ADD KEY `idx_intermedia_alumna` (`id_alumna`),
+  ADD KEY `idx_intermedia_agenda` (`id_agenda`),
+  ADD KEY `idx_intermedia_curso` (`id_agenda_curso`);
 
 --
 -- Indices de la tabla `inventario`
@@ -710,7 +834,8 @@ ALTER TABLE `inventario_stock`
 -- Indices de la tabla `kits_productos`
 --
 ALTER TABLE `kits_productos`
-  ADD PRIMARY KEY (`id_kit`);
+  ADD PRIMARY KEY (`id_kit`),
+  ADD KEY `idx_kits_activo_stock` (`Activo`,`Stock`);
 
 --
 -- Indices de la tabla `maestras`
@@ -722,7 +847,8 @@ ALTER TABLE `maestras`
 -- Indices de la tabla `productos`
 --
 ALTER TABLE `productos`
-  ADD PRIMARY KEY (`id_producto`);
+  ADD PRIMARY KEY (`id_producto`),
+  ADD KEY `idx_productos_activo_stock` (`Activo`,`Stock`);
 
 --
 -- Indices de la tabla `productos_kits`
@@ -762,7 +888,7 @@ ALTER TABLE `venta`
 -- AUTO_INCREMENT de la tabla `agenda`
 --
 ALTER TABLE `agenda`
-  MODIFY `id_agenda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_agenda` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `agenda_cursos`
@@ -798,7 +924,7 @@ ALTER TABLE `descuentos`
 -- AUTO_INCREMENT de la tabla `detalle_venta`
 --
 ALTER TABLE `detalle_venta`
-  MODIFY `idDetalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `idDetalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
 -- AUTO_INCREMENT de la tabla `egresos_talleres`
@@ -816,25 +942,25 @@ ALTER TABLE `historial_pagos`
 -- AUTO_INCREMENT de la tabla `historial_pagos_cursos`
 --
 ALTER TABLE `historial_pagos_cursos`
-  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT de la tabla `historial_venta_productos`
---
-ALTER TABLE `historial_venta_productos`
-  MODIFY `id_venta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `ingresos_talleres`
 --
 ALTER TABLE `ingresos_talleres`
-  MODIFY `id_ingreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_ingreso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `institutos`
 --
 ALTER TABLE `institutos`
   MODIFY `id_instituto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `intermedia_a`
+--
+ALTER TABLE `intermedia_a`
+  MODIFY `id_intermedia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `inventario`
@@ -876,13 +1002,13 @@ ALTER TABLE `talleres`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `Id_Usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Id_Usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `venta`
 --
 ALTER TABLE `venta`
-  MODIFY `idVenta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `idVenta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- Restricciones para tablas volcadas
@@ -935,19 +1061,19 @@ ALTER TABLE `historial_pagos_cursos`
   ADD CONSTRAINT `fk_hist_pagos_cursos__alumnas` FOREIGN KEY (`id_alumna`) REFERENCES `alumnas` (`id_alumna`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `historial_venta_productos`
---
-ALTER TABLE `historial_venta_productos`
-  ADD CONSTRAINT `fk_hist_venta__kit` FOREIGN KEY (`id_kit`) REFERENCES `kits_productos` (`id_kit`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `historial_venta_productos_ibfk_1` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`),
-  ADD CONSTRAINT `historial_venta_productos_ibfk_2` FOREIGN KEY (`id_taller`) REFERENCES `talleres` (`id_taller`);
-
---
 -- Filtros para la tabla `ingresos_talleres`
 --
 ALTER TABLE `ingresos_talleres`
   ADD CONSTRAINT `ingresos_talleres_ibfk_1` FOREIGN KEY (`id_alumna`) REFERENCES `alumnas` (`id_alumna`),
   ADD CONSTRAINT `ingresos_talleres_ibfk_2` FOREIGN KEY (`id_taller`) REFERENCES `talleres` (`id_taller`);
+
+--
+-- Filtros para la tabla `intermedia_a`
+--
+ALTER TABLE `intermedia_a`
+  ADD CONSTRAINT `fk_intermediaA_agenda` FOREIGN KEY (`id_agenda`) REFERENCES `agenda` (`id_agenda`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_intermediaA_alumna` FOREIGN KEY (`id_alumna`) REFERENCES `alumnas` (`id_alumna`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_intermediaA_curso` FOREIGN KEY (`id_agenda_curso`) REFERENCES `agenda_cursos` (`id_agenda_curso`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `inventario`

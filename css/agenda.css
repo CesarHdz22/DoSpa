@@ -1,0 +1,86 @@
+
+          .btn-mini{
+            padding:6px 10px; border:1px solid #e5e7eb; border-radius:8px; background:#fff;
+            cursor:pointer; font-weight:600; transition:box-shadow .15s ease;
+          }
+          .btn-mini:hover{ box-shadow:0 2px 10px rgba(0,0,0,.07); }
+
+          .modal{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.35); z-index:999; }
+          .modal.open{ display:flex; }
+          .modal .box{
+            width: min(680px, 92vw); background:#fff; border-radius:16px; border:1px solid #e5e7eb;
+            box-shadow:0 10px 30px rgba(0,0,0,.2); padding:18px;
+          }
+          .modal header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+          .modal h3{ margin:0; font-size:18px; font-weight:800; }
+          .modal .close{ background:transparent; border:0; font-size:22px; cursor:pointer; }
+          .grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+          @media (max-width: 720px){ .grid{ grid-template-columns:1fr; } }
+          label{ font-weight:700; font-size:13px; margin-top:8px; display:block; }
+          input, select{ width:100%; padding:9px 10px; border:1px solid #e5e7eb; border-radius:10px; }
+          .actions{ display:flex; gap:10px; margin-top:14px; }
+          .btn-primary{ background:#3b82f6; color:#fff; border:0; }
+
+          /* Forzar apilado vertical: Talleres arriba, Cursos abajo */
+      .tablas-inventario {
+        display: grid !important;
+        grid-template-columns: 1fr !important; /* una columna */
+        gap: 16px; /* separación entre secciones */
+        align-items: start;
+      }
+
+      /* Asegura que cada sección ocupe todo el ancho disponible */
+      .tablas-inventario .productos,
+      .tablas-inventario .kits {
+        width: 100%;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      /* Ajustes de cabecera de sección para que los botones queden alineados */
+      .tablas-inventario .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* Las tablas deben ocupar todo el ancho del contenedor */
+      .tablas-inventario table.display,
+      .tablas-inventario .display {
+        width: 100% !important;
+        table-layout: auto;
+      }
+
+      /* Pequeño ajuste visual para botones/icons si es necesario */
+      .tablas-inventario .section-actions .icon {
+        vertical-align: middle;
+      }
+
+      /* Estilo general de las filas */
+      .ventas-tabla tbody tr {
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+
+      /* Hover */
+      .ventas-tabla tbody tr:hover {
+        background-color: #f0f0f0;
+      }
+
+      /* Seleccionada */
+      .ventas-tabla tbody tr.selected {
+        background-color: #ffcccc !important;
+        font-weight: bold;
+        border-left: 5px solid #ff0000;
+      }
+
+      .modal-inscritas { 
+  position: fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:9999; 
+}
+.modal-content-inscritas { 
+  background:#fff; padding:20px; border-radius:10px; width:60%; max-height:80vh; overflow-y:auto; position:relative; box-shadow:0 4px 20px rgba(0,0,0,0.3); 
+}
+.close-inscritas { 
+  position:absolute; top:10px; right:15px; cursor:pointer; font-size:22px; font-weight:bold; color:#333; 
+}

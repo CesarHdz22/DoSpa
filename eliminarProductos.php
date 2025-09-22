@@ -1,30 +1,33 @@
-<?php 
+<?php
+declare(strict_types=1);
 session_start();
-include_once("conexion.php");
+if (empty($_SESSION['Id_Usuario'])) { header("Location: index.html"); exit; }
 
-  $idU = $_SESSION['Id_Usuario'];
-  $Nombre = $_SESSION['nombre'];
-  $Amat = $_SESSION['amat'];
-  $Apat = $_SESSION['apat'];
+require_once "conexion.php";
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+mysqli_set_charset($conexion, 'utf8mb4');
 
-  $idComprador = $_POST['idComprador'];
-  $carrito_json = $_POST['carrito'];
-  $carrito = json_decode($carrito_json, true);
-  $tipo = $_SESSION['tipoCliente'];
+// Recibir id y tipo (producto|kit)
+$id   = isset($_GET['id'])   ? (int)$_GET['id']   : 0;
+$type = isset($_GET['type']) ? strtolower(trim((string)$_GET['type'])) : '';
 
-  // Validación mínima
-  if (!is_array($carrito)) {
-      echo "Carrito inválido.";
-      exit;
-  }
+if ($id <= 0 || !in_array($type, ['producto','kit'], true)) {
+  header("Location: inventario.php?msg=ID_invalido");
+  exit;
+}
 
-  // Guardar en sesión para que trabajes con él desde otras páginas si quieres
-  $_SESSION['carrito_temp'] = $carrito;
+// Con triggers instalados, basta con poner Stock=0
+if ($type === 'kit') {
+  $sql = "UPDATE kits_productos SET Stock = 0 WHERE id_kit = ?";
+} else {
+  $sql = "UPDATE productos SET Stock = 0 WHERE id_producto = ?";
+}
 
-  // Total (si también enviaste total por seguridad lo puedes tomar de $_POST['total'])
-  $total = 0;
-  foreach ($carrito as $item) {
-      $precio = isset($item['precio']) ? floatval($item['precio']) : 0;
-      $cant   = isset($item['cantidad']) ? intval($item['cantidad']) : 0;
-      $total += $precio * $cant;
-  }
+$stmt = mysqli_prepare($conexion, $sql);
+mysqli_stmt_bind_param($stmt, "i", $id);
+mysqli_stmt_execute($stmt);
+mysqli_stmt_close($stmt);
+
+// Redirige al inventario
+header("Location: inventario.php?msg=Eliminado_ok");
+exit;

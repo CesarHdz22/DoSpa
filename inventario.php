@@ -30,7 +30,8 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
       <ul id="menu">
         <li><a href="main.php"><i class="fas fa-home"></i> Panel</a></li>
         <li><a href="ventas.php"><i class="fas fa-file-invoice-dollar"></i> Historial Ventas</a></li>
-        <li><a href="agenda.php"><i class="fas fa-th-large"></i> Agenda</a></li>
+        <li><a href="agenda.php"><i class="fas fa-calendar-days"></i> Agenda</a></li>
+        <li><a href="talleres-cursos.php"><i class="fas fa-chalkboard-teacher"></i>Talleres/Cursos</a></li> 
         <li class="active"><a href="inventario.php"><i class="fas fa-layer-group"></i>Inventario</a></li>
       </ul>
     </aside>
@@ -117,9 +118,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                         <td><?php echo $mostrar['id_kit'] ?></td>
                         <td><?php echo $mostrar['nombre'] ?></td>
                         <td><?php echo "$".$mostrar['precio_unitario'] ?></td>
-                        <td><?php echo $mostrar['Stock'] ?></td>
-                        
-                        
+                        <td><?php echo $mostrar['Stock'] ?></td>   
                     </tr>
                     <?php } ?>
                     </tbody>
@@ -147,8 +146,8 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                 <label for="tipo">Selecciona tipo de comprador:</label>
                 <select id="tipo" name="tipo" aria-controls="contenedor-tabla">
                     <option value="">-- Seleccionar --</option>
-                    <option value="Cliente">Cliente</option>
-                    <option value="Alumna">Alumna</option>
+                    <option value="cliente">Cliente</option>
+                    <option value="alumna">Alumna</option>
                 </select>
 
                 <div id="contenedor-tabla" aria-live="polite"></div>
@@ -349,6 +348,36 @@ document.querySelectorAll('.btn-eliminar').forEach(btn => {
 
 
 
+<script>
+// Resaltar fila seleccionada
+$('#TablaProductos tbody').on('click', 'tr', function() {
+  $('#TablaProductos tbody tr').removeClass('row-selected');
+  $(this).addClass('row-selected');
+});
+$('#TablaKits tbody').on('click', 'tr', function() {
+  $('#TablaKits tbody tr').removeClass('row-selected');
+  $(this).addClass('row-selected');
+});
+
+// Icono eliminar de la cabecera
+document.querySelectorAll('.btn-eliminar').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tipo = btn.dataset.tipo; // 'producto' | 'kit'
+    const tableId = (tipo === 'kit') ? '#TablaKits' : '#TablaProductos';
+    const rowSel = document.querySelector(`${tableId} tbody tr.row-selected`);
+    if (!rowSel) { alert('Selecciona una fila primero.'); return; }
+
+    const id = (rowSel.querySelector('td') || {}).innerText?.trim();
+    if (!id) { alert('No se pudo leer el ID.'); return; }
+
+    if (!confirm(`¿Eliminar este ${tipo}?`)) return;
+
+    window.location.href = `eliminarProductos.php?id=${encodeURIComponent(id)}&type=${encodeURIComponent(tipo)}`;
+  });
+});
+
+
+</script>
 
 </body>
 </html>

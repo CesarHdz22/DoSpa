@@ -30,7 +30,8 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
       <ul id="menu">
         <li><a href="main.php"><i class="fas fa-home"></i> Panel</a></li>
         <li class="active"><a href="ventas.php"><i class="fas fa-file-invoice-dollar"></i> Historial Ventas</a></li>
-        <li><a href="agenda.php"><i class="fas fa-th-large"></i> Agenda</a></li>
+        <li><a href="agenda.php"><i class="fas fa-calendar-days"></i> Agenda</a></li>
+        <li><a href="talleres-cursos.php"><i class="fas fa-chalkboard-teacher"></i>Talleres/Cursos</a></li> 
         <li><a href="inventario.php"><i class="fas fa-layer-group"></i>Inventario</a></li>
       </ul>
     </aside>
@@ -68,7 +69,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                 </thead>
                 <tbody>
                 <?php
-                  $sql="SELECT * FROM venta";
+                  $sql="SELECT * FROM venta ORDER BY fecha DESC";
                                
                   $result=mysqli_query($conexion,$sql);
                   while($mostrar=mysqli_fetch_array($result)){
@@ -107,6 +108,8 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
     </main>
   </div>
   <script src="librerias/tables.js"></script>
+  
+
   <script>
     // Inicializar tabla de ventas con Simple-DataTables
     const tablaVentas = new simpleDatatables.DataTable("#ventasTabla", {

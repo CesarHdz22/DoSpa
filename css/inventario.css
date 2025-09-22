@@ -1,3 +1,7 @@
+*{
+
+   font-family: 'Segoe UI', sans-serif;
+}
 .main {
   margin-left: 230px; /* ancho sidebar */
   margin-top: 60px;   /* altura header */
@@ -182,7 +186,7 @@ a{
 
 /* Botón Eliminar: fondo rojo sólido */
 .accion-btn.btn-delete {
-  background: #e74c3c;        /* rojo principal */
+  background: rgb(231, 76, 60);        /* rojo principal */
   color: #fff;
   width: 36px;
   height: 36px;
@@ -332,4 +336,25 @@ a{
 @media (max-width: 480px) {
   #modalComprador .modal-content { padding: 14px; }
   .confirmacion select { padding: 10px; }
+}
+
+/* ====== AGENDA: hover + selección de filas ====== */
+/* Apunta al id original y al que genera simple-datatables */
+#TablaTalleres tbody tr,
+#TablaCursos  tbody tr,
+.dataTable-table tbody tr{
+  cursor: pointer;
+  transition: background-color .15s ease;
+}
+
+#TablaTalleres tbody tr:hover,
+#TablaCursos  tbody tr:hover,
+.dataTable-table tbody tr:hover{
+  background: rgb(188, 113, 104)!important; /* hover suave */
+}
+
+#TablaTalleres tbody tr.row-selected,
+#TablaCursos  tbody tr.row-selected,
+.dataTable-table tbody tr.row-selected{
+  background: rgb(231, 76, 60)!important; /* selección visible */
 }

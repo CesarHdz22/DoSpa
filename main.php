@@ -17,6 +17,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
   <link rel="stylesheet" href="css/sidebar.css">
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/main.css">
+
   <link rel="icon" href="img/DO_SPA_logo.png" type="image/png">
   <!-- Iconos de FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -30,7 +31,8 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
       <ul id="menu">
         <li class="active"><a href="main.php"><i class="fas fa-home"></i> Panel</a></li>
         <li><a href="ventas.php"><i class="fas fa-file-invoice-dollar"></i> Historial Ventas</a></li>
-        <li><a href="agenda.php"><i class="fas fa-th-large"></i> Agenda</a></li>
+        <li><a href="agenda.php"><i class="fas fa-calendar-days"></i> Agenda</a></li>
+        <li><a href="talleres-cursos.php"><i class="fas fa-chalkboard-teacher"></i>Talleres/Cursos</a></li>  
         <li><a href="inventario.php"><i class="fas fa-layer-group"></i>Inventario</a></li>
       </ul>
     </aside>

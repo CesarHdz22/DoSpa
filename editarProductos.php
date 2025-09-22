@@ -78,8 +78,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                 $resultado1 = mysqli_query($conexion,$sql);
                 while($mostrar = mysqli_fetch_array($resultado1)){
             ?>
-            <label for="Id">Id:</label>
-            <input type="text" name="id" id="id" value="<?php echo $mostrar['id_producto'] ?>" readonly required>
+            <input style = "display:none;" type="text" name="id" id="id" value="<?php echo $mostrar['id_producto'] ?>" readonly required>
 
             <label for="nombre">Nombre:</label>
             <input type="text" name="nombre" id="nombre" value="<?php echo $mostrar['nombre'] ?>" required>

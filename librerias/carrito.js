@@ -39,45 +39,57 @@
       } catch(e) { console.warn('init tabla kits:', e); }
     }
 
-    // Forzar estado inicial del botón Confirmar Compra
+    // Botón Confirmar + modal
     const btnConfirm = document.querySelector('.btn-confirmar');
     const modal = document.getElementById("modalComprador"); // tu modal (puede ser null)
 
-    // Abrir modal: solo si existe y solo un listener
+    // Abrir modal: ahora valida stock antes de abrir
     if (btnConfirm) {
       btnConfirm.addEventListener('click', () => {
         if (carrito.length === 0) {
           alert('No hay productos seleccionados.');
           return;
         }
+
+        // Buscar faltantes (cantidad > stock)
+        const faltantes = carrito
+          .filter(p => Number(p.cantidad) > Number(p.stock))
+          .map(p => `• ${p.nombre} — pedido: ${p.cantidad}, stock: ${p.stock}`);
+
+        if (faltantes.length > 0) {
+          alert(
+            'No hay stock suficiente para:\n\n' +
+            faltantes.join('\n') +
+            '\n\nEdita el/los productos para reponer existencias y vuelve a confirmar.'
+          );
+          return; // no abre el modal si hay faltantes
+        }
+
+        // OK: abrir modal
         if (modal) {
           modal.style.display = 'flex';
         } else {
-          alert('Modal no encontrado.'); // fallback si no existe
+          alert('Modal no encontrado.');
         }
       });
     }
 
-    // Cerrar modal: busca DOS tipos de botones comunes y los enlaza si existen
+    // Cerrar modal
     if (modal) {
       const cerrarBtn = modal.querySelector('.cerrar-modal') || modal.querySelector('#cerrarModal');
       if (cerrarBtn) {
-        cerrarBtn.addEventListener('click', () => {
-          modal.style.display = 'none';
-        });
+        cerrarBtn.addEventListener('click', () => { modal.style.display = 'none'; });
       }
-
-      // Cerrar al hacer click fuera del contenido del modal
       window.addEventListener('click', (e) => {
         if (e.target === modal) modal.style.display = 'none';
       });
     }
 
-    // Inicializar selección por filas (productos y kits)
+    // Inicializar selección/click por filas (Productos/Kits)
     initRowSelection('#TablaProductos', 'producto');
     initRowSelection('#TablaKits', 'kit');
 
-    // Delegación global para botones de acción dentro del body
+    // Delegación global para botones de acción dentro del body (se mantiene tu patrón)
     document.body.addEventListener('click', function(e) {
       const btn = e.target.closest('.accion-btn');
       if (!btn) return;
@@ -129,9 +141,9 @@
         agregarAlCarrito({ id, nombre, precio, stock, type });
         return;
       }
-    }, true); // capture true para interceptar antes handlers en filas
+    }, true);
 
-    // Vaciar carrito: botón puede no existir hasta que añadas el HTML del resumen
+    // Vaciar carrito
     const vacBtn = document.getElementById('vaciarCarritoBtn');
     if (vacBtn) {
       vacBtn.addEventListener('click', () => {
@@ -152,16 +164,16 @@
       if (!row.hasAttribute('data-type') && type) row.setAttribute('data-type', type);
       row.style.cursor = 'pointer';
       row.addEventListener('click', function(ev) {
-        if (ev.target.closest('.accion-btn')) return; // botón acción pulsado -> no seleccionar
-        const cells = row.children;
-        const id = row.getAttribute('data-id') || (cells[0]?.innerText.trim()) || '';
+        if (ev.target.closest('.accion-btn')) return; // botón acción -> no seleccionar
+        const cells  = row.children;
+        const id     = row.getAttribute('data-id') || (cells[0]?.innerText.trim()) || '';
         const nombre = (cells[1]?.innerText.trim()) || '';
         const precioRaw = (cells[2]?.innerText.trim() || '').replace(/[^0-9\.,\-]/g,'') || '0';
         const precio = parseFloat(precioRaw.replace(',', '.')) || 0;
-        const stock = parseInt((cells[3]?.innerText.trim() || '').replace(/\D/g,'')) || 0;
-        const tipo = row.getAttribute('data-type') || type || 'producto';
+        const stock  = parseInt((cells[3]?.innerText.trim() || '').replace(/\D/g,'')) || 0;
+        const tipo   = row.getAttribute('data-type') || type || 'producto';
 
-        if (stock <= 0) { alert('Este producto no tiene stock disponible.'); return; }
+        // ✅ Ya NO bloqueamos por stock 0: se puede agregar al carrito
         agregarAlCarrito({ id, nombre, precio, stock, type: tipo });
       });
     });
@@ -176,8 +188,9 @@
     if (!item || !item.id) return;
     const key = generarKey(item.type, item.id);
     const existente = carrito.find(p => p.key === key);
+
+    // ✅ Permitir agregar sin límite respecto al stock (validamos al confirmar)
     if (existente) {
-      if (existente.cantidad + 1 > item.stock) { alert('No puedes agregar más: excede el stock disponible.'); return; }
       existente.cantidad++;
     } else {
       carrito.push({
@@ -186,7 +199,7 @@
         id: item.id,
         nombre: item.nombre || '',
         precio: Number(item.precio) || 0,
-        stock: Number(item.stock) || 0,
+        stock: Number(item.stock) || 0, // lo guardamos para validar al confirmar
         cantidad: 1,
       });
     }
@@ -256,4 +269,3 @@
   window.renderCarritoResumen = renderCarritoResumen;
 
 })();
-

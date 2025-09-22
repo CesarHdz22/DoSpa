@@ -2,12 +2,14 @@
 include("conexion.php");
 
 $tipo = $_POST['tipo'];
-
+$_SESSION['tipoCliente'] = $tipo;
 if ($tipo == "alumna") {
     $sql = "SELECT * FROM alumnas";
 } else {
     $sql = "SELECT * FROM clientes";
 }
+
+
 
 $result = mysqli_query($conexion, $sql);
 
