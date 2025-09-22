@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-09-2025 a las 07:27:27
+-- Tiempo de generación: 22-09-2025 a las 10:41:35
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -245,7 +245,10 @@ INSERT INTO `detalle_venta` (`idDetalle`, `idVenta`, `id_producto`, `id_kit`, `c
 (75, 20, NULL, 2, 3, 1500.00, 4500.00),
 (76, 21, 2, NULL, 2, 800.00, 1600.00),
 (77, 22, 1, NULL, 1, 500.00, 500.00),
-(78, 23, 1, NULL, 1, 500.00, 500.00);
+(78, 23, 1, NULL, 1, 500.00, 500.00),
+(79, 24, 2, NULL, 1, 800.00, 800.00),
+(80, 24, 1, NULL, 1, 500.00, 500.00),
+(81, 24, 3, NULL, 1, 300.00, 300.00);
 
 -- --------------------------------------------------------
 
@@ -305,26 +308,27 @@ CREATE TABLE `intermedia_a` (
   `id_alumna` int(11) NOT NULL,
   `id_agenda` int(11) DEFAULT NULL,
   `id_agenda_curso` int(11) DEFAULT NULL,
-  `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `estado` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `intermedia_a`
 --
 
-INSERT INTO `intermedia_a` (`id_intermedia`, `id_alumna`, `id_agenda`, `id_agenda_curso`, `fecha`) VALUES
-(1, 1, 3, NULL, '2025-09-22 00:44:57'),
-(2, 2, NULL, 3, '2025-09-22 00:46:21'),
-(3, 2, 3, NULL, '2025-09-22 00:57:23'),
-(4, 2, 2, NULL, '2025-09-22 01:01:57'),
-(5, 3, 1, NULL, '2025-09-22 01:02:01'),
-(6, 3, 3, NULL, '2025-09-22 01:04:15'),
-(7, 1, 4, NULL, '2025-09-22 01:07:07'),
-(8, 3, NULL, 1, '2025-09-22 01:08:26'),
-(9, 3, NULL, 3, '2025-09-22 01:08:30'),
-(10, 2, NULL, 2, '2025-09-22 01:08:33'),
-(11, 2, 4, NULL, '2025-09-22 01:58:19'),
-(12, 3, 4, NULL, '2025-09-22 02:17:52');
+INSERT INTO `intermedia_a` (`id_intermedia`, `id_alumna`, `id_agenda`, `id_agenda_curso`, `fecha`, `estado`) VALUES
+(1, 1, 3, NULL, '2025-09-22 00:44:57', ''),
+(2, 2, NULL, 3, '2025-09-22 00:46:21', ''),
+(3, 2, 3, NULL, '2025-09-22 00:57:23', ''),
+(4, 2, 2, NULL, '2025-09-22 01:01:57', ''),
+(5, 3, 1, NULL, '2025-09-22 01:02:01', ''),
+(6, 3, 3, NULL, '2025-09-22 01:04:15', ''),
+(7, 1, 4, NULL, '2025-09-22 01:07:07', ''),
+(8, 3, NULL, 1, '2025-09-22 01:08:26', ''),
+(9, 3, NULL, 3, '2025-09-22 01:08:30', ''),
+(10, 2, NULL, 2, '2025-09-22 01:08:33', ''),
+(11, 2, 4, NULL, '2025-09-22 01:58:19', ''),
+(12, 3, 4, NULL, '2025-09-22 02:17:52', '');
 
 --
 -- Disparadores `intermedia_a`
@@ -490,9 +494,9 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id_producto`, `nombre`, `precio_unitario`, `Stock`, `Activo`) VALUES
-(1, 'Libro de repostería', 500.00, 3, 1),
-(2, 'Set de brochas', 800.00, 10, 1),
-(3, 'Caja de pinturas', 300.00, 99, 1);
+(1, 'Libro de repostería', 500.00, 0, 0),
+(2, 'Set de brochas', 800.00, 9, 1),
+(3, 'Caja de pinturas', 300.00, 98, 1);
 
 --
 -- Disparadores `productos`
@@ -635,7 +639,8 @@ INSERT INTO `venta` (`idVenta`, `fecha`, `comprador_tipo`, `id_alumna`, `id_clie
 (20, '2025-09-21 07:04:33', 'Alumna', 1, NULL, NULL, 4500.00, 'Pendiente'),
 (21, '2025-09-21 07:05:18', 'Cliente', NULL, 1, NULL, 1600.00, 'Pendiente'),
 (22, '2025-09-21 07:14:52', 'cliente', NULL, 3, NULL, 500.00, 'Pendiente'),
-(23, '2025-09-22 02:02:00', 'alumna', 2, NULL, NULL, 500.00, 'Pendiente');
+(23, '2025-09-22 02:02:00', 'alumna', 2, NULL, NULL, 500.00, 'Pendiente'),
+(24, '2025-09-22 07:41:14', 'alumna', 2, NULL, NULL, 1600.00, 'Pendiente');
 
 --
 -- Índices para tablas volcadas
@@ -823,7 +828,7 @@ ALTER TABLE `descuentos`
 -- AUTO_INCREMENT de la tabla `detalle_venta`
 --
 ALTER TABLE `detalle_venta`
-  MODIFY `idDetalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `idDetalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 
 --
 -- AUTO_INCREMENT de la tabla `historial_pagos`
@@ -889,7 +894,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `venta`
 --
 ALTER TABLE `venta`
-  MODIFY `idVenta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `idVenta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- Restricciones para tablas volcadas

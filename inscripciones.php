@@ -102,7 +102,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                         }        
                 ?>
                 <tr>
-                <td><a href="detallesInscripcion.php?id=<?php echo $row['id_intermedia'] ?>&?tipo=<?php echo $tipo ?>&?idC=<?php echo $row['id_alumna'] ?>"><?php echo $row['id_intermedia'] ?></a></td>
+                <td><a href="detallesInscripcion.php?id=<?php echo $row['id_intermedia'] ?>&tipo=<?php echo $tipo ?>&idC=<?php echo $row['id_alumna'] ?>"><?php echo $row['id_intermedia'] ?></a></td>
                 <td><?php echo $nom_sql." ".$apat_sql." ".$amat_sql ?></td>
                 <td><?php echo $nom_agenda." - ".$tipo ?></td>
                 <td><?php echo $row['fecha']?></td>

@@ -113,8 +113,6 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                 <?php
                         }
                     }
-                ?>
-            <?php
                 $sql = "SELECT * FROM venta WHERE idVenta = '$idVenta'";
                 $result=mysqli_query($conexion,$sql);
                 while($mostrar=mysqli_fetch_array($result)){

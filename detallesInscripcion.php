@@ -10,6 +10,10 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
   $tipo = $_GET['tipo'];
   $idA = $_GET['idC'];
 
+  
+    $sql = "SELECT id_agenda FROM intermedia_a WHERE id_intermedia = '$idI'";
+  
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -86,13 +90,10 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
 
             </div>
 
-            <h4>Productos</h4>
+            <h4><?php echo $tipo.":" ?></h4>
             <ul class="items">
+                
                 <li>Ryobi ONE taladro - $409.00</li>
-                <li>Socket Systeme Electric - $238.00</li>
-                <li>DVB-T2 receptor bbk - $139.00</li>
-                <li>Compresor de aire sin aceite - $135.00</li>
-                <li>Inversor de soldadura TIG-200 - $699.00</li>
             </ul>
 
             <div class="total">
