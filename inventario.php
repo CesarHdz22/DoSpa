@@ -162,6 +162,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
         
     </main>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="librerias/tables.js"></script>
 <script src="librerias/carrito.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -391,5 +392,4 @@ document.querySelectorAll('.btn-eliminar').forEach(btn => {
 </body>
 </html>
 <?php
-}
 ?>
