@@ -263,7 +263,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                           <td><?php echo "$".$mostrar['precio_unitario'] ?></td>
                           <td><?php echo $mostrar['Stock'] ?></td>
                           <td>
-                             <button class="btn-ver-productos" class="accion-btn" data-id="<?php echo $mostrar['id_kit'] ?>">Ver productos</button>
+                             <button class="btn-ver-productos"  data-id="<?php echo $mostrar['id_kit'] ?>">Ver productos</button>
                           </td>
                       </tr>
                     <?php } ?>
@@ -365,164 +365,100 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
               </div>
             </div>
       </div>
+
+      <!-- Modal Editar Kit -->
+      <div id="modalEditarKit" class="modal" aria-hidden="true" style="display:none;">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalEditarKitTitle">
+          <button id="cerrarModalEditarKit" class="btn-cerrar" aria-label="Cerrar">&times;</button>
+          
+          <h3 id="modalEditarKitTitle">Editar Kit</h3>
+          <form id="formEditarKit" method="POST" action="actualizarKit.php">
+            <input type="hidden" name="idKit" id="editarIdKit">
+
+            <div class="form-group">
+              <label for="editarNombreKit">Nombre del Kit:</label>
+              <input type="text" id="editarNombreKit" name="nombreKit" required>
+            </div>
+
+            <div class="form-group">
+              <label for="editarPrecioKit">Precio Unitario:</label>
+              <input type="number" id="editarPrecioKit" name="precioKit" required min="0" step="0.01">
+            </div>
+
+            <div class="form-group">
+              <label for="editarStockKit">Stock:</label>
+              <input type="number" id="editarStockKit" name="stockKit" required min="1">
+            </div>
+
+            <h4>Productos del kit:</h4>
+            <div id="productosEditarKit">
+              <p>Cargando productos...</p>
+            </div>
+
+            <input type="hidden" name="productosSeleccionados" id="productosSeleccionadosEditar">
+
+            <button type="submit" class="btn-confirmar">Actualizar Kit</button>
+          </form>
+        </div>
+      </div>
+
     </main>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" ></script>
   <script src="librerias/tables.js"></script>
-<script src="librerias/carrito.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$(document).ready(function() {
-    // Evitar que el clic en el botón afecte la fila
-    $(document).on('click', '.btn-ver-productos', function(event) {
-        event.stopPropagation(); // <--- esto evita que se seleccione la fila al hacer clic en el botón
-    });
+  <script src="librerias/carrito.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    // Listener de fila para seleccionar kit
-    $('#TablaKits tbody').on('click', 'tr', function() {
-        $('#TablaKits tbody tr').removeClass('row-selected');
-        $(this).addClass('row-selected');
-        // Aquí agregas al carrito solo si quieres al hacer clic en la fila
-    });
-});
-</script>
-<script>
-    $(document).ready(function() {
 
-      // Listener delegado: funciona aunque #tipo esté dentro de modal dinámico
-      $(document).on('change', '#tipo', function() {
-        const tipoSeleccionado = $(this).val();
-        const $contenedor = $('#contenedor-tabla');
-
-        console.log('[DEBUG] cambio tipo ->', tipoSeleccionado);
-
-        if (!tipoSeleccionado) {
-          $contenedor.empty();
-          return;
-        }
-
-        $contenedor.html('<p>Cargando...</p>');
-
-        $.ajax({
-          url: 'getTipo.php',
-          type: 'POST',
-          data: { tipo: tipoSeleccionado },
-          dataType: 'html',
-          success: function(respuestaHtml) {
-            console.log('[DEBUG] respuesta recibida length=', respuestaHtml.length);
-            $contenedor.html(respuestaHtml);
-
-            // Inicializar simple-datatables si existe la tabla
-            const personaTableEl = document.querySelector('#personasTabla');
-            if (personaTableEl && !personaTableEl.dataset._datatable) {
-              new simpleDatatables.DataTable("#personasTabla", {
-                searchable: true,
-                fixedHeight: true,
-                perPage: 5
-              });
-              personaTableEl.dataset._datatable = '1';
-            }
-
-            // Delegación de click por fila
-            $(document).off('click', '#personasTabla tbody tr'); // evitar duplicados
-            $(document).on('click', '#personasTabla tbody tr', function() {
-              const idComprador = $(this).find('td').first().text().trim();
-              console.log('[DEBUG] fila clic id=', idComprador);
-
-              // Obtener carrito
-              const carrito = window.getCarrito ? window.getCarrito() : [];
-              if (!carrito || carrito.length === 0) {
-                alert('El carrito está vacío.');
-                return;
-              }
-
-              // Crear formulario dinámico
-              const form = document.createElement('form');
-              form.method = 'POST';
-              form.action = 'confirmar_compra.php'; // Cambiar a tu página destino
-              form.style.display = 'none';
-
-              // Input para id del comprador
-              const inputId = document.createElement('input');
-              inputId.type = 'hidden';
-              inputId.name = 'idComprador';
-              inputId.value = idComprador;
-              form.appendChild(inputId);
-
-              // Input para carrito en JSON
-              const inputCarrito = document.createElement('input');
-              inputCarrito.type = 'hidden';
-              inputCarrito.name = 'carrito';
-              inputCarrito.value = JSON.stringify(carrito);
-              form.appendChild(inputCarrito);
-
-              // Input para tipo de cliente (si quieres mantenerlo en sesión)
-              const inputTipo = document.createElement('input');
-              inputTipo.type = 'hidden';
-              inputTipo.name = 'tipoCliente';
-              inputTipo.value = tipoSeleccionado;
-              form.appendChild(inputTipo);
-
-              document.body.appendChild(form);
-              form.submit();
-            });
-
-          },
-          error: function(xhr, status, err) {
-            console.error('AJAX getTipo error:', status, err);
-            $contenedor.html('<p style="color:red;">Error al cargar. Revisa la consola (Network).</p>');
-          }
-        });
-      });
-
-    });
-</script>
 
 <script>
-  // Listener para todos los botones de editar
-    document.querySelectorAll('.btn-editar').forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Obtener el carrito
-            const carrito = window.getCarrito ? window.getCarrito() : [];
 
-            // Verificar que haya exactamente un producto seleccionado
-            if (!carrito || carrito.length !== 1) {
-                Swal.fire({
+  // Listener solo para el botón de editar productos
+document.querySelectorAll('.btn-editar[data-tipo="producto"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Obtener el carrito
+        const carrito = window.getCarrito ? window.getCarrito() : [];
+
+        // Verificar que haya exactamente un producto seleccionado
+        if (!carrito || carrito.length !== 1) {
+            Swal.fire({
                 icon: "error",
                 title: "Oops...",
                 text: "Selecciona exactamente un producto para editar."
-                });
-                return;
-            }
+            });
+            return;
+        }
 
-            // Obtener el tipo del producto en el carrito
-            const tipoCarrito = carrito[0].type; // debe existir este campo en tu array
+        // Obtener el tipo del producto en el carrito
+        const tipoCarrito = carrito[0].type; // debe existir este campo en tu array
 
-            // Verificar que el botón corresponda al tipo de producto
-            const tipoBtn = btn.dataset.tipo; // agrega data-tipo="kit", "producto", etc. en tus botones
+        // Verificar que el botón corresponda al tipo de producto
+        const tipoBtn = btn.dataset.tipo; // debe ser "producto"
 
-            if (tipoCarrito !== tipoBtn) {
-                alert(`Este botón solo funciona para ${tipoBtn}s.`);
-                return;
-            }
+        if (tipoCarrito !== tipoBtn) {
+            alert(`Este botón solo funciona para ${tipoBtn}s.`);
+            return;
+        }
 
-            // Crear formulario dinámico para enviar por POST
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'editarProductos.php';
-            form.style.display = 'none';
+        // Crear formulario dinámico para enviar por POST
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'editarProductos.php';
+        form.style.display = 'none';
 
-            // Input para carrito como JSON
-            const inputCarrito = document.createElement('input');
-            inputCarrito.type = 'hidden';
-            inputCarrito.name = 'carrito';
-            inputCarrito.value = JSON.stringify(carrito);
-            form.appendChild(inputCarrito);
+        // Input para carrito como JSON
+        const inputCarrito = document.createElement('input');
+        inputCarrito.type = 'hidden';
+        inputCarrito.name = 'carrito';
+        inputCarrito.value = JSON.stringify(carrito);
+        form.appendChild(inputCarrito);
 
-            document.body.appendChild(form);
-            form.submit();
-        });
+        document.body.appendChild(form);
+        form.submit();
     });
+});
+
 
   // Listener para todos los botones de eliminar
     document.querySelectorAll('.btn-eliminar').forEach(btn => {
@@ -671,16 +607,32 @@ $(document).ready(function() {
     });
 </script>
 
+
+
+
 <script>
-$(document).ready(function() {
-    // Abrir modal al hacer click en "Ver productos"
-    $(document).on('click', '.btn-ver-productos', function() {
-        const idKit = $(this).data('id');
+document.addEventListener("DOMContentLoaded", function() {
+    // Inicializar DataTable SOLO UNA VEZ
+    const tablaKits = document.querySelector("#TablaKits");
+    if (tablaKits && !tablaKits.dataset._datatable) {
+        new simpleDatatables.DataTable("#TablaKits", {
+            searchable: true,
+            fixedHeight: true,
+            perPage: 5
+        });
+        tablaKits.dataset._datatable = "1";
+    }
+
+    // Delegación de evento para "Ver productos"
+    $(document).on('click', '#TablaKits .btn-ver-productos', function () {
+       const idKit = $(this).closest('tr').find('td:first').text().trim();
+        console.log("ID del kit clicado:", idKit);
+
         $('#contenidoKitProductos').html('<p>Cargando...</p>');
         $('#modalKitProductos').fadeIn().attr('aria-hidden', 'false');
 
-        // Llamada AJAX para obtener productos del kit
-        $.get('getKitProductos.php', { idKit: idKit }, function(data) {
+        // Petición AJAX con cache-buster
+        $.get('getKitProductos.php', { idKit: idKit, t: Date.now() }, function(data) {
             $('#contenidoKitProductos').html(data);
         });
     });
@@ -690,14 +642,70 @@ $(document).ready(function() {
         $('#modalKitProductos').fadeOut().attr('aria-hidden', 'true');
     });
 
-    // Cerrar al hacer clic fuera del contenido
     $(window).on('click', function(e) {
-        const modal = $('#modalKitProductos')[0];
-        if (e.target === modal) {
+        if (e.target === $('#modalKitProductos')[0]) {
             $('#modalKitProductos').fadeOut().attr('aria-hidden', 'true');
         }
     });
 });
+
+
+// Abrir modal de editar kit
+document.querySelector('.btn-editar[data-tipo="kit"]').addEventListener('click', () => {
+  const rowSel = document.querySelector('#TablaKits tbody tr.row-selected');
+  if (!rowSel) {
+    Swal.fire({ icon:"error", title:"Oops...", text:"Selecciona un kit primero." });
+    return;
+  }
+
+  const idKit = rowSel.querySelector('td').innerText.trim();
+
+  // Llenar inputs con la fila seleccionada
+  document.getElementById('editarIdKit').value = idKit;
+  document.getElementById('editarNombreKit').value = rowSel.cells[1].innerText.trim();
+  document.getElementById('editarPrecioKit').value = rowSel.cells[2].innerText.replace('$','').trim();
+  document.getElementById('editarStockKit').value = rowSel.cells[3].innerText.trim();
+
+  // Cargar productos de este kit vía AJAX
+  $('#productosEditarKit').html('<p>Cargando...</p>');
+  $.get('getProductosKitEditar.php', { idKit: idKit, t: Date.now() }, function(data) {
+      $('#productosEditarKit').html(data);
+  });
+
+  // Mostrar modal
+  document.getElementById('modalEditarKit').style.display = 'flex';
+  document.getElementById('modalEditarKit').setAttribute('aria-hidden', 'false');
+});
+
+// Cerrar modal editar
+document.getElementById('cerrarModalEditarKit').addEventListener('click', () => {
+  document.getElementById('modalEditarKit').style.display = 'none';
+  document.getElementById('modalEditarKit').setAttribute('aria-hidden', 'true');
+});
+
+// Enviar formulario con productos seleccionados
+document.getElementById("formEditarKit").addEventListener("submit", function(e){
+  const seleccionados = [];
+  document.querySelectorAll("#productosEditarKit tbody tr").forEach(row => {
+    const chk = row.querySelector(".chkProd");
+    const cantidad = row.querySelector(".cantidadProd").value;
+    if(chk && chk.checked){
+      seleccionados.push({
+        id: chk.value,
+        cantidad: cantidad
+      });
+    }
+  });
+
+  if(seleccionados.length === 0){
+    alert("Selecciona al menos un producto para el kit.");
+    e.preventDefault();
+    return;
+  }
+
+  document.getElementById("productosSeleccionadosEditar").value = JSON.stringify(seleccionados);
+});
+
 </script>
 
 </body>
