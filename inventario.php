@@ -162,6 +162,10 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
           background: #45a049;
             transition: 0.2s ease;
         }
+        .kit-con-inactivo {
+  color: #c62828 !important; /* rojo */
+  font-weight: 700 !important;
+}
     </style>
   </head>
   <body>
@@ -222,7 +226,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                           ?>
                           <tr>
                               <td><?php echo $mostrar['id_producto'] ?></td>
-                              <td><?php echo $mostrar['nombre'] ?></td>
+                              <td ><?php echo $mostrar['nombre'] ?></td>
                               <td><?php echo "$".$mostrar['precio_unitario'] ?></td>
                               <td><?php echo $mostrar['Stock'] ?></td>
                           </tr>
@@ -230,45 +234,62 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                           </tbody>
                       </table>
                       </section>
-
                       <!-- Kits -->
                       <section class="kits">
-                      <div class="section-header">
-                          <h3>Kits</h3>
-                          <div class="section-actions">
-                              <img src="img/editar.png" alt="Editar" class="icon btn-editar" width="20" data-tipo="kit">
-                              <img src="img/eliminar.png" alt="Eliminar" class="icon btn-eliminar" width="20" data-tipo="kit">
-                              <img src="img/agregar.png" alt="Agregar" class="icon btn-agregar-kit"  width="20" style="cursor:pointer;">
-                          </div>
-                      </div>
-                      <table id="TablaKits" class="display">
-                          <thead>
-                          <tr>
-                              <th>Id</th>
-                              <th>Nombre</th>
-                              <th>Precio Unitario</th>
-                              <th>Stock</th>
-                              <th>Accion</th>
-                          </tr>
-                          </thead>
-                          <tbody>
-                          <?php
-                              $sql = "SELECT * FROM kits_productos";
-                              $r = mysqli_query($conexion, $sql);
-                              while($mostrar = mysqli_fetch_array($r)) {
-                          ?>
+                        <div class="section-header">
+                            <h3>Kits</h3>
+                            <div class="section-actions">
+                                <img src="img/editar.png" alt="Editar" class="icon btn-editar" width="20" data-tipo="kit">
+                                <img src="img/eliminar.png" alt="Eliminar" class="icon btn-eliminar" width="20" data-tipo="kit">
+                                <img src="img/agregar.png" alt="Agregar" class="icon btn-agregar-kit"  width="20" style="cursor:pointer;">
+                            </div>
+                        </div>
+
+                        <table id="TablaKits" class="display">
+                            <thead>
                             <tr>
-                                <td><?php echo $mostrar['id_kit'] ?></td>
-                                <td><?php echo $mostrar['nombre'] ?></td>
-                                <td><?php echo "$".$mostrar['precio_unitario'] ?></td>
-                                <td><?php echo $mostrar['Stock'] ?></td>
-                                <td>
-                                  <button class="btn-ver-productos"  data-id="<?php echo $mostrar['id_kit'] ?>">Ver productos</button>
-                                </td>
+                                <th>Id</th>
+                                <th>Nombre</th>
+                                <th>Precio Unitario</th>
+                                <th>Stock</th>
+                                <th>Accion</th>
                             </tr>
-                          <?php } ?>
-                          </tbody>
-                      </table>
+                            </thead>
+                            <tbody>
+                            <?php
+                                // Trae todos los kits y marca si tienen al menos 1 producto con Stock = 0
+                                $sql = "
+                                  SELECT k.*,
+                                    CASE
+                                      WHEN EXISTS (
+                                        SELECT 1
+                                        FROM productos_kits pk
+                                        JOIN productos p ON p.id_producto = pk.id_producto
+                                        WHERE pk.id_kit = k.id_kit AND p.Stock = 0
+                                      ) THEN 1 ELSE 0
+                                    END AS tiene_inactivos
+                                  FROM kits_productos k
+                                ";
+                                $r = mysqli_query($conexion, $sql);
+                                while($mostrar = mysqli_fetch_assoc($r)) {
+                                    $flag = ($mostrar['tiene_inactivos'] == 1) ? '1' : '0';
+                            ?>
+                              <tr>
+                                  <td><?php echo htmlspecialchars($mostrar['id_kit']); ?></td>
+                                  <td class="nombre-kit">
+                                    <?php echo htmlspecialchars($mostrar['nombre']); ?>
+                                    <!-- flag oculto que perdurará aunque el datatable re-renderice -->
+                                    <span class="kit-flag" style="display:none;"><?php echo $flag; ?></span>
+                                  </td>
+                                  <td><?php echo "$".htmlspecialchars($mostrar['precio_unitario']); ?></td>
+                                  <td><?php echo htmlspecialchars($mostrar['Stock']); ?></td>
+                                  <td>
+                                    <button class="btn-ver-productos" data-id="<?php echo htmlspecialchars($mostrar['id_kit']); ?>">Ver productos</button>
+                                  </td>
+                              </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
                       </section>
                   </div>
                   <br>
@@ -814,6 +835,46 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
             }
         });
 
+        // función que aplica la clase leyendo el flag dentro de la celda (span.kit-flag)
+        function aplicarColorKits() {
+          document.querySelectorAll('#TablaKits tbody tr').forEach(tr => {
+            const nombreCell = tr.querySelector('td.nombre-kit') || tr.querySelector('td:nth-child(2)');
+            if (!nombreCell) return;
+            const flagSpan = nombreCell.querySelector('.kit-flag');
+            const tiene = flagSpan && flagSpan.textContent.trim() === '1';
+            if (tiene) {
+              nombreCell.classList.add('kit-con-inactivo');
+            } else {
+              nombreCell.classList.remove('kit-con-inactivo');
+            }
+          });
+        }
+
+        // Llama después de inicializar DataTable (reemplaza tu bloque de inicialización o añade esto justo después)
+        const tablaKits = document.querySelector("#TablaKits");
+        if (tablaKits && !tablaKits.dataset._datatable) {
+            new simpleDatatables.DataTable("#TablaKits", {
+                searchable: true,
+                fixedHeight: true,
+                perPage: 5
+            });
+            tablaKits.dataset._datatable = "1";
+        }
+
+        // reaplicar ahora y con pequeños delays para asegurar que el datatable terminó
+        aplicarColorKits();
+        setTimeout(aplicarColorKits, 120);
+        setTimeout(aplicarColorKits, 400);
+
+        // y además usar un MutationObserver sobre la sección que contiene la tabla
+        const kitsSection = document.querySelector('.kits');
+        if (kitsSection) {
+          const mo = new MutationObserver((mutations) => {
+            // esperar un tick para que el datatable termine cambios
+            setTimeout(aplicarColorKits, 40);
+          });
+          mo.observe(kitsSection, { childList: true, subtree: true });
+        }
 
     </script>
 
