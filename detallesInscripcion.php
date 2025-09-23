@@ -12,15 +12,33 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
   $nombreAgenda = "";
 
   if($tipo == "Taller"){
-    $sql = "SELECT nombre FROM talleres WHERE id_taller = (SELECT id_taller FROM agenda WHERE id_agenda = (SELECT id_agenda FROM intermedia_a WHERE id_intermedia = '$idI'))";
-  }else{
-    $sql = "SELECT nombre FROM cursos WHERE id_curso = (SELECT id_curso FROM agenda_cursos WHERE id_agenda_cursos = (SELECT id_agenda_cursos FROM intermedia_a WHERE id_intermedia = '$idI'))";
-  }
+    $sql = "SELECT t.nombre, t.costo_base 
+            FROM talleres t
+            WHERE t.id_taller = (
+              SELECT id_taller FROM agenda 
+              WHERE id_agenda = (
+                SELECT id_agenda FROM intermedia_a 
+                WHERE id_intermedia = '$idI'
+              )
+            )";
+}else{
+    $sql = "SELECT c.nombre, c.costo_base 
+            FROM cursos c
+            WHERE c.id_curso = (
+              SELECT id_curso FROM agenda_cursos 
+              WHERE id_agenda_curso = (
+                SELECT id_agenda_curso FROM intermedia_a 
+                WHERE id_intermedia = '$idI'
+              )
+            )";
+}
     
-    $r1 = mysqli_query($conexion,$sql);
-    while($row=mysqli_fetch_array($r1)){
-        $nombreAgenda = $row['nombre'];
-    }
+   
+$r1 = mysqli_query($conexion,$sql);
+while($row = mysqli_fetch_array($r1)){
+    $nombreAgenda = $row['nombre'];
+    $costo = $row['costo_base']; // usa el nombre real de tu columna
+}
   
 
 ?>
@@ -106,8 +124,9 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                 </ul>
 
                 <div class="total">
-                    <strong>Total:</strong> $1,620.00
+                    <strong>Total:</strong> $<?php echo number_format($costo, 2); ?>
                 </div>
+
 
             
             </div>

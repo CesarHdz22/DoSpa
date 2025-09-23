@@ -350,11 +350,11 @@ a{
 #TablaTalleres tbody tr:hover,
 #TablaCursos  tbody tr:hover,
 .dataTable-table tbody tr:hover{
-  background: rgb(188, 113, 104)!important; /* hover suave */
+  background: #E9C6C4!important; /* hover suave */
 }
 
 #TablaTalleres tbody tr.row-selected,
 #TablaCursos  tbody tr.row-selected,
 .dataTable-table tbody tr.row-selected{
-  background: rgb(231, 76, 60)!important; /* selección visible */
+  background: rgb(188, 113, 104)!important; /* selección visible */
 }
