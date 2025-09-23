@@ -22,6 +22,12 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
   <!-- Iconos de FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css">
+  <style>
+   tbody tr:hover {
+      background: #E9C6C4;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <div class="dashboard">
@@ -54,7 +60,16 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
     
       <section class="inscripciones">
         <div class="inscripciones-container">
-            <h2 class="inscripciones-title">Inscripciones</h2>
+            <div class="section-header">
+              <h3>Inscripciones</h3>
+              <div class="section-actions">
+
+                <!-- Ícono EDITAR existente (selección + editar) -->
+                <img src="img/editar.png" alt="Editar" class="icon btn-editar" width="20" data-tipo="taller" title="Editar">
+
+              </div>
+            </div>
+           
             <table class="tablaInscripciones" id="tablaInscripciones">
             <thead>
                 <tr>
@@ -114,10 +129,106 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
     </section>
 
 
-      
+      <!-- FORMULARIO FLOTANTE PARA NUEVA INSCRIPCIÓN -->
+      <div class="overlay" id="overlay"></div>
+      <div class="form-panel-float" id="formAgregar">
+        <h3>Nueva Inscripción</h3>
+        <form action="guardarInscripcion.php" method="POST">
+          <div class="form-control">
+            <label for="alumna">Alumna</label>
+            <select name="alumna" id="alumna" required>
+              <option value="">Selecciona una alumna</option>
+              <?php
+                $q = mysqli_query($conexion, "SELECT * FROM alumnas");
+                while($a = mysqli_fetch_array($q)){
+                  echo "<option value='{$a['id_alumna']}'>{$a['nombre']} {$a['apat']} {$a['amat']}</option>";
+                }
+              ?>
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label for="agenda">Agenda</label>
+            <select name="agenda" id="agenda" required>
+              <option value="">Selecciona un taller/curso</option>
+              <?php
+                $q2 = mysqli_query($conexion, "SELECT id_taller, nombre FROM talleres");
+                while($t = mysqli_fetch_array($q2)){
+                  echo "<option value='T-{$t['id_taller']}'>Taller - {$t['nombre']}</option>";
+                }
+                $q3 = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos");
+                while($c = mysqli_fetch_array($q3)){
+                  echo "<option value='C-{$c['id_curso']}'>Curso - {$c['nombre']}</option>";
+                }
+              ?>
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label for="fecha">Fecha</label>
+            <input type="date" name="fecha" id="fecha" required>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-mini btn-primary">Guardar</button>
+            <button type="button" class="btn btn-mini btn-cerrar">Cancelar</button>
+          </div>
+        </form>
+      </div>
+      <!-- FORMULARIO FLOTANTE PARA EDITAR INSCRIPCIÓN -->
+      <div class="overlay" id="overlayEditar"></div>
+      <div class="form-panel-float" id="formEditar">
+        <h3>Editar Inscripción</h3>
+        <form action="editarInscripcion.php" method="POST">
+          <!-- ID oculto para saber qué editar -->
+          <input type="hidden" name="id_intermedia" id="edit_id_intermedia">
+
+          <div class="form-control">
+            <label for="edit_alumna">Alumna</label>
+            <select name="alumna" id="edit_alumna" required>
+              <option value="">Selecciona una alumna</option>
+              <?php
+                $q = mysqli_query($conexion, "SELECT * FROM alumnas");
+                while($a = mysqli_fetch_array($q)){
+                  echo "<option value='{$a['id_alumna']}'>{$a['nombre']} {$a['apat']} {$a['amat']}</option>";
+                }
+              ?>
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label for="edit_agenda">Agenda</label>
+            <select name="agenda" id="edit_agenda" required>
+              <option value="">Selecciona un taller/curso</option>
+              <?php
+                $q2 = mysqli_query($conexion, "SELECT id_taller, nombre FROM talleres");
+                while($t = mysqli_fetch_array($q2)){
+                  echo "<option value='T-{$t['id_taller']}'>Taller - {$t['nombre']}</option>";
+                }
+                $q3 = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos");
+                while($c = mysqli_fetch_array($q3)){
+                  echo "<option value='C-{$c['id_curso']}'>Curso - {$c['nombre']}</option>";
+                }
+              ?>
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label for="edit_fecha">Fecha</label>
+            <input type="date" name="fecha" id="edit_fecha" required>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-mini btn-primary">Actualizar</button>
+            <button type="button" class="btn btn-mini btn-cerrar">Cancelar</button>
+          </div>
+        </form>
+      </div>
+
     </main>
   </div>
   <script src="librerias/tables.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     // Inicializar tabla de ventas con Simple-DataTables
     const tablaVentas = new simpleDatatables.DataTable("#tablaInscripciones", {
@@ -127,6 +238,100 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
     });
 
   </script>
+  <script>
+    const btnAgregar = document.querySelector(".btn-agregar");
+    const formPanel = document.getElementById("formAgregar");
+    const btnCerrar = formPanel.querySelector(".btn-cerrar");
+
+    // Abrir formulario
+    btnAgregar.addEventListener("click", () => {
+      formPanel.classList.add("open");
+    });
+
+    // Cerrar formulario
+    btnCerrar.addEventListener("click", () => {
+      formPanel.classList.remove("open");
+    });
+
+    const overlay = document.getElementById("overlay");
+
+    btnAgregar.addEventListener("click", () => {
+      formPanel.classList.add("open");
+      overlay.classList.add("open");
+    });
+
+    btnCerrar.addEventListener("click", () => {
+      formPanel.classList.remove("open");
+      overlay.classList.remove("open");
+    });
+
+    overlay.addEventListener("click", () => {
+      formPanel.classList.remove("open");
+      overlay.classList.remove("open");
+    });
+
+  </script>
+
+  <script>
+    const btnEditar = document.querySelector(".btn-editar");
+    const formEditar = document.getElementById("formEditar");
+    const btnCerrarEditar = formEditar.querySelector(".btn-cerrar");
+    const overlayEditar = document.getElementById("overlayEditar");
+
+    // Cuando clic en editar
+    btnEditar.addEventListener("click", () => {
+      const fila = document.querySelector("#tablaInscripciones tbody tr.selected");
+      if (!fila) {
+         Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Por favor selecciona una inscripción de la tabla."
+                });
+                return;
+      }
+
+      // Extraer valores de la fila seleccionada
+      const id = fila.cells[0].innerText.trim();
+      const alumna = fila.cells[1].innerText.trim();
+      const agenda = fila.cells[2].innerText.trim();
+      const fecha = fila.cells[3].innerText.trim();
+
+      // Rellenar campos en el form
+      document.getElementById("edit_id_intermedia").value = id;
+      document.getElementById("edit_fecha").value = fecha;
+
+      // Alumna y agenda -> como los select tienen options con value, lo mejor es setear por value
+      [...document.querySelectorAll("#edit_alumna option")].forEach(opt => {
+        if (alumna.includes(opt.text)) opt.selected = true;
+      });
+      [...document.querySelectorAll("#edit_agenda option")].forEach(opt => {
+        if (agenda.includes(opt.text)) opt.selected = true;
+      });
+
+      // Mostrar modal
+      formEditar.classList.add("open");
+      overlayEditar.classList.add("open");
+    });
+
+    // Cerrar modal
+    btnCerrarEditar.addEventListener("click", () => {
+      formEditar.classList.remove("open");
+      overlayEditar.classList.remove("open");
+    });
+    overlayEditar.addEventListener("click", () => {
+      formEditar.classList.remove("open");
+      overlayEditar.classList.remove("open");
+    });
+
+    // Permitir seleccionar fila en la tabla
+    document.querySelectorAll("#tablaInscripciones tbody tr").forEach(row => {
+      row.addEventListener("click", () => {
+        document.querySelectorAll("#tablaInscripciones tbody tr").forEach(r => r.classList.remove("selected"));
+        row.classList.add("selected");
+      });
+    });
+  </script>
+
 
   
 </body>

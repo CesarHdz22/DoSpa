@@ -43,7 +43,6 @@
     const btnConfirm = document.querySelector('.btn-confirmar');
     const modal = document.getElementById("modalComprador"); // tu modal (puede ser null)
 
-    // Abrir modal: ahora valida stock antes de abrir
     if (btnConfirm) {
       btnConfirm.addEventListener('click', () => {
         if (carrito.length === 0) {
@@ -51,7 +50,6 @@
           return;
         }
 
-        // Buscar faltantes (cantidad > stock)
         const faltantes = carrito
           .filter(p => Number(p.cantidad) > Number(p.stock))
           .map(p => `• ${p.nombre} — pedido: ${p.cantidad}, stock: ${p.stock}`);
@@ -62,10 +60,9 @@
             faltantes.join('\n') +
             '\n\nEdita el/los productos para reponer existencias y vuelve a confirmar.'
           );
-          return; // no abre el modal si hay faltantes
+          return;
         }
 
-        // OK: abrir modal
         if (modal) {
           modal.style.display = 'flex';
         } else {
@@ -74,7 +71,6 @@
       });
     }
 
-    // Cerrar modal
     if (modal) {
       const cerrarBtn = modal.querySelector('.cerrar-modal') || modal.querySelector('#cerrarModal');
       if (cerrarBtn) {
@@ -85,11 +81,45 @@
       });
     }
 
-    // Inicializar selección/click por filas (Productos/Kits)
-    initRowSelection('#TablaProductos', 'producto');
-    initRowSelection('#TablaKits', 'kit');
+    // ------------------------------
+    // Delegación de eventos para selección de filas
+    // ------------------------------
 
-    // Delegación global para botones de acción dentro del body (se mantiene tu patrón)
+    // Productos
+    document.addEventListener('click', function (ev) {
+      const row = ev.target.closest('#TablaProductos tbody tr');
+      if (!row) return;
+      if (ev.target.closest('.btn-ver-productos, .accion-btn')) return;
+
+      const cells  = row.children;
+      const id     = row.getAttribute('data-id') || (cells[0]?.innerText.trim()) || '';
+      const nombre = (cells[1]?.innerText.trim()) || '';
+      const precioRaw = (cells[2]?.innerText.trim() || '').replace(/[^0-9\.,\-]/g,'') || '0';
+      const precio = parseFloat(precioRaw.replace(',', '.')) || 0;
+      const stock  = parseInt((cells[3]?.innerText.trim() || '').replace(/\D/g,'')) || 0;
+
+      agregarAlCarrito({ id, nombre, precio, stock, type: 'producto' });
+    });
+
+    // Kits
+    document.addEventListener('click', function (ev) {
+      const row = ev.target.closest('#TablaKits tbody tr');
+      if (!row) return;
+      if (ev.target.closest('.btn-ver-productos, .accion-btn')) return;
+
+      const cells  = row.children;
+      const id     = row.getAttribute('data-id') || (cells[0]?.innerText.trim()) || '';
+      const nombre = (cells[1]?.innerText.trim()) || '';
+      const precioRaw = (cells[2]?.innerText.trim() || '').replace(/[^0-9\.,\-]/g,'') || '0';
+      const precio = parseFloat(precioRaw.replace(',', '.')) || 0;
+      const stock  = parseInt((cells[3]?.innerText.trim() || '').replace(/\D/g,'')) || 0;
+
+      agregarAlCarrito({ id, nombre, precio, stock, type: 'kit' });
+    });
+
+    // ------------------------------
+    // Delegación global para botones de acción
+    // ------------------------------
     document.body.addEventListener('click', function(e) {
       const btn = e.target.closest('.accion-btn');
       if (!btn) return;
@@ -100,13 +130,11 @@
       const type = btn.getAttribute('data-type') || btn.closest('tr')?.getAttribute('data-type') || '';
       const id = btn.getAttribute('data-id') || btn.closest('tr')?.getAttribute('data-id') || '';
 
-      // Editar -> redirección simple
       if (btn.classList.contains('btn-edit')) {
         window.location.href = `editar.php?type=${encodeURIComponent(type)}&id=${encodeURIComponent(id)}`;
         return;
       }
 
-      // Eliminar -> petición AJAX
       if (btn.classList.contains('btn-delete')) {
         if (!confirm('¿Eliminar este registro? Esta acción no se puede deshacer.')) return;
         fetch('eliminar_item.php', {
@@ -133,7 +161,6 @@
         return;
       }
 
-      // Agregar -> usa data-attributes del botón
       if (btn.classList.contains('btn-add')) {
         const nombre = btn.getAttribute('data-nombre') || '';
         const precio = parseFloat(btn.getAttribute('data-precio') || '0') || 0;
@@ -144,55 +171,28 @@
     }, true);
 
     // Vaciar carrito
-  const vacBtn = document.getElementById('vaciarCarritoBtn');
-if (vacBtn) {
-  vacBtn.addEventListener('click', () => {
-    if (carrito.length === 0) return;
+    const vacBtn = document.getElementById('vaciarCarritoBtn');
+    if (vacBtn) {
+      vacBtn.addEventListener('click', () => {
+        if (carrito.length === 0) return;
 
-    Swal.fire({
-      title: '¿Vaciar carrito?',
-      showDenyButton: true,
-      showCancelButton: true,
-      confirmButtonText: 'Sí, vaciar',
-      denyButtonText: `No vaciar`
-    }).then((result) => {
-      if (result.isConfirmed) {
-        vaciarCarrito();
-        Swal.fire('¡Carrito vaciado!', '', 'success');
-      } else if (result.isDenied) {
-        Swal.fire('No se vació el carrito', '', 'info');
-      }
-
-    });
-  });
-}
-  }); // DOMContentLoaded end
-
-  // ------------------------------
-  // Funciones: selección filas
-  // ------------------------------
-  function initRowSelection(selector, type) {
-    const tabla = document.querySelector(selector);
-    if (!tabla) return;
-    const filas = tabla.querySelectorAll('tbody tr');
-    filas.forEach(row => {
-      if (!row.hasAttribute('data-type') && type) row.setAttribute('data-type', type);
-      row.style.cursor = 'pointer';
-      row.addEventListener('click', function(ev) {
-        if (ev.target.closest('.btn-ver-productos')) return; // botón acción -> no seleccionar
-        const cells  = row.children;
-        const id     = row.getAttribute('data-id') || (cells[0]?.innerText.trim()) || '';
-        const nombre = (cells[1]?.innerText.trim()) || '';
-        const precioRaw = (cells[2]?.innerText.trim() || '').replace(/[^0-9\.,\-]/g,'') || '0';
-        const precio = parseFloat(precioRaw.replace(',', '.')) || 0;
-        const stock  = parseInt((cells[3]?.innerText.trim() || '').replace(/\D/g,'')) || 0;
-        const tipo   = row.getAttribute('data-type') || type || 'producto';
-
-        // ✅ Ya NO bloqueamos por stock 0: se puede agregar al carrito
-        agregarAlCarrito({ id, nombre, precio, stock, type: tipo });
+        Swal.fire({
+          title: '¿Vaciar carrito?',
+          showDenyButton: true,
+          showCancelButton: true,
+          confirmButtonText: 'Sí, vaciar',
+          denyButtonText: `No vaciar`
+        }).then((result) => {
+          if (result.isConfirmed) {
+            vaciarCarrito();
+            Swal.fire('¡Carrito vaciado!', '', 'success');
+          } else if (result.isDenied) {
+            Swal.fire('No se vació el carrito', '', 'info');
+          }
+        });
       });
-    });
-  }
+    }
+  }); // DOMContentLoaded end
 
   // ------------------------------
   // Funciones del carrito
@@ -204,7 +204,6 @@ if (vacBtn) {
     const key = generarKey(item.type, item.id);
     const existente = carrito.find(p => p.key === key);
 
-    // ✅ Permitir agregar sin límite respecto al stock (validamos al confirmar)
     if (existente) {
       existente.cantidad++;
     } else {
@@ -214,7 +213,7 @@ if (vacBtn) {
         id: item.id,
         nombre: item.nombre || '',
         precio: Number(item.precio) || 0,
-        stock: Number(item.stock) || 0, // lo guardamos para validar al confirmar
+        stock: Number(item.stock) || 0,
         cantidad: 1,
       });
     }
@@ -277,7 +276,7 @@ if (vacBtn) {
     if (expandir) cont.scrollIntoView({ behavior: 'smooth' });
   }
 
-  // Exponer métodos globales para uso fuera del IIFE
+  // Exponer métodos globales
   window.agregarAlCarrito = agregarAlCarrito;
   window.quitarDelCarrito = quitarDelCarrito;
   window.vaciarCarrito = vaciarCarrito;

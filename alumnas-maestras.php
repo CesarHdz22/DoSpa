@@ -134,7 +134,7 @@ $maestras = mysqli_query($conexion, $sqlMaestras);
 
       <center>
           <div class="grid-2">
-                  <h2>Alumnas / Maestras</h2>
+                  <h2>Alumnas / Clientes</h2>
                   <!-- ================== Card Alumnas ================== -->
                   <section class="card">
                     <header>
@@ -235,7 +235,7 @@ $maestras = mysqli_query($conexion, $sqlMaestras);
                   <!-- ================== Card Maestras ================== -->
                   <section class="card">
                     <header>
-                      <h3>Maestras</h3>
+                      <h3>Clientes</h3>
                       <div class="section-actions">
                         <img src="img/agregar.png" class="btn-mini btn-primary" alt="Agregar" id="btnNuevaMaestra"class="icon btn-agregar" width="20" data-tipo="curso" title="Agregar sesión de curso">
                        
@@ -247,7 +247,7 @@ $maestras = mysqli_query($conexion, $sqlMaestras);
                       <div class="modal" id="modalMaestra">
                         <div class="modal-content">
                           <header>
-                            <h3>Nueva maestra</h3>
+                            <h3>Nuev Cliente</h3>
                             <button class="close" data-close="#modalMaestra">&times;</button>
                           </header>
                           <form method="post" autocomplete="off">
