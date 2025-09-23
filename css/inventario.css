@@ -359,3 +359,24 @@ a{
   background: rgb(188, 113, 104)!important; /* selección visible */
 }
 
+/* Animación de entrada para modales flotantes */
+@keyframes fadeInModal {
+    from {
+        opacity: 0;
+        transform: translateY(-20px); /* sube ligeramente desde arriba */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Aplicar animación a todos los modales flotantes */
+.modal-content {
+    animation: fadeInModal 0.3s ease forwards;
+}
+
+/* Opcional: animación de cierre más rápida */
+.modal-content.fadeOut {
+    animation: fadeInModal 0.2s ease reverse forwards;
+}
