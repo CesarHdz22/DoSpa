@@ -14,7 +14,7 @@ if (!isset($_GET['idKit'])) {
 $idKit = intval($_GET['idKit']);
 
 // Usar prepared statement
-$sql = "SELECT p.nombre, pk.cantidad
+$sql = "SELECT p.nombre, pk.cantidad, p.Stock
         FROM productos_kits pk
         JOIN productos p ON p.id_producto = pk.id_producto
         WHERE pk.id_kit = ?";
@@ -37,8 +37,10 @@ if (mysqli_num_rows($res) == 0) {
         </thead>
         <tbody>";
     while ($row = mysqli_fetch_assoc($res)) {
+        // Si el producto está inactivo (Stock 0), poner el nombre en rojo
+        $color = ($row['Stock'] == 0) ? 'style="color:red;"' : '';
         echo "<tr>
-                <td>".htmlspecialchars($row['nombre'])."</td>
+                <td {$color}>".htmlspecialchars($row['nombre'])."</td>
                 <td>".htmlspecialchars($row['cantidad'])."</td>
               </tr>";
     }

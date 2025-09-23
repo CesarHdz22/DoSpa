@@ -128,7 +128,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
 
       .modal-content input, 
       .modal-content textarea {
-        width: 100%;
+        width: 95%;
         padding: 8px;
         border: 1px solid #bbb;
         border-radius: 6px;
@@ -201,8 +201,8 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                     <h3>Productos</h3>
                     <div class="section-actions">
                         <img src="img/editar.png" alt="Editar" class="icon btn-editar" width="20" data-tipo="producto">
-                        <img src="img/eliminar.png" alt="Eliminar" class="icon btn-eliminar" width="20" data-tipo="producto">
-                        <a href="agregarProducto.php"><img src="img/agregar.png" alt="Agregar" class="icon btn-agregar" width="20"></a>
+                        <img src="img/eliminar.png" alt="Poner Stock 0" class="icon btn-stock-cero" width="20" data-tipo="producto">
+                       <img src="img/agregar.png" alt="Agregar" class="icon btn-agregar-producto" width="20" style="cursor:pointer;">
                     </div>
                 </div>
                 <table id="TablaProductos" class="display">
@@ -401,6 +401,32 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
           </form>
         </div>
       </div>
+<!-- Modal Agregar Producto -->
+<div id="modalAgregarProducto" class="modal" aria-hidden="true" style="display:none;">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalAgregarProductoTitle">
+    <button id="cerrarModalProducto" class="btn-cerrar" aria-label="Cerrar">&times;</button>
+    
+    <h3 id="modalAgregarProductoTitle">Agregar Producto</h3>
+    <form id="formAgregarProducto" method="POST" action="guardarProducto.php">
+      <div class="form-group">
+        <label for="nombreProducto">Nombre del Producto:</label>
+        <input type="text" id="nombreProducto" name="nombreProducto" required>
+      </div>
+
+      <div class="form-group">
+        <label for="precioProducto">Precio Unitario:</label>
+        <input type="number" id="precioProducto" name="precioProducto" required min="0" step="0.01">
+      </div>
+
+      <div class="form-group">
+        <label for="stockProducto">Stock:</label>
+        <input type="number" id="stockProducto" name="stockProducto" required min="1">
+      </div>
+
+      <button type="submit" class="btn-confirmar">Guardar Producto</button>
+    </form>
+  </div>
+</div>
 
     </main>
   </div>
@@ -410,303 +436,338 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
   <script src="librerias/carrito.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-
-
 <script>
+  document.addEventListener("DOMContentLoaded", function() {
+      // -------------------------------
+      // Funciones auxiliares
+      // -------------------------------
+      const getCarrito = () => (window.getCarrito ? window.getCarrito() : []);
+      
+      const crearFormularioPost = (action, dataObj, name = 'carrito') => {
+          const form = document.createElement('form');
+          form.method = 'POST';
+          form.action = action;
+          form.style.display = 'none';
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = name;
+          input.value = JSON.stringify(dataObj);
+          form.appendChild(input);
+          document.body.appendChild(form);
+          form.submit();
+      };
 
-  // Listener solo para el botón de editar productos
-document.querySelectorAll('.btn-editar[data-tipo="producto"]').forEach(btn => {
-    btn.addEventListener('click', () => {
-        // Obtener el carrito
-        const carrito = window.getCarrito ? window.getCarrito() : [];
+      const resaltarFila = (tablaSelector) => {
+          $(tablaSelector + ' tbody').on('click', 'tr', function() {
+              $(tablaSelector + ' tbody tr').removeClass('row-selected');
+              $(this).addClass('row-selected');
+          });
+      };
 
-        // Verificar que haya exactamente un producto seleccionado
-        if (!carrito || carrito.length !== 1) {
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Selecciona exactamente un producto para editar."
-            });
-            return;
-        }
+      // -------------------------------
+      // Resaltar filas
+      // -------------------------------
+      resaltarFila('#TablaProductos');
+      resaltarFila('#TablaKits');
 
-        // Obtener el tipo del producto en el carrito
-        const tipoCarrito = carrito[0].type; // debe existir este campo en tu array
+      // -------------------------------
+      // Editar producto
+      // -------------------------------
+      document.querySelectorAll('.btn-editar[data-tipo="producto"]').forEach(btn => {
+          btn.addEventListener('click', () => {
+              const carrito = getCarrito();
+              if (!carrito || carrito.length !== 1) {
+                  Swal.fire({ icon: "error", title: "Oops...", text: "Selecciona exactamente un producto para editar." });
+                  return;
+              }
+              if (carrito[0].type !== btn.dataset.tipo) {
+                  alert(`Este botón solo funciona para ${btn.dataset.tipo}s.`);
+                  return;
+              }
+              crearFormularioPost('editarProductos.php', carrito);
+          });
+      });
 
-        // Verificar que el botón corresponda al tipo de producto
-        const tipoBtn = btn.dataset.tipo; // debe ser "producto"
-
-        if (tipoCarrito !== tipoBtn) {
-            alert(`Este botón solo funciona para ${tipoBtn}s.`);
-            return;
-        }
-
-        // Crear formulario dinámico para enviar por POST
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = 'editarProductos.php';
-        form.style.display = 'none';
-
-        // Input para carrito como JSON
-        const inputCarrito = document.createElement('input');
-        inputCarrito.type = 'hidden';
-        inputCarrito.name = 'carrito';
-        inputCarrito.value = JSON.stringify(carrito);
-        form.appendChild(inputCarrito);
-
-        document.body.appendChild(form);
-        form.submit();
-    });
-});
-
-
-  // Listener para todos los botones de eliminar
-    document.querySelectorAll('.btn-eliminar').forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Obtener carrito global
-            const carrito = window.getCarrito ? window.getCarrito() : [];
-
-            // Verificar que haya exactamente un producto seleccionado
-            if (!carrito || carrito.length !== 1) {
-              Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Selecciona exactamente un producto para eliminar.",
-              });
-              return; 
-            }
-
-            // Tipo del producto en el carrito
-            const tipoCarrito = carrito[0].type;
-
-            // Tipo del botón (data-tipo="kit", "producto", etc.)
-            const tipoBtn = btn.dataset.tipo;
-
-            if (tipoCarrito !== tipoBtn) {
-
-              Swal.fire({
-                  icon: "error",
-                  title: "Oops...",
-                  text: `Este botón solo funciona para ${tipoBtn}s.`
-              });
+      // -------------------------------
+      // Eliminar producto
+      // -------------------------------
+      const eliminarProducto = (btn) => {
+          const carrito = getCarrito();
+          if (!carrito || carrito.length !== 1) {
+              Swal.fire({ icon: "error", title: "Oops...", text: "Selecciona exactamente un producto para eliminar." });
               return;
-            }
-
-            // Confirmación
-            if (!confirm(`¿Eliminar ${carrito[0].nombre}?`)) return;
-
-            // Crear formulario dinámico para enviar por POST
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'eliminarProductos.php';
-            form.style.display = 'none';
-
-            // Input para carrito como JSON
-            const inputCarrito = document.createElement('input');
-            inputCarrito.type = 'hidden';
-            inputCarrito.name = 'carrito';
-            inputCarrito.value = JSON.stringify(carrito);
-            form.appendChild(inputCarrito);
-
-            document.body.appendChild(form);
-            form.submit();
-        });
-    });
-</script>
-
-
-
-<script>
-    // Resaltar fila seleccionada
-    $('#TablaProductos tbody').on('click', 'tr', function() {
-      $('#TablaProductos tbody tr').removeClass('row-selected');
-      $(this).addClass('row-selected');
-    });
-    $('#TablaKits tbody').on('click', 'tr', function() {
-      $('#TablaKits tbody tr').removeClass('row-selected');
-      $(this).addClass('row-selected');
-    });
-
-    // Icono eliminar de la cabecera
-    document.querySelectorAll('.btn-eliminar').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const tipo = btn.dataset.tipo; // 'producto' | 'kit'
-        const tableId = (tipo === 'kit') ? '#TablaKits' : '#TablaProductos';
-        const rowSel = document.querySelector(`${tableId} tbody tr.row-selected`);
-
-        if (!rowSel) {            
+          }
+          if (carrito[0].type !== btn.dataset.tipo) {
+              Swal.fire({ icon: "error", title: "Oops...", text: `Este botón solo funciona para ${btn.dataset.tipo}s.` });
+              return;
+          }
           Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "Selecciona una fila primero."
+              title: `¿Eliminar ${carrito[0].nombre}?`,
+              text: "Esta acción no se puede deshacer.",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#d33",
+              cancelButtonColor: "#3085d6",
+              confirmButtonText: "Sí, eliminar",
+              cancelButtonText: "Cancelar"
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  crearFormularioPost('eliminarProductos.php', carrito);
+              }
           });
-          return;
-        }
+      };
 
-        const id = (rowSel.querySelector('td') || {}).innerText?.trim();
-        if (!id) {
-          Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "No se pudo leer el ID."
-          });
-          return;
-        }
-
-        if (!confirm(`¿Eliminar este ${tipo}?`)) return;
-
-        window.location.href = `eliminarProductos.php?id=${encodeURIComponent(id)}&type=${encodeURIComponent(tipo)}`;
-      });
-    });
-</script>
-
-<script>
-    document.getElementById("formAgregarKit").addEventListener("submit", function(e){
-      const seleccionados = [];
-      document.querySelectorAll("#productosSeleccionables tbody tr").forEach(row => {
-        const chk = row.querySelector(".chkProd");
-        const cantidad = row.querySelector(".cantidadProd").value;
-        if(chk.checked){
-          seleccionados.push({
-            id: chk.value,
-            cantidad: cantidad
-          });
-        }
+     document.querySelectorAll('.btn-stock-cero[data-tipo="producto"]').forEach(btn => {
+          btn.addEventListener('click', () => ponerStockCero(btn));
       });
 
-      if(seleccionados.length === 0){
-        alert("Selecciona al menos un producto para el kit.");
-        e.preventDefault();
+      // -------------------------------
+      // Agregar producto
+      // -------------------------------
+      const modalProducto = document.getElementById('modalAgregarProducto');
+      document.querySelector('.btn-agregar-producto').addEventListener('click', () => {
+          modalProducto.style.display = 'flex';
+          modalProducto.setAttribute('aria-hidden', 'false');
+      });
+      document.getElementById('cerrarModalProducto').addEventListener('click', () => {
+          modalProducto.style.display = 'none';
+          modalProducto.setAttribute('aria-hidden', 'true');
+      });
+      window.addEventListener('click', (e) => {
+          if (e.target === modalProducto) {
+              modalProducto.style.display = 'none';
+              modalProducto.setAttribute('aria-hidden', 'true');
+          }
+      });
+
+      // -------------------------------
+      // Agregar kit
+      // -------------------------------
+      const modalKit = document.getElementById('modalAgregarKit');
+      document.querySelector('.btn-agregar-kit').addEventListener('click', () => {
+          modalKit.style.display = 'flex';
+          modalKit.setAttribute('aria-hidden', 'false');
+      });
+      document.getElementById('cerrarModalKit').addEventListener('click', () => {
+          modalKit.style.display = 'none';
+          modalKit.setAttribute('aria-hidden', 'true');
+      });
+      window.addEventListener('click', (e) => {
+          if (e.target === modalKit) {
+              modalKit.style.display = 'none';
+              modalKit.setAttribute('aria-hidden', 'true');
+          }
+      });
+
+      // Validar selección de productos al agregar kit
+      document.getElementById("formAgregarKit").addEventListener("submit", function(e){
+          const seleccionados = [];
+          document.querySelectorAll("#productosSeleccionables tbody tr").forEach(row => {
+              const chk = row.querySelector(".chkProd");
+              const cantidad = row.querySelector(".cantidadProd").value;
+              if(chk.checked){
+                  seleccionados.push({ id: chk.value, cantidad: cantidad });
+              }
+          });
+          if(seleccionados.length === 0){
+              alert("Selecciona al menos un producto para el kit.");
+              e.preventDefault();
+              return;
+          }
+          document.getElementById("productosSeleccionados").value = JSON.stringify(seleccionados);
+      });
+
+      // -------------------------------
+      // Ver productos de kit (AJAX)
+      // -------------------------------
+      $(document).on('click', '#TablaKits .btn-ver-productos', function () {
+          const idKit = $(this).closest('tr').find('td:first').text().trim();
+          $('#contenidoKitProductos').html('<p>Cargando...</p>');
+          $('#modalKitProductos').fadeIn().attr('aria-hidden', 'false');
+          $.get('getKitProductos.php', { idKit: idKit, t: Date.now() }, function(data) {
+              $('#contenidoKitProductos').html(data);
+          });
+      });
+
+      $('#cerrarModalKitProductos').on('click', function() {
+          $('#modalKitProductos').fadeOut().attr('aria-hidden', 'true');
+      });
+      $(window).on('click', function(e) {
+          if (e.target === $('#modalKitProductos')[0]) {
+              $('#modalKitProductos').fadeOut().attr('aria-hidden', 'true');
+          }
+      });
+
+      // -------------------------------
+      // Editar kit
+      // -------------------------------
+      document.querySelector('.btn-editar[data-tipo="kit"]').addEventListener('click', () => {
+          const rowSel = document.querySelector('#TablaKits tbody tr.row-selected');
+          if (!rowSel) {
+              Swal.fire({ icon:"error", title:"Oops...", text:"Selecciona un kit primero." });
+              return;
+          }
+          const idKit = rowSel.querySelector('td').innerText.trim();
+          document.getElementById('editarIdKit').value = idKit;
+          document.getElementById('editarNombreKit').value = rowSel.cells[1].innerText.trim();
+          document.getElementById('editarPrecioKit').value = rowSel.cells[2].innerText.replace('$','').trim();
+          document.getElementById('editarStockKit').value = rowSel.cells[3].innerText.trim();
+
+          $('#productosEditarKit').html('<p>Cargando...</p>');
+          $.get('getProductosKitEditar.php', { idKit: idKit, t: Date.now() }, function(data) {
+              $('#productosEditarKit').html(data);
+          });
+
+          const modalEditar = document.getElementById('modalEditarKit');
+          modalEditar.style.display = 'flex';
+          modalEditar.setAttribute('aria-hidden', 'false');
+      });
+
+      document.getElementById('cerrarModalEditarKit').addEventListener('click', () => {
+          const modalEditar = document.getElementById('modalEditarKit');
+          modalEditar.style.display = 'none';
+          modalEditar.setAttribute('aria-hidden', 'true');
+      });
+
+      // Validar productos al editar kit
+      document.getElementById("formEditarKit").addEventListener("submit", function(e){
+          const seleccionados = [];
+          document.querySelectorAll("#productosEditarKit tbody tr").forEach(row => {
+              const chk = row.querySelector(".chkProd");
+              const cantidad = row.querySelector(".cantidadProd").value;
+              if(chk && chk.checked){
+                  seleccionados.push({ id: chk.value, cantidad: cantidad });
+              }
+          });
+          if(seleccionados.length === 0){
+              alert("Selecciona al menos un producto para el kit.");
+              e.preventDefault();
+              return;
+          }
+          document.getElementById("productosSeleccionadosEditar").value = JSON.stringify(seleccionados);
+      });
+
+      // -------------------------------
+      // Eliminar kit
+      // -------------------------------
+      document.querySelectorAll('.btn-eliminar[data-tipo="kit"]').forEach(btn => {
+          btn.addEventListener('click', () => {
+              const rowSel = document.querySelector('#TablaKits tbody tr.row-selected');
+              if (!rowSel) {
+                  Swal.fire({ icon: "error", title: "Oops...", text: "Selecciona un kit primero." });
+                  return;
+              }
+              const idKit = rowSel.querySelector('td').innerText.trim();
+              const nombreKit = rowSel.cells[1].innerText.trim();
+              Swal.fire({
+                  title: `¿Eliminar el kit "${nombreKit}"?`,
+                  text: "Esta acción no se puede deshacer.",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#d33",
+                  cancelButtonColor: "#3085d6",
+                  confirmButtonText: "Sí, eliminar",
+                  cancelButtonText: "Cancelar"
+              }).then((result) => {
+                  if (result.isConfirmed) {
+                      crearFormularioPost('eliminarKit.php', idKit, 'idKit');
+                  }
+              });
+          });
+      });
+
+      // -------------------------------
+      // Inicializar DataTables
+      // -------------------------------
+      const tablaKits = document.querySelector("#TablaKits");
+      if (tablaKits && !tablaKits.dataset._datatable) {
+          new simpleDatatables.DataTable("#TablaKits", {
+              searchable: true,
+              fixedHeight: true,
+              perPage: 5
+          });
+          tablaKits.dataset._datatable = "1";
+      }
+  });
+
+  // -------------------------------
+  // Desactivar producto con verificación de kits
+  // -------------------------------
+const ponerStockCero = (btn) => {
+    const carrito = getCarrito();
+    if (!carrito || carrito.length !== 1) {
+        Swal.fire({ icon: "error", title: "Oops...", text: "Selecciona exactamente un producto." });
         return;
-      }
-
-      document.getElementById("productosSeleccionados").value = JSON.stringify(seleccionados);
-    });
-</script>
-
-<script>
-  // Abrir modal de Agregar Kit
-    document.querySelector('.btn-agregar-kit').addEventListener('click', () => {
-      document.getElementById('modalAgregarKit').style.display = 'flex';
-      document.getElementById('modalAgregarKit').setAttribute('aria-hidden', 'false');
-    });
-
-    // Cerrar modal de Agregar Kit
-    document.getElementById('cerrarModalKit').addEventListener('click', () => {
-      document.getElementById('modalAgregarKit').style.display = 'none';
-      document.getElementById('modalAgregarKit').setAttribute('aria-hidden', 'true');
-    });
-
-    // También cerrar al hacer clic fuera del contenido
-    window.addEventListener('click', (e) => {
-      const modal = document.getElementById('modalAgregarKit');
-      if (e.target === modal) {
-        modal.style.display = 'none';
-        modal.setAttribute('aria-hidden', 'true');
-      }
-    });
-</script>
-
-
-
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Inicializar DataTable SOLO UNA VEZ
-    const tablaKits = document.querySelector("#TablaKits");
-    if (tablaKits && !tablaKits.dataset._datatable) {
-        new simpleDatatables.DataTable("#TablaKits", {
-            searchable: true,
-            fixedHeight: true,
-            perPage: 5
-        });
-        tablaKits.dataset._datatable = "1";
+    }
+    const producto = carrito[0];
+    if (producto.type !== btn.dataset.tipo) {
+        Swal.fire({ icon: "error", title: "Oops...", text: `Este botón solo funciona para ${btn.dataset.tipo}s.` });
+        return;
     }
 
-    // Delegación de evento para "Ver productos"
-    $(document).on('click', '#TablaKits .btn-ver-productos', function () {
-       const idKit = $(this).closest('tr').find('td:first').text().trim();
-        console.log("ID del kit clicado:", idKit);
-
-        $('#contenidoKitProductos').html('<p>Cargando...</p>');
-        $('#modalKitProductos').fadeIn().attr('aria-hidden', 'false');
-
-        // Petición AJAX con cache-buster
-        $.get('getKitProductos.php', { idKit: idKit, t: Date.now() }, function(data) {
-            $('#contenidoKitProductos').html(data);
-        });
-    });
-
-    // Cerrar modal
-    $('#cerrarModalKitProductos').on('click', function() {
-        $('#modalKitProductos').fadeOut().attr('aria-hidden', 'true');
-    });
-
-    $(window).on('click', function(e) {
-        if (e.target === $('#modalKitProductos')[0]) {
-            $('#modalKitProductos').fadeOut().attr('aria-hidden', 'true');
+    // Obtener los kits donde está este producto
+    $.get('kitsDelProducto.php', { idProducto: producto.id, t: Date.now() }, function(respuesta){
+        let res = JSON.parse(respuesta);
+        if(res.status !== "success"){
+            Swal.fire("Error", "No se pudo verificar los kits", "error");
+            return;
         }
+
+        // Construir tabla HTML
+        let htmlKits = '';
+        if(res.kits.length > 0){
+            htmlKits = `
+                <p>Este producto se encuentra en los siguientes kits:</p>
+                <table style="width:100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="border:1px solid #ccc; padding:4px;">#</th>
+                            <th style="border:1px solid #ccc; padding:4px;">Nombre del Kit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${res.kits.map((kit, index) => `
+                            <tr>
+                                <td style="border:1px solid #ccc; padding:4px; text-align:center;">${index + 1}</td>
+                                <td style="border:1px solid #ccc; padding:4px;">${kit}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <br>
+            `;
+        }
+
+        Swal.fire({
+            title: `¿Poner stock de ${producto.nombre} en 0?`,
+            html: htmlKits + "Esto marcará el producto como inactivo.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Sí, poner en 0",
+            cancelButtonText: "Cancelar",
+            width: '600px'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.post('ponerStockCero.php', { carrito: JSON.stringify(carrito) }, function(response){
+                    let res2 = JSON.parse(response);
+                    if(res2.status === "success"){
+                        Swal.fire("¡Listo!", res2.message, "success").then(()=>{
+                            location.reload(); // recarga la tabla para mostrar stock 0
+                        });
+                    } else {
+                        Swal.fire("Error", res2.message, "error");
+                    }
+                });
+            }
+        });
     });
-});
+};
 
-
-// Abrir modal de editar kit
-document.querySelector('.btn-editar[data-tipo="kit"]').addEventListener('click', () => {
-  const rowSel = document.querySelector('#TablaKits tbody tr.row-selected');
-  if (!rowSel) {
-    Swal.fire({ icon:"error", title:"Oops...", text:"Selecciona un kit primero." });
-    return;
-  }
-
-  const idKit = rowSel.querySelector('td').innerText.trim();
-
-  // Llenar inputs con la fila seleccionada
-  document.getElementById('editarIdKit').value = idKit;
-  document.getElementById('editarNombreKit').value = rowSel.cells[1].innerText.trim();
-  document.getElementById('editarPrecioKit').value = rowSel.cells[2].innerText.replace('$','').trim();
-  document.getElementById('editarStockKit').value = rowSel.cells[3].innerText.trim();
-
-  // Cargar productos de este kit vía AJAX
-  $('#productosEditarKit').html('<p>Cargando...</p>');
-  $.get('getProductosKitEditar.php', { idKit: idKit, t: Date.now() }, function(data) {
-      $('#productosEditarKit').html(data);
-  });
-
-  // Mostrar modal
-  document.getElementById('modalEditarKit').style.display = 'flex';
-  document.getElementById('modalEditarKit').setAttribute('aria-hidden', 'false');
-});
-
-// Cerrar modal editar
-document.getElementById('cerrarModalEditarKit').addEventListener('click', () => {
-  document.getElementById('modalEditarKit').style.display = 'none';
-  document.getElementById('modalEditarKit').setAttribute('aria-hidden', 'true');
-});
-
-// Enviar formulario con productos seleccionados
-document.getElementById("formEditarKit").addEventListener("submit", function(e){
-  const seleccionados = [];
-  document.querySelectorAll("#productosEditarKit tbody tr").forEach(row => {
-    const chk = row.querySelector(".chkProd");
-    const cantidad = row.querySelector(".cantidadProd").value;
-    if(chk && chk.checked){
-      seleccionados.push({
-        id: chk.value,
-        cantidad: cantidad
-      });
-    }
-  });
-
-  if(seleccionados.length === 0){
-    alert("Selecciona al menos un producto para el kit.");
-    e.preventDefault();
-    return;
-  }
-
-  document.getElementById("productosSeleccionadosEditar").value = JSON.stringify(seleccionados);
-});
 
 </script>
+
 
 </body>
 </html>
