@@ -37,8 +37,8 @@ if (mysqli_num_rows($res) == 0) {
         </thead>
         <tbody>";
     while ($row = mysqli_fetch_assoc($res)) {
-        // Si el producto está inactivo (Stock 0), poner el nombre en rojo
-        $color = ($row['Stock'] == 0) ? 'style="color:red;"' : '';
+        // Si el producto está inactivo se coloca en rojo el nombre
+        $color = ($row['Stock'] == 0 || $row['cantidad'] > $row['Stock']) ? 'style="color:#943154; cursor:pointer;" title="No hay suficientes productos en stock"' : '';
         echo "<tr>
                 <td {$color}>".htmlspecialchars($row['nombre'])."</td>
                 <td>".htmlspecialchars($row['cantidad'])."</td>
