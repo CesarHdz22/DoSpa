@@ -1,3 +1,4 @@
+
 <?php 
 session_start();
 include_once("conexion.php");
@@ -14,6 +15,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DO SPA - Base</title>
+    <link rel="stylesheet" href="css/inventario_modal.css">
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/inventario.css">
@@ -22,151 +24,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css">
 
-    <style>
-        /* Estilos para el modal flotante */
-        #modalKitProductos .modal-content {
-          background: #fff;
-          padding: 24px;
-          border-radius: 8px;
-          max-width: 500px;
-          width: 90%;
-          margin: auto;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        /* Encabezado */
-        #modalKitProductos h3 {
-          text-align: center;
-          margin-bottom: 20px;
-          font-size: 20px;
-          font-weight: bold;
-        }
-
-        /* Botón cerrar */
-        #modalKitProductos .btn-cerrar {
-          position: absolute;
-          top: 12px;
-          right: 16px;
-          background: transparent;
-          border: none;
-          font-size: 24px;
-          color: #333;
-          cursor: pointer;
-        }
-
-        /* Tabla interna dentro del modal */
-        #tablaProductosKit {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 10px;
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        /* Encabezado de la tabla */
-        #tablaProductosKit thead {
-          background-color: #f2f2f2;
-        }
-
-        #tablaProductosKit th {
-          text-align: left;
-          padding: 8px 12px;
-          font-weight: bold;
-          border-bottom: 1px solid #ccc;
-        }
-
-        /* Celdas de la tabla */
-        #tablaProductosKit td {
-          padding: 8px 12px;
-          border-bottom: 1px solid #e0e0e0;
-        }
-
-        /* Filas alternas */
-        #tablaProductosKit tbody tr:nth-child(even) {
-          background-color: #fafafa;
-        }
-
-        /* Responsive para pantallas pequeñas */
-        @media screen and (max-width: 500px) {
-          #modalKitProductos .modal-content {
-            padding: 16px;
-          }
-
-          #tablaProductosKit th,
-          #tablaProductosKit td {
-            font-size: 14px;
-            padding: 6px 8px;
-          }
-        }
-            .modal {
-          position: fixed;
-          top: 0; left: 0;
-          width: 100%; height: 100%;
-          background: rgba(0,0,0,.6);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: 2000;
-        }
-
-        .modal-content {
-          background: #fff;
-          padding: 20px;
-          border-radius: 12px;
-          width: 400px;
-          max-width: 90%;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        .modal-content h3 {
-          margin-bottom: 15px;
-          text-align: center;
-        }
-
-        .modal-content .form-group {
-          margin-bottom: 12px;
-        }
-
-        .modal-content input, 
-        .modal-content textarea {
-          width: 95%;
-          padding: 8px;
-          border: 1px solid #bbb;
-          border-radius: 6px;
-        }
-
-        .btn-cerrar {
-          background: none;
-          border: none;
-          font-size: 22px;
-          float: right;
-          cursor: pointer;
-        }
-        #modalKitProductos .modal-content {
-          width: 500px;
-          max-width: 90%;
-        }
-
-        .btn-ver-productos {
-            align-self: flex-start;
-            margin-bottom: 0px;
-            padding: 9px 18px;
-            background: #943154;
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-size: 10px;
-            cursor: pointer;
-            transition: 0.2s ease;
-        }
-        .btn-ver-productos:hover {
-          background: #45a049;
-            transition: 0.2s ease;
-        }
-        .kit-con-inactivo {
-  color: #c62828 !important; /* rojo */
-  font-weight: 700 !important;
-}
-    </style>
+    
   </head>
   <body>
     <div class="dashboard">
@@ -353,7 +211,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                         </div>
 
                         <h4>Seleccionar productos del kit:</h4>
-                      <table id="productosSeleccionables" class="display" style="width:100%">
+                      <table id="productosSeleccionables" class="display">
                         <thead>
                           <tr>
                             <th>Seleccionar</th>
@@ -364,7 +222,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                         </thead>
                         <tbody>
                           <?php
-                            $sqlProd = "SELECT * FROM productos";
+                            $sqlProd = "SELECT * FROM productos WHERE Stock > 0";
                             $resProd = mysqli_query($conexion, $sqlProd);
                             while($p = mysqli_fetch_assoc($resProd)){
                               echo "<tr>
@@ -374,6 +232,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                                 <td><input type='number' min='1' value='1' class='cantidadProd' style='width:60px;'></td>
                               </tr>";
                             }
+
                           ?>
                         </tbody>
                       </table>
@@ -483,404 +342,16 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" ></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="librerias/tables.js"></script>
     <script src="librerias/carrito.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="librerias/FunInventario.js"></script>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-          // -------------------------------
-          // Funciones auxiliares
-          // -------------------------------
-          const getCarrito = () => (window.getCarrito ? window.getCarrito() : []);
-          
-          const crearFormularioPost = (action, dataObj, name = 'carrito') => {
-              const form = document.createElement('form');
-              form.method = 'POST';
-              form.action = action;
-              form.style.display = 'none';
-              const input = document.createElement('input');
-              input.type = 'hidden';
-              input.name = name;
-              input.value = JSON.stringify(dataObj);
-              form.appendChild(input);
-              document.body.appendChild(form);
-              form.submit();
-          };
-
-          const resaltarFila = (tablaSelector) => {
-              $(tablaSelector + ' tbody').on('click', 'tr', function() {
-                  $(tablaSelector + ' tbody tr').removeClass('row-selected');
-                  $(this).addClass('row-selected');
-              });
-          };
-
-          // -------------------------------
-          // Resaltar filas
-          // -------------------------------
-          resaltarFila('#TablaProductos');
-          resaltarFila('#TablaKits');
-          // -------------------------------
-          // Eliminar producto
-          // -------------------------------
-          const eliminarProducto = (btn) => {
-              const carrito = getCarrito();
-              if (!carrito || carrito.length !== 1) {
-                  Swal.fire({ icon: "error", title: "Oops...", text: "Selecciona exactamente un producto para eliminar." });
-                  return;
-              }
-              if (carrito[0].type !== btn.dataset.tipo) {
-                  Swal.fire({ icon: "error", title: "Oops...", text: `Este botón solo funciona para ${btn.dataset.tipo}s.` });
-                  return;
-              }
-              Swal.fire({
-                  title: `¿Eliminar ${carrito[0].nombre}?`,
-                  text: "Esta acción no se puede deshacer.",
-                  icon: "warning",
-                  showCancelButton: true,
-                  confirmButtonColor: "#d33",
-                  cancelButtonColor: "#3085d6",
-                  confirmButtonText: "Sí, eliminar",
-                  cancelButtonText: "Cancelar"
-              }).then((result) => {
-                  if (result.isConfirmed) {
-                      crearFormularioPost('eliminarProductos.php', carrito);
-                  }
-              });
-          };
-
-        document.querySelectorAll('.btn-stock-cero[data-tipo="producto"]').forEach(btn => {
-              btn.addEventListener('click', () => ponerStockCero(btn));
-          });
-
-          // -------------------------------
-          // Agregar producto
-          // -------------------------------
-          const modalProducto = document.getElementById('modalAgregarProducto');
-          document.querySelector('.btn-agregar-producto').addEventListener('click', () => {
-              modalProducto.style.display = 'flex';
-              modalProducto.setAttribute('aria-hidden', 'false');
-          });
-          document.getElementById('cerrarModalProducto').addEventListener('click', () => {
-              modalProducto.style.display = 'none';
-              modalProducto.setAttribute('aria-hidden', 'true');
-          });
-          window.addEventListener('click', (e) => {
-              if (e.target === modalProducto) {
-                  modalProducto.style.display = 'none';
-                  modalProducto.setAttribute('aria-hidden', 'true');
-              }
-          });
-
-          // -------------------------------
-          // Agregar kit
-          // -------------------------------
-          const modalKit = document.getElementById('modalAgregarKit');
-          document.querySelector('.btn-agregar-kit').addEventListener('click', () => {
-              modalKit.style.display = 'flex';
-              modalKit.setAttribute('aria-hidden', 'false');
-          });
-          document.getElementById('cerrarModalKit').addEventListener('click', () => {
-              modalKit.style.display = 'none';
-              modalKit.setAttribute('aria-hidden', 'true');
-          });
-          window.addEventListener('click', (e) => {
-              if (e.target === modalKit) {
-                  modalKit.style.display = 'none';
-                  modalKit.setAttribute('aria-hidden', 'true');
-              }
-          });
-
-          // Validar selección de productos al agregar kit
-          document.getElementById("formAgregarKit").addEventListener("submit", function(e){
-              const seleccionados = [];
-              document.querySelectorAll("#productosSeleccionables tbody tr").forEach(row => {
-                  const chk = row.querySelector(".chkProd");
-                  const cantidad = row.querySelector(".cantidadProd").value;
-                  if(chk.checked){
-                      seleccionados.push({ id: chk.value, cantidad: cantidad });
-                  }
-              });
-              if(seleccionados.length === 0){
-                  alert("Selecciona al menos un producto para el kit.");
-                  e.preventDefault();
-                  return;
-              }
-              document.getElementById("productosSeleccionados").value = JSON.stringify(seleccionados);
-          });
-
-          // -------------------------------
-          // Ver productos de kit (AJAX)
-          // -------------------------------
-          $(document).on('click', '#TablaKits .btn-ver-productos', function () {
-              const idKit = $(this).closest('tr').find('td:first').text().trim();
-              $('#contenidoKitProductos').html('<p>Cargando...</p>');
-              $('#modalKitProductos').fadeIn().attr('aria-hidden', 'false');
-              $.get('getKitProductos.php', { idKit: idKit, t: Date.now() }, function(data) {
-                  $('#contenidoKitProductos').html(data);
-              });
-          });
-
-          $('#cerrarModalKitProductos').on('click', function() {
-              $('#modalKitProductos').fadeOut().attr('aria-hidden', 'true');
-          });
-          $(window).on('click', function(e) {
-              if (e.target === $('#modalKitProductos')[0]) {
-                  $('#modalKitProductos').fadeOut().attr('aria-hidden', 'true');
-              }
-          });
-
-          // -------------------------------
-          // Editar kit
-          // -------------------------------
-          document.querySelector('.btn-editar[data-tipo="kit"]').addEventListener('click', () => {
-              const rowSel = document.querySelector('#TablaKits tbody tr.row-selected');
-              if (!rowSel) {
-                  Swal.fire({ icon:"error", title:"Oops...", text:"Selecciona un kit primero." });
-                  return;
-              }
-              const idKit = rowSel.querySelector('td').innerText.trim();
-              document.getElementById('editarIdKit').value = idKit;
-              document.getElementById('editarNombreKit').value = rowSel.cells[1].innerText.trim();
-              document.getElementById('editarPrecioKit').value = rowSel.cells[2].innerText.replace('$','').trim();
-              document.getElementById('editarStockKit').value = rowSel.cells[3].innerText.trim();
-
-              $('#productosEditarKit').html('<p>Cargando...</p>');
-              $.get('getProductosKitEditar.php', { idKit: idKit, t: Date.now() }, function(data) {
-                  $('#productosEditarKit').html(data);
-              });
-
-              const modalEditar = document.getElementById('modalEditarKit');
-              modalEditar.style.display = 'flex';
-              modalEditar.setAttribute('aria-hidden', 'false');
-          });
-
-          document.getElementById('cerrarModalEditarKit').addEventListener('click', () => {
-              const modalEditar = document.getElementById('modalEditarKit');
-              modalEditar.style.display = 'none';
-              modalEditar.setAttribute('aria-hidden', 'true');
-          });
-
-          // Validar productos al editar kit
-          document.getElementById("formEditarKit").addEventListener("submit", function(e){
-              const seleccionados = [];
-              document.querySelectorAll("#productosEditarKit tbody tr").forEach(row => {
-                  const chk = row.querySelector(".chkProd");
-                  const cantidad = row.querySelector(".cantidadProd").value;
-                  if(chk && chk.checked){
-                      seleccionados.push({ id: chk.value, cantidad: cantidad });
-                  }
-              });
-              if(seleccionados.length === 0){
-                  alert("Selecciona al menos un producto para el kit.");
-                  e.preventDefault();
-                  return;
-              }
-              document.getElementById("productosSeleccionadosEditar").value = JSON.stringify(seleccionados);
-          });
-
-          // -------------------------------
-          // Eliminar kit
-          // -------------------------------
-          document.querySelectorAll('.btn-eliminar[data-tipo="kit"]').forEach(btn => {
-              btn.addEventListener('click', () => {
-                  const rowSel = document.querySelector('#TablaKits tbody tr.row-selected');
-                  if (!rowSel) {
-                      Swal.fire({ icon: "error", title: "Oops...", text: "Selecciona un kit primero." });
-                      return;
-                  }
-                  const idKit = rowSel.querySelector('td').innerText.trim();
-                  const nombreKit = rowSel.cells[1].innerText.trim();
-                  Swal.fire({
-                      title: `¿Eliminar el kit "${nombreKit}"?`,
-                      text: "Esta acción no se puede deshacer.",
-                      icon: "warning",
-                      showCancelButton: true,
-                      confirmButtonColor: "#d33",
-                      cancelButtonColor: "#3085d6",
-                      confirmButtonText: "Sí, eliminar",
-                      cancelButtonText: "Cancelar"
-                  }).then((result) => {
-                      if (result.isConfirmed) {
-                          crearFormularioPost('eliminarKit.php', idKit, 'idKit');
-                      }
-                  });
-              });
-          });
-
-          // -------------------------------
-          // Inicializar DataTables
-          // -------------------------------
-          const tablaKits = document.querySelector("#TablaKits");
-          if (tablaKits && !tablaKits.dataset._datatable) {
-              new simpleDatatables.DataTable("#TablaKits", {
-                  searchable: true,
-                  fixedHeight: true,
-                  perPage: 5
-              });
-              tablaKits.dataset._datatable = "1";
-          }
-      });
-
-        // -------------------------------
-        // Desactivar producto con verificación de kits
-        // -------------------------------
-        const ponerStockCero = (btn) => {
-            const carrito = getCarrito();
-            if (!carrito || carrito.length !== 1) {
-                Swal.fire({ icon: "error", title: "Oops...", text: "Selecciona exactamente un producto." });
-                return;
-            }
-            const producto = carrito[0];
-            if (producto.type !== btn.dataset.tipo) {
-                Swal.fire({ icon: "error", title: "Oops...", text: `Este botón solo funciona para ${btn.dataset.tipo}s.` });
-                return;
-            }
-
-            // Obtener los kits donde está este producto
-            $.get('kitsDelProducto.php', { idProducto: producto.id, t: Date.now() }, function(respuesta){
-                let res = JSON.parse(respuesta);
-                if(res.status !== "success"){
-                    Swal.fire("Error", "No se pudo verificar los kits", "error");
-                    return;
-                }
-
-                // Construir tabla HTML
-                let htmlKits = '';
-                if(res.kits.length > 0){
-                    htmlKits = `
-                        <p>Este producto se encuentra en los siguientes kits:</p>
-                        <table style="width:100%; border-collapse: collapse;">
-                            <thead>
-                                <tr>
-                                    <th style="border:1px solid #ccc; padding:4px;">#</th>
-                                    <th style="border:1px solid #ccc; padding:4px;">Nombre del Kit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${res.kits.map((kit, index) => `
-                                    <tr>
-                                        <td style="border:1px solid #ccc; padding:4px; text-align:center;">${index + 1}</td>
-                                        <td style="border:1px solid #ccc; padding:4px;">${kit}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                        <br>
-                    `;
-                }
-
-                Swal.fire({
-                    title: `¿Poner stock de ${producto.nombre} en 0?`,
-                    html: htmlKits + "Esto marcará el producto como inactivo.",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "Sí, poner en 0",
-                    cancelButtonText: "Cancelar",
-                    width: '600px'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.post('ponerStockCero.php', { carrito: JSON.stringify(carrito) }, function(response){
-                            let res2 = JSON.parse(response);
-                            if(res2.status === "success"){
-                                Swal.fire("¡Listo!", res2.message, "success").then(()=>{
-                                    location.reload(); // recarga la tabla para mostrar stock 0
-                                });
-                            } else {
-                                Swal.fire("Error", res2.message, "error");
-                            }
-                        });
-                    }
-                });
-            });
-        };
-
-        // -------------------------------
-        // Editar Producto
-        // -------------------------------
-        document.querySelectorAll('.btn-editar[data-tipo="producto"]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const rowSel = document.querySelector('#TablaProductos tbody tr.row-selected');
-                if(!rowSel){
-                    Swal.fire({ icon:"error", title:"Oops...", text:"Selecciona un producto primero." });
-                    return;
-                }
-
-                // Llenar formulario con datos de la fila
-                document.getElementById('editarIdProducto').value = rowSel.cells[0].innerText.trim();
-                document.getElementById('editarNombreProducto').value = rowSel.cells[1].innerText.trim();
-                document.getElementById('editarPrecioProducto').value = rowSel.cells[2].innerText.replace('$','').trim();
-                document.getElementById('editarStockProducto').value = rowSel.cells[3].innerText.trim();
-
-                // Abrir modal
-                const modal = document.getElementById('modalEditarProducto');
-                modal.style.display = 'flex';
-                modal.setAttribute('aria-hidden', 'false');
-            });
-        });
-
-        document.getElementById('cerrarModalEditarProducto').addEventListener('click', () => {
-            const modal = document.getElementById('modalEditarProducto');
-            modal.style.display = 'none';
-            modal.setAttribute('aria-hidden', 'true');
-        });
-
-        window.addEventListener('click', (e) => {
-            const modal = document.getElementById('modalEditarProducto');
-            if(e.target === modal){
-                modal.style.display = 'none';
-                modal.setAttribute('aria-hidden', 'true');
-            }
-        });
-
-        // función que aplica la clase leyendo el flag dentro de la celda (span.kit-flag)
-        function aplicarColorKits() {
-          document.querySelectorAll('#TablaKits tbody tr').forEach(tr => {
-            const nombreCell = tr.querySelector('td.nombre-kit') || tr.querySelector('td:nth-child(2)');
-            if (!nombreCell) return;
-            const flagSpan = nombreCell.querySelector('.kit-flag');
-            const tiene = flagSpan && flagSpan.textContent.trim() === '1';
-            if (tiene) {
-              nombreCell.classList.add('kit-con-inactivo');
-            } else {
-              nombreCell.classList.remove('kit-con-inactivo');
-            }
-          });
-        }
-
-        // Llama después de inicializar DataTable (reemplaza tu bloque de inicialización o añade esto justo después)
-        const tablaKits = document.querySelector("#TablaKits");
-        if (tablaKits && !tablaKits.dataset._datatable) {
-            new simpleDatatables.DataTable("#TablaKits", {
-                searchable: true,
-                fixedHeight: true,
-                perPage: 5
-            });
-            tablaKits.dataset._datatable = "1";
-        }
-
-        // reaplicar ahora y con pequeños delays para asegurar que el datatable terminó
-        aplicarColorKits();
-        setTimeout(aplicarColorKits, 120);
-        setTimeout(aplicarColorKits, 400);
-
-        // y además usar un MutationObserver sobre la sección que contiene la tabla
-        const kitsSection = document.querySelector('.kits');
-        if (kitsSection) {
-          const mo = new MutationObserver((mutations) => {
-            // esperar un tick para que el datatable termine cambios
-            setTimeout(aplicarColorKits, 40);
-          });
-          mo.observe(kitsSection, { childList: true, subtree: true });
-        }
-
-    </script>
-
-
+  
+    
   </body>
 </html>
 <?php
 }
-?>
+?> 

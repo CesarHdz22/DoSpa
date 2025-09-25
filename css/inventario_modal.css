@@ -1,0 +1,417 @@
+
+        /* Estilos para el modal flotante */
+        #modalKitProductos .modal-content {
+          background: #fff;
+          padding: 24px;
+          border-radius: 8px;
+          max-width: 500px;
+          width: 90%;
+          margin: auto;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Encabezado */
+        #modalKitProductos h3 {
+          text-align: center;
+          margin-bottom: 20px;
+          font-size: 20px;
+          font-weight: bold;
+        }
+
+        /* Botón cerrar */
+        #modalKitProductos .btn-cerrar {
+          position: absolute;
+          top: 12px;
+          right: 16px;
+          background: transparent;
+          border: none;
+          font-size: 24px;
+          color: #333;
+          cursor: pointer;
+        }
+
+        /* Tabla interna dentro del modal */
+        #tablaProductosKit {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 10px;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Encabezado de la tabla */
+        #tablaProductosKit thead {
+          background-color: #f2f2f2;
+        }
+
+        #tablaProductosKit th {
+          text-align: left;
+          padding: 8px 12px;
+          font-weight: bold;
+          border-bottom: 1px solid #ccc;
+        }
+
+        /* Celdas de la tabla */
+        #tablaProductosKit td {
+          padding: 8px 12px;
+          border-bottom: 1px solid #e0e0e0;
+        }
+
+        /* Filas alternas */
+        #tablaProductosKit tbody tr:nth-child(even) {
+          background-color: #fafafa;
+        }
+
+        /* Responsive para pantallas pequeñas */
+        @media screen and (max-width: 500px) {
+          #modalKitProductos .modal-content {
+            padding: 16px;
+          }
+
+          #tablaProductosKit th,
+          #tablaProductosKit td {
+            font-size: 14px;
+            padding: 6px 8px;
+          }
+        }
+            .modal {
+          position: fixed;
+          top: 0; left: 0;
+          width: 100%; height: 100%;
+          background: rgba(0,0,0,.6);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 2000;
+        }
+
+        .modal-content {
+          background: #fff;
+          padding: 20px;
+          border-radius: 12px;
+          width: 400px;
+          max-width: 90%;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .modal-content h3 {
+          margin-bottom: 15px;
+          text-align: center;
+        }
+
+        .modal-content .form-group {
+          margin-bottom: 12px;
+        }
+
+        .modal-content input, 
+        .modal-content textarea {
+          width: 95%;
+          padding: 8px;
+          border: 1px solid #bbb;
+          border-radius: 6px;
+        }
+
+        .btn-cerrar {
+          background: none;
+          border: none;
+          font-size: 22px;
+          float: right;
+          cursor: pointer;
+        }
+        #modalKitProductos .modal-content {
+          width: 500px;
+          max-width: 90%;
+        }
+
+        .btn-ver-productos {
+            align-self: flex-start;
+            margin-bottom: 0px;
+            padding: 9px 18px;
+            background: #943154;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 10px;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+        .btn-ver-productos:hover {
+          background: #45a049;
+            transition: 0.2s ease;
+        }
+        .kit-con-inactivo {
+        color: #c62828 !important; /* rojo */
+        font-weight: 700 !important;
+      }
+
+      /* ===============================
+        Estilo modal para "Agregar Kit"
+        =============================== */
+
+      #modalAgregarKit {
+        display: none; /* oculto por defecto */
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.55); /* overlay oscuro */
+        z-index: 2000; /* más alto que el inventario */
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      /* Cuando está abierto */
+      #modalAgregarKit.open {
+        display: flex;
+      }
+
+      /* Caja interna */
+      #modalAgregarKit .modal-content {
+        background: #fff;
+        width: 100%;
+        max-width: 720px;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+        padding: 22px;
+        position: relative;
+        font-family: "Segoe UI", sans-serif;
+        animation: fadeInModal 0.3s ease forwards;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      /* Título igual que inventario */
+      #modalAgregarKit .modal-title {
+        font-size: 26px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 8px;
+      }
+
+      /* Botón cerrar */
+      #modalAgregarKit .btn-cerrar {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: transparent;
+        border: none;
+        font-size: 22px;
+        cursor: pointer;
+        color: #333;
+      }
+
+      /* Tabla dentro del modal con estilo de inventario */
+      #modalAgregarKit table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      #modalAgregarKit th {
+        background: #f9f9f9;
+        text-align: left;
+        padding: 10px 12px;
+        border-bottom: 2px solid #eee;
+      }
+
+      #modalAgregarKit td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #eee;
+        color: #333;
+      }
+
+      #modalAgregarKit tbody tr {
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      #modalAgregarKit tbody tr:hover {
+        background: #E9C6C4;
+      }
+
+      /* Botones al pie del modal */
+      #modalAgregarKit .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 10px;
+      }
+
+      #modalAgregarKit .modal-actions button {
+        padding: 10px 16px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      #modalAgregarKit .btn-guardar {
+        background: #00ACC8;
+        color: #fff;
+      }
+
+      #modalAgregarKit .btn-guardar:hover {
+        background: #45a049;
+      }
+
+      #modalAgregarKit .btn-cancelar {
+        background: #eee;
+        color: #444;
+      }
+
+      #modalAgregarKit .btn-cancelar:hover {
+        background: #ddd;
+      }
+
+
+    .stock-cero {
+        color: #e74c3c;    
+        font-weight: bold;
+    }
+
+
+    /* ================================
+   Estilo modal "Editar Kit"
+   ================================ */
+#modalEditarKit {
+  display: none; /* oculto por defecto */
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55); /* overlay oscuro */
+  z-index: 2100;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+#modalEditarKit .modal-content {
+  background: #fff;
+  width: 100%;
+  max-width: 720px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  padding: 22px;
+  position: relative;
+  font-family: "Segoe UI", sans-serif;
+  animation: fadeInModal 0.3s ease forwards;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Título */
+#modalEditarKit h3 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Botón cerrar */
+#modalEditarKit .btn-cerrar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Inputs del formulario */
+#modalEditarKit .form-group label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}
+
+#modalEditarKit .form-group input {
+  width: 95%;
+  padding: 8px 10px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+}
+
+/* ================================
+   Tabla de productos del kit
+   ================================ */
+#modalEditarKit table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+#modalEditarKit th {
+  background: #f9f9f9;
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 2px solid #eee;
+}
+
+#modalEditarKit td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+  vertical-align: middle;
+}
+
+/* Estilo checkboxes */
+#modalEditarKit input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* Input cantidad */
+#modalEditarKit .cantidadProd {
+  width: 70px;
+  padding: 5px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* Hover fila */
+#modalEditarKit tbody tr:hover {
+  background: #E9C6C4;
+}
+
+/* ================================
+   Botón guardar
+   ================================ */
+#modalEditarKit .btn-confirmar {
+  align-self: flex-end;
+  padding: 10px 18px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  background: #00ACC8;
+  color: #fff;
+  transition: 0.2s ease;
+}
+
+#modalEditarKit .btn-confirmar:hover {
+  background: #45a049;
+}
+
+/* ================================
+   Responsive
+   ================================ */
+@media screen and (max-width: 600px) {
+  #modalEditarKit .modal-content {
+    padding: 16px;
+  }
+
+  #modalEditarKit table th,
+  #modalEditarKit table td {
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+
+  #modalEditarKit .cantidadProd {
+    width: 55px;
+  }
+}
