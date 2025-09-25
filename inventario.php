@@ -23,8 +23,17 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
     <!-- Iconos de FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css">
-    <link rel="stylesheet" href="inventario_modal.css">
+   
     
+
+    <style>
+.sin-stock {
+    color: #943154;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+    </style>
   </head>
   <body>
     <div class="dashboard">
@@ -69,28 +78,32 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                       </div>
                       <table id="TablaProductos" class="display">
                           <thead>
-                          <tr>
-                              <th>Id</th>
-                              <th>Nombre</th>
-                              <th>Precio Unitario</th>
-                              <th>Stock</th>
-                          </tr>
+                              <tr>
+                                  <th>Id</th>
+                                  <th>Nombre</th>
+                                  <th>Precio Unitario</th>
+                                  <th>Stock</th>
+                              </tr>
                           </thead>
                           <tbody>
                           <?php
                               $sql = "SELECT * FROM productos";
                               $r = mysqli_query($conexion, $sql);
                               while($mostrar = mysqli_fetch_array($r)) {
+                                  $clase = ($mostrar['Stock'] == 0) ? 'sin-stock' : '';
                           ?>
-                          <tr>
-                              <td><?php echo $mostrar['id_producto'] ?></td>
-                              <td ><?php echo $mostrar['nombre'] ?></td>
-                              <td><?php echo "$".$mostrar['precio_unitario'] ?></td>
-                              <td><?php echo $mostrar['Stock'] ?></td>
-                          </tr>
+                              <tr>
+                                  <td><?php echo $mostrar['id_producto'] ?></td>
+                                  <td class="<?php echo $clase; ?>" <?php echo ($mostrar['Stock'] == 0) ? 'title="No hay stock disponible"' : ''; ?>>
+                                      <?php echo $mostrar['nombre'] ?>
+                                  </td>
+                                  <td><?php echo "$".$mostrar['precio_unitario'] ?></td>
+                                  <td><?php echo $mostrar['Stock'] ?></td>
+                              </tr>
                           <?php } ?>
                           </tbody>
                       </table>
+
                       </section>
                       <!-- Kits -->
                       <section class="kits">
@@ -347,8 +360,33 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
     <script src="librerias/tables.js"></script>
     <script src="librerias/carrito.js"></script>
     <script src="librerias/FunInventario.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const tablaProductos = document.querySelector("#TablaProductos");
+    const dataTable = new simpleDatatables.DataTable(tablaProductos);
 
-  
+    function aplicarEstilosStock() {
+        // Recorre todas las filas visibles del tbody
+        const filas = tablaProductos.querySelectorAll("tbody tr");
+        filas.forEach(row => {
+            const stock = parseInt(row.cells[3].innerText);
+            if (stock === 0) {
+                const nombreCell = row.cells[1];
+                nombreCell.classList.add("sin-stock");
+                nombreCell.title = "No hay stock disponible";
+            }
+        });
+    }
+
+    aplicarEstilosStock();
+
+    // Reaplicar después de búsqueda, ordenamiento o cambio de página
+    dataTable.on("datatable.search", aplicarEstilosStock);
+    dataTable.on("datatable.sort", aplicarEstilosStock);
+    dataTable.on("datatable.page", aplicarEstilosStock);
+});
+
+</script>
     
   </body>
 </html>
