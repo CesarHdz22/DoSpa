@@ -9,35 +9,27 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
   $idI = $_GET['id'];
   $tipo = $_GET['tipo'];
   $idA = $_GET['idC'];
+  $total = 0.0;
   $nombreAgenda = "";
-
+  $estado = "";
   if($tipo == "Taller"){
-    $sql = "SELECT t.nombre, t.costo_base 
-            FROM talleres t
-            WHERE t.id_taller = (
-              SELECT id_taller FROM agenda 
-              WHERE id_agenda = (
-                SELECT id_agenda FROM intermedia_a 
-                WHERE id_intermedia = '$idI'
-              )
-            )";
-}else{
-    $sql = "SELECT c.nombre, c.costo_base 
-            FROM cursos c
-            WHERE c.id_curso = (
-              SELECT id_curso FROM agenda_cursos 
-              WHERE id_agenda_curso = (
-                SELECT id_agenda_curso FROM intermedia_a 
-                WHERE id_intermedia = '$idI'
-              )
-            )";
-}
+    $sql = "SELECT total FROM intermedia_a WHERE id_intermedia = '$idI'";
+    $sql2 = "SELECT nombre FROM talleres WHERE id_taller = (SELECT id_taller FROM agenda WHERE id_agenda = (SELECT id_agenda FROM intermedia_a WHERE id_intermedia = '$idI'))";
+  }else{
+    $sql = "SELECT total FROM intermedia_a WHERE id_intermedia = '$idI'";
+    $sql2 = "SELECT nombre FROM cursos WHERE id_curso = (SELECT id_curso FROM agenda_cursos WHERE id_agenda_curso = (SELECT id_agenda_curso FROM intermedia_a WHERE id_intermedia = '$idI'))";
+
+  }
     
    
 $r1 = mysqli_query($conexion,$sql);
 while($row = mysqli_fetch_array($r1)){
-    $nombreAgenda = $row['nombre'];
-    $costo = $row['costo_base']; // usa el nombre real de tu columna
+    $total = $row['total'];
+}
+
+$r2 = mysqli_query($conexion,$sql2);
+while($row2 = mysqli_fetch_array($r2)){
+    $nombreAgenda = $row2['nombre'];
 }
   
 
@@ -91,9 +83,10 @@ while($row = mysqli_fetch_array($r1)){
             $sql4="SELECT estado FROM intermedia_a WHERE id_intermedia = '$idI'";
             $result4 = mysqli_query($conexion,$sql4);
             while($mostrar4=mysqli_fetch_array($result4)){
+              $estado = $mostrar4['estado'];
 
             ?> 
-            <h3>Venta #<?php echo $idI." - ".$mostrar4['estado'] ?></h3>
+            <h3>Venta #<?php echo $idI." - ".$estado ?></h3>
             <?php
             }
             ?>
@@ -124,7 +117,7 @@ while($row = mysqli_fetch_array($r1)){
                 </ul>
 
                 <div class="total">
-                    <strong>Total:</strong> $<?php echo number_format($costo, 2); ?>
+                    <strong>Total:</strong> <?php echo "$".$total; ?>
                 </div>
 
 
@@ -136,7 +129,15 @@ while($row = mysqli_fetch_array($r1)){
          
             <div class="ventas-detalle">
                 <h3>Historial de Pagos</h3>
+
+                <?php
+                  if($estado == "Pendiente"){
+                ?>
                 <a href="agregarPago.php?tipo=inscripcion&idI=<?php echo $idI ?>"><img src="img/agregar.png" alt="Agregar" class="icon btn-agregar" width="20"></a>
+                <?php
+                  }
+                ?>
+                
                 <table class="display" id="historial">
                     <thead>
                         <tr>
@@ -156,11 +157,11 @@ while($row = mysqli_fetch_array($r1)){
                             ?>
                         <tr>
                             
-                            <td><?php echo $mostrar3['monto_pagado'] ?></td>
-                            <td><?php echo $mostrar3['saldo_pendiente'] ?></td>
+                            <td><?php echo "$".$mostrar3['monto_pagado'] ?></td>
+                            <td><?php echo "$".$mostrar3['saldo_pendiente'] ?></td>
                             <td><?php echo $mostrar3['fecha_pago'] ?></td>
-                            <td><?php echo $mostrar3['metodo_pago'] ?></td>
-                            <td><?php echo $mostrar3['comprobante'] ?></td>
+                            <td><?php echo ucfirst($mostrar3['metodo_pago']) ?></td>
+                            <td><a href="<?php echo $mostrar3['comprobante'] ?>" target="_blank"><?php echo $mostrar3['comprobante'] ?></a></td>
                             
                         </tr>
                         <?php

@@ -163,9 +163,9 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
             transition: 0.2s ease;
         }
         .kit-con-inactivo {
-  color: #c62828 !important; /* rojo */
-  font-weight: 700 !important;
-}
+        color: #c62828 !important; /* rojo */
+        font-weight: 700 !important;
+      }
     </style>
   </head>
   <body>

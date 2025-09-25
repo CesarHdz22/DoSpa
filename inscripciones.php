@@ -77,6 +77,9 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                 <th>Alumna</th>
                 <th>Agenda</th>
                 <th>Fecha</th>
+                <th>Total</th>
+                <th>Estado</th>
+                
                 </tr>
             </thead>
             <tbody>
@@ -121,6 +124,9 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                 <td><?php echo $nom_sql." ".$apat_sql." ".$amat_sql ?></td>
                 <td><?php echo $nom_agenda." - ".$tipo ?></td>
                 <td><?php echo $row['fecha']?></td>
+                <td><?php echo "$".$row['total'] ?></td>
+                <td><?php echo $row['estado'] ?></td>
+                
                 </tr>
                 <?php } ?>
             </tbody>
