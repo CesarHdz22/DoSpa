@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-09-2025 a las 22:00:46
+-- Tiempo de generación: 25-09-2025 a las 10:31:23
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -262,9 +262,9 @@ CREATE TABLE `historial_pagos` (
   `id_intermedia` int(11) DEFAULT NULL,
   `monto_pagado` decimal(10,2) DEFAULT NULL,
   `saldo_pendiente` decimal(10,2) DEFAULT NULL,
-  `fecha_pago` timestamp NULL DEFAULT NULL,
+  `fecha_pago` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `metodo_pago` enum('efectivo','tarjeta','transferencia','depósito','otros') DEFAULT 'efectivo',
-  `tipo_servicio` varchar(30) DEFAULT NULL,
+  `tipo_servicio` varchar(30) DEFAULT 'servicio',
   `comprobante` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -273,9 +273,38 @@ CREATE TABLE `historial_pagos` (
 --
 
 INSERT INTO `historial_pagos` (`id_pago`, `idVenta`, `id_intermedia`, `monto_pagado`, `saldo_pendiente`, `fecha_pago`, `metodo_pago`, `tipo_servicio`, `comprobante`) VALUES
-(4, 1, NULL, 500.00, 1100.00, '2025-09-17 05:20:26', 'transferencia', 'producto', ''),
-(5, 1, NULL, 300.00, 800.00, '2025-09-18 05:20:26', 'transferencia', 'producto', ''),
-(6, 2, NULL, 300.00, 500.00, '2025-09-10 05:25:32', 'transferencia', 'producto', '');
+(4, 1, NULL, 500.00, 1100.00, '2025-09-17 05:20:26', 'transferencia', 'venta', ''),
+(5, 1, NULL, 300.00, 800.00, '2025-09-18 05:20:26', 'transferencia', 'venta', ''),
+(6, 2, NULL, 300.00, 500.00, '2025-09-10 05:25:32', 'transferencia', 'venta', ''),
+(7, NULL, 1, 300.00, 200.00, '2025-09-25 07:05:51', 'tarjeta', 'inscripcion', 'https://drive.google.com/file/d/1uXPuC1KvnEo0InWHSKKz-0CHWfRSCIbp/view?usp=drive_link'),
+(8, NULL, 2, 300.00, 300.00, '2025-09-25 07:33:16', 'tarjeta', 'inscripcion', 'https://drive.google.com/file/d/1uXPuC1KvnEo0InWHSKKz-0CHWfRSCIbp/view?usp=drive_link'),
+(10, NULL, 2, 200.00, 100.00, '2025-09-25 08:01:57', 'tarjeta', 'inscripcion', 'https://drive.google.com/file/d/1uXPuC1KvnEo0InWHSKKz-0CHWfRSCIbp/view?usp=drive_link'),
+(12, NULL, 2, 100.00, 0.00, '2025-09-25 08:10:51', 'tarjeta', 'inscripcion', 'https://drive.google.com/file/d/1uXPuC1KvnEo0InWHSKKz-0CHWfRSCIbp/view?usp=drive_link');
+
+--
+-- Disparadores `historial_pagos`
+--
+DELIMITER $$
+CREATE TRIGGER `tr_pago_completo` AFTER INSERT ON `historial_pagos` FOR EACH ROW BEGIN
+    -- Si el saldo pendiente es 0
+    IF NEW.saldo_pendiente = 0 THEN
+        -- Caso: Venta
+        IF NEW.idVenta IS NOT NULL THEN
+            UPDATE venta
+            SET estado = 'Pagado'
+            WHERE idVenta = NEW.idVenta;
+        END IF;
+
+        -- Caso: Inscripción (intermedia_a)
+        IF NEW.id_intermedia IS NOT NULL THEN
+            UPDATE intermedia_a
+            SET estado = 'Pagado'
+            WHERE id_intermedia = NEW.id_intermedia;
+        END IF;
+    END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -309,26 +338,27 @@ CREATE TABLE `intermedia_a` (
   `id_agenda` int(11) DEFAULT NULL,
   `id_agenda_curso` int(11) DEFAULT NULL,
   `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `estado` varchar(30) NOT NULL
+  `estado` varchar(30) NOT NULL,
+  `total` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `intermedia_a`
 --
 
-INSERT INTO `intermedia_a` (`id_intermedia`, `id_alumna`, `id_agenda`, `id_agenda_curso`, `fecha`, `estado`) VALUES
-(1, 1, 3, NULL, '2025-09-22 00:44:57', ''),
-(2, 2, NULL, 3, '2025-09-22 00:46:21', ''),
-(3, 2, 3, NULL, '2025-09-22 00:57:23', ''),
-(4, 2, 2, NULL, '2025-09-22 01:01:57', ''),
-(5, 3, 1, NULL, '2025-09-22 01:02:01', ''),
-(6, 3, 3, NULL, '2025-09-22 01:04:15', ''),
-(7, 1, 4, NULL, '2025-09-22 01:07:07', ''),
-(8, 3, NULL, 1, '2025-09-22 01:08:26', ''),
-(9, 3, NULL, 3, '2025-09-22 01:08:30', ''),
-(10, 2, NULL, 2, '2025-09-22 01:08:33', ''),
-(11, 2, 4, NULL, '2025-09-22 01:58:19', ''),
-(12, 3, 4, NULL, '2025-09-22 02:17:52', '');
+INSERT INTO `intermedia_a` (`id_intermedia`, `id_alumna`, `id_agenda`, `id_agenda_curso`, `fecha`, `estado`, `total`) VALUES
+(1, 1, 3, NULL, '2025-09-25 07:28:02', 'Pendiente', 500.00),
+(2, 2, NULL, 3, '2025-09-25 08:10:51', 'Pagado', 600.00),
+(3, 2, 3, NULL, '2025-09-25 07:27:45', '', 800.00),
+(4, 2, 2, NULL, '2025-09-22 01:01:57', '', 0.00),
+(5, 3, 1, NULL, '2025-09-22 01:02:01', '', 0.00),
+(6, 3, 3, NULL, '2025-09-22 01:04:15', '', 0.00),
+(7, 1, 4, NULL, '2025-09-22 01:07:07', '', 0.00),
+(8, 3, NULL, 1, '2025-09-22 01:08:26', '', 0.00),
+(9, 3, NULL, 3, '2025-09-22 01:08:30', '', 0.00),
+(10, 2, NULL, 2, '2025-09-22 01:08:33', '', 0.00),
+(11, 2, 4, NULL, '2025-09-22 01:58:19', '', 0.00),
+(12, 3, 4, NULL, '2025-09-22 02:17:52', '', 0.00);
 
 --
 -- Disparadores `intermedia_a`
@@ -421,11 +451,8 @@ CREATE TABLE `kits_productos` (
 
 INSERT INTO `kits_productos` (`id_kit`, `nombre`, `precio_unitario`, `Stock`, `Activo`) VALUES
 (1, 'Kit Repostería', 1200.00, 3, 1),
-(2, 'Kit Maquillaje', 1500.00, 0, 0),
-(3, 'Kit Manualidades', 1000.00, 0, 0),
-(4, 'Kit completo', 1800.00, 5, 1),
-(5, 'Kit Principal', 1400.00, 2, 1),
-(6, 'Kit Beneficiario', 1200.00, 5, 1);
+(2, 'Kit Maquillaje', 1500.00, 90, 1),
+(3, 'Kit Manualidades', 1000.00, 0, 0);
 
 --
 -- Disparadores `kits_productos`
@@ -536,7 +563,7 @@ DELIMITER ;
 CREATE TABLE `productos_kits` (
   `id_kit` int(11) DEFAULT NULL,
   `id_producto` int(11) DEFAULT NULL,
-  `cantidad` int(11) NOT NULL DEFAULT 1
+  `cantidad` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -544,17 +571,9 @@ CREATE TABLE `productos_kits` (
 --
 
 INSERT INTO `productos_kits` (`id_kit`, `id_producto`, `cantidad`) VALUES
-(1, 1, 1),
-(2, 2, 1),
-(3, 3, 1),
-(4, 1, 1),
-(4, 2, 1),
-(4, 3, 1),
-(5, 1, 1),
-(5, 2, 1),
-(5, 3, 1),
-(6, 1, 4),
-(6, 2, 2);
+(1, 1, 0),
+(3, 3, 0),
+(2, 2, 4);
 
 -- --------------------------------------------------------
 
@@ -846,7 +865,7 @@ ALTER TABLE `detalle_venta`
 -- AUTO_INCREMENT de la tabla `historial_pagos`
 --
 ALTER TABLE `historial_pagos`
-  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `institutos`
@@ -876,7 +895,7 @@ ALTER TABLE `inventario_stock`
 -- AUTO_INCREMENT de la tabla `kits_productos`
 --
 ALTER TABLE `kits_productos`
-  MODIFY `id_kit` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_kit` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `maestras`
