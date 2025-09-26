@@ -1,6 +1,11 @@
 <?php
 include_once("conexion.php");
 
+// Evitar cache del navegador / proxy
+header('Cache-Control: no-cache, no-store, must-revalidate');
+header('Pragma: no-cache');
+header('Expires: 0');
+
 if (!isset($_GET['idKit'])) {
     echo "<em>Kit no especificado.</em>";
     exit;
@@ -8,44 +13,63 @@ if (!isset($_GET['idKit'])) {
 
 $idKit = intval($_GET['idKit']);
 
-// Traer solo los productos activos (Stock > 0)
-$sql = "SELECT p.id_producto, p.nombre, p.precio_unitario,
-               IFNULL(pk.cantidad, 0) AS cantidad,
-               IF(pk.id_producto IS NULL, 0, 1) AS seleccionado
-        FROM productos p
-        LEFT JOIN productos_kits pk
-          ON p.id_producto = pk.id_producto AND pk.id_kit = $idKit
-        WHERE p.Stock > 0";
+// 1. Traer los productos que ya están en el kit
+$sqlKit = "SELECT p.id_producto, p.nombre, pk.cantidad, p.Stock, p.precio_unitario
+           FROM productos_kits pk
+           JOIN productos p ON p.id_producto = pk.id_producto
+           WHERE pk.id_kit = ?";
+$stmtKit = mysqli_prepare($conexion, $sqlKit);
+mysqli_stmt_bind_param($stmtKit, "i", $idKit);
+mysqli_stmt_execute($stmtKit);
+$resKit = mysqli_stmt_get_result($stmtKit);
 
-$res = mysqli_query($conexion, $sql);
+$productosEnKit = [];
+if (mysqli_num_rows($resKit) > 0) {
+    while ($row = mysqli_fetch_assoc($resKit)) {
+        $productosEnKit[$row['id_producto']] = $row; // guardamos por id
+    }
+}
 
-echo "<style>
-        .fila-roja { background-color: #ffcccc !important; }
-      </style>";
+mysqli_stmt_close($stmtKit);
 
-echo "<table name='productosEditables' id='tablaEditarKitProductos' class='display' style='width:100%'>
+// 2. Traer todos los productos
+$sqlTodos = "SELECT id_producto, nombre, Stock, precio_unitario FROM productos ORDER BY nombre";
+$resTodos = mysqli_query($conexion, $sqlTodos);
+
+if (mysqli_num_rows($resTodos) == 0) {
+    echo "<em>No hay productos registrados.</em>";
+} else {
+    echo "
+    <table id='tablaProductosKit' class='subtabla'>
         <thead>
-          <tr>
-            <th>Seleccionar</th>
-            <th>Nombre</th>
-            <th>Precio</th>
-            <th>Cantidad</th>
-          </tr>
+            <tr>
+                <th>Seleccionar</th>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+            </tr>
         </thead>
         <tbody>";
 
-while ($row = mysqli_fetch_assoc($res)) {
-    $checked = $row['seleccionado'] ? "checked" : "";
-    $cantidad = $row['cantidad'] > 0 ? $row['cantidad'] : 1;
-    $classRow = $row['seleccionado'] ? "fila-roja" : "";  // Si está en el kit → fila roja
+    while ($row = mysqli_fetch_assoc($resTodos)) {
+        $enKit = isset($productosEnKit[$row['id_producto']]);
+        $cantidad = $enKit ? $productosEnKit[$row['id_producto']]['cantidad'] : 1; // por defecto 1 si no está en kit
 
-    echo "<tr class='{$classRow}'>
-            <td><input type='checkbox' class='chkProd' value='{$row['id_producto']}' $checked></td>
-            <td>".htmlspecialchars($row['nombre'])."</td>
-            <td>$ ".htmlspecialchars($row['precio_unitario'])."</td>
-            <td><input type='number' min='1' value='{$cantidad}' class='cantidadProd' style='width:60px;'></td>
-          </tr>";
+        $color = ($row['Stock'] == 0 || ($enKit && $cantidad > $row['Stock'])) 
+            ? 'style="color:#943154; font-weight:bold; cursor:pointer;" title="No hay suficientes productos en stock"' 
+            : '';
+
+        echo "<tr>
+                <td>
+                    <input type='checkbox' class='chkProd' name='productos[]' value='".htmlspecialchars($row['id_producto'])."' ".($enKit ? 'checked' : '').">
+                </td>
+                <td {$color}>".htmlspecialchars($row['nombre'])."</td>
+                <td>$ ".htmlspecialchars($row['precio_unitario'])."</td>
+                <td><input type='number' min='1' value='".htmlspecialchars($cantidad)."' class='cantidadProd' style='width:60px;'></td>
+              </tr>";
+    }
+
+    echo "  </tbody>
+    </table>";
 }
-echo "</tbody></table>";
 ?>
-
