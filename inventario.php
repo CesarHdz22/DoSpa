@@ -383,6 +383,15 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
           dataTable.on("datatable.page", aplicarEstilosStock);
       });
     </script>
+    <script>
+    // Inicializar tabla de ventas con Simple-DataTables
+    const tablaUsuarios = new simpleDatatables.DataTable("#personasTabla", {
+      searchable: true,
+      fixedHeight: true,
+      perPage: 5
+    });
+
+  </script>
     
   </body>
 </html>
