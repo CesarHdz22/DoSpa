@@ -27,7 +27,81 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
   <!-- Librería SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!-- Iconos de FontAwesome -->
- 
+  <style>
+    /* ====== Formulario Registro de Pago ====== */
+.registro {
+  background: #fff;
+  padding: 30px 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  max-width: 500px;
+  margin: 30px auto;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.registro h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #943154;
+  text-align: center;
+  font-weight: 600;
+}
+
+.registro form div {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+.registro label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #444;
+}
+
+.registro input[type="text"],
+.registro select {
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.registro input[type="text"]:focus,
+.registro select:focus {
+  border-color: #943154;
+  box-shadow: 0 0 0 2px rgba(148, 49, 84, 0.2);
+  outline: none;
+}
+
+.registro button {
+  background: #943154;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.registro button:hover {
+  background: #a94666;
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .registro {
+    padding: 20px 15px;
+    margin: 20px;
+  }
+}
+
+  </style>
 </head>
 <body>
   <div class="dashboard">
@@ -83,8 +157,10 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                 <label for="comprobante">Comprobante (link de Drive):</label>
                 <input type="text" id="comprobante" name="comprobante" required>
             </div>
-
-            <button type="submit">Registrar Pago</button>
+            <center>
+              <button type="submit">Registrar Pago</button>
+            </center>
+            
           </form>
         </section>
     

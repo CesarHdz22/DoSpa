@@ -24,11 +24,12 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css">
     <style>
-      .sin-stock {
-          color: #943154;
-          font-weight: bold;
-          cursor: pointer;
-      }
+    .sin-stock {
+        color: #943154;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
     </style>
   </head>
   <body>

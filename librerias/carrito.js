@@ -21,6 +21,49 @@
   // Inicio: DOM ready
   // ------------------------------
   document.addEventListener('DOMContentLoaded', () => {
+
+    const tipoSelect = document.getElementById('tipo');
+const contenedorTabla = document.getElementById('contenedor-tabla');
+
+if (tipoSelect) {
+  tipoSelect.addEventListener('change', function() {
+    const tipo = this.value;
+    contenedorTabla.innerHTML = '<p>Cargando...</p>';
+
+    if (!tipo) {
+      contenedorTabla.innerHTML = '';
+      return;
+    }
+
+    // Petición AJAX a PHP para obtener usuarios por tipo
+    $.ajax({
+      url: 'traer_usuarios.php',
+      type: 'POST',
+      data: { tipo },
+      success: function(data) {
+        contenedorTabla.innerHTML = data;
+
+        // Agregar evento a botones de selección
+        contenedorTabla.querySelectorAll('.btn-seleccionar-usuario').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const idComprador = this.dataset.id;
+          const tipoSelect = document.getElementById("tipo");
+          const tipo = tipoSelect ? tipoSelect.value : '';
+          if(!tipo){
+            alert("Selecciona un tipo de comprador");
+            return;
+          }
+          confirmarCompra(idComprador);
+        });
+        });
+      },
+      error: function() {
+        contenedorTabla.innerHTML = '<p>Error al cargar usuarios.</p>';
+      }
+    });
+  });
+}
+
     // Inicializar Simple-DataTables si existe
     if (window.simpleDatatables && typeof simpleDatatables.DataTable === 'function') {
       try {
@@ -283,3 +326,28 @@
   window.renderCarritoResumen = renderCarritoResumen;
 
 })();
+// ------------------------------
+// Función global para confirmar compra
+// ------------------------------
+function confirmarCompra(idComprador) {
+  const tipoSelect = document.getElementById("tipo");
+  const tipo = tipoSelect ? tipoSelect.value.trim().toLowerCase() : '';
+  
+  if(!tipo){
+    alert("Selecciona un tipo de comprador");
+    return;
+  }
+
+  console.log("Tipo que se enviará:", tipo, "idComprador:", idComprador, "carrito:", window.getCarrito());
+
+  $.post('confirmar_compra.php', {
+    idComprador: idComprador,
+    carrito: JSON.stringify(window.getCarrito()),
+    tipoCliente: tipo  // coincide con el POST real
+  }, function(resp){
+    alert(resp);
+    location.reload();
+  });
+}
+
+window.confirmarCompra = confirmarCompra;

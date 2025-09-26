@@ -1,6 +1,12 @@
 <?php 
 session_start();
-include_once("conexion.php");
+  include_once("conexion.php");
+
+  error_reporting(E_ALL);
+  ini_set('display_errors', 1);
+
+
+
 if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
   $idU = $_SESSION['Id_Usuario'];
   $Nombre = $_SESSION['nombre'];
@@ -10,7 +16,11 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
   $idComprador = $_POST['idComprador'];
   $carrito_json = $_POST['carrito'];
   $carrito = json_decode($carrito_json, true);
-  $tipo = $_SESSION['tipoCliente'];
+  $tipo = isset($_POST['tipoCliente']) ? trim(strtolower($_POST['tipoCliente'])) : '';
+  if(!in_array($tipo, ["cliente","alumna"])) {
+      die("Tipo de comprador inválido. Valor recibido: " . $_POST['tipoCliente']);
+  }
+
 
   // Validación mínima
   if (!is_array($carrito)) {
@@ -29,11 +39,13 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
       $total += $precio * $cant;
   }
 
-  if ($tipo == "cliente"){
-      $insertarVenta = "INSERT INTO venta (comprador_tipo,id_cliente,total,estado) ";
-  }else if($tipo == "alumna"){
-      $insertarVenta = "INSERT INTO venta (comprador_tipo,id_alumna,total,estado) ";
-  }
+          if ($tipo == "cliente") {
+          $insertarVenta = "INSERT INTO venta (comprador_tipo,id_cliente,total,estado) ";
+      } else if ($tipo == "alumna") {
+          $insertarVenta = "INSERT INTO venta (comprador_tipo,id_alumna,total,estado) ";
+      } else {
+          die("Tipo de comprador inválido.");
+      }
       $insertarVenta .= "VALUES ('$tipo','$idComprador','$total','Pendiente')";
 
       if($resultado1 = mysqli_query($conexion,$insertarVenta)){
