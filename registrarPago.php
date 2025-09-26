@@ -9,7 +9,12 @@ $metodo_pago = $_POST['metodo_pago'];
 $comprobante = $_POST['comprobante'];
 $total = 0.0;
 
-$consultaPrincipal = "SELECT * FROM historial_pagos WHERE id_intermedia = '$idI'";
+
+if($tipo == "inscripcion"){
+    $consultaPrincipal = "SELECT * FROM historial_pagos WHERE id_intermedia = '$idI'";
+}else{
+    $consultaPrincipal = "SELECT * FROM historial_pagos WHERE idVenta = '$idI'";
+}
 $resultado = mysqli_query($conexion,$consultaPrincipal);
 $filas = mysqli_num_rows($resultado);
 if($filas == 0){

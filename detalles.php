@@ -60,9 +60,10 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
             $sql4="SELECT estado FROM venta WHERE idVenta = '$idVenta'";
             $result4 = mysqli_query($conexion,$sql4);
             while($mostrar4=mysqli_fetch_array($result4)){
-
+              $estado = $mostrar4['estado'];
             ?> 
             <h3>Venta #<?php echo $idVenta." - ".$mostrar4['estado'] ?></h3>
+            
             <?php
             }
             ?>
@@ -130,6 +131,15 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
           <br><br>
             <div class="ventas-detalle">
                 <h3>Historial de Pagos</h3>
+
+                <?php
+                  if($estado == "Pendiente"){
+                ?>
+                <a href="agregarPago.php?tipo=venta&idI=<?php echo $idVenta ?>"><img src="img/agregar.png" alt="Agregar" class="icon btn-agregar" width="20"></a>
+                <?php
+                  }
+                ?>
+                
                 <table class="display" id="historial">
                     <thead>
                         <tr>
@@ -149,11 +159,11 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                             ?>
                         <tr>
                             
-                            <td><?php echo $mostrar3['monto_pagado'] ?></td>
-                            <td><?php echo $mostrar3['saldo_pendiente'] ?></td>
+                            <td><?php echo "$".$mostrar3['monto_pagado'] ?></td>
+                            <td><?php echo "$".$mostrar3['saldo_pendiente'] ?></td>
                             <td><?php echo $mostrar3['fecha_pago'] ?></td>
-                            <td><?php echo $mostrar3['metodo_pago'] ?></td>
-                            <td><?php echo $mostrar3['comprobante'] ?></td>
+                            <td><?php echo ucfirst($mostrar3['metodo_pago']) ?></td>
+                            <td><a href="<?php echo $mostrar3['comprobante'] ?>" target="_blank"><?php echo $mostrar3['comprobante'] ?></a></td>
                             
                         </tr>
                         <?php

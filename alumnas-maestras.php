@@ -344,5 +344,6 @@ $maestras = mysqli_query($conexion, $sqlMaestras);
 });
 
   </script>
+
 </body>
 </html>
