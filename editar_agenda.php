@@ -38,6 +38,9 @@ function h($s){ return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
   <link rel="stylesheet" href="css/editarP.css">
   <link rel="icon" href="img/DO_SPA_logo.png" type="image/png">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Iconos de FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 <body>
@@ -50,7 +53,7 @@ function h($s){ return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
         <li><a href="inscripciones.php"><i class="fas fa-clipboard-list"></i> Historial Inscripciones</a></li>
         <li class="active"><a href="agenda.php"><i class="fas fa-calendar-days"></i> Agenda</a></li>
         <li><a href="talleres-cursos.php"><i class="fas fa-chalkboard-teacher"></i>Talleres/Cursos</a></li> 
-        <li><a href="alumnas-maestras.php"><i class="fa-solid fa-users"></i><span>Alumnas / Maestras</span></a></li>
+        <li><a href="alumnas-maestras.php"><i class="fa-solid fa-users"></i><span>Usuarios</span></a></li>
         <li><a href="inventario.php"><i class="fas fa-layer-group"></i> Inventario</a></li>
       </ul>
     </aside>

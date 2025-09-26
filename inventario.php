@@ -23,16 +23,12 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
     <!-- Iconos de FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css">
-   
-    
-
     <style>
-.sin-stock {
-    color: #943154;
-    font-weight: bold;
-    cursor: pointer;
-}
-
+      .sin-stock {
+          color: #943154;
+          font-weight: bold;
+          cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -46,7 +42,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
           <li><a href="inscripciones.php"><i class="fas fa-clipboard-list"></i> Historial Inscripciones</a></li>
           <li><a href="agenda.php"><i class="fas fa-calendar-days"></i> Agenda</a></li>
           <li><a href="talleres-cursos.php"><i class="fas fa-chalkboard-teacher"></i>Talleres/Cursos</a></li> 
-          <li><a href="alumnas-maestras.php"><i class="fa-solid fa-users"></i><span>Alumnas / Maestras</span></a></li>
+          <li><a href="alumnas-maestras.php"><i class="fa-solid fa-users"></i><span>Usuarios</span></a></li>
           <li class="active"><a href="inventario.php"><i class="fas fa-layer-group"></i> Inventario</a></li>
         </ul>
       </aside>
@@ -360,33 +356,32 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
     <script src="librerias/tables.js"></script>
     <script src="librerias/carrito.js"></script>
     <script src="librerias/FunInventario.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const tablaProductos = document.querySelector("#TablaProductos");
-    const dataTable = new simpleDatatables.DataTable(tablaProductos);
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          const tablaProductos = document.querySelector("#TablaProductos");
+          const dataTable = new simpleDatatables.DataTable(tablaProductos);
 
-    function aplicarEstilosStock() {
-        // Recorre todas las filas visibles del tbody
-        const filas = tablaProductos.querySelectorAll("tbody tr");
-        filas.forEach(row => {
-            const stock = parseInt(row.cells[3].innerText);
-            if (stock === 0) {
-                const nombreCell = row.cells[1];
-                nombreCell.classList.add("sin-stock");
-                nombreCell.title = "No hay stock disponible";
-            }
-        });
-    }
+          function aplicarEstilosStock() {
+              // Recorre todas las filas visibles del tbody
+              const filas = tablaProductos.querySelectorAll("tbody tr");
+              filas.forEach(row => {
+                  const stock = parseInt(row.cells[3].innerText);
+                  if (stock === 0) {
+                      const nombreCell = row.cells[1];
+                      nombreCell.classList.add("sin-stock");
+                      nombreCell.title = "No hay stock disponible";
+                  }
+              });
+          }
 
-    aplicarEstilosStock();
+          aplicarEstilosStock();
 
-    // Reaplicar después de búsqueda, ordenamiento o cambio de página
-    dataTable.on("datatable.search", aplicarEstilosStock);
-    dataTable.on("datatable.sort", aplicarEstilosStock);
-    dataTable.on("datatable.page", aplicarEstilosStock);
-});
-
-</script>
+          // Reaplicar después de búsqueda, ordenamiento o cambio de página
+          dataTable.on("datatable.search", aplicarEstilosStock);
+          dataTable.on("datatable.sort", aplicarEstilosStock);
+          dataTable.on("datatable.page", aplicarEstilosStock);
+      });
+    </script>
     
   </body>
 </html>
