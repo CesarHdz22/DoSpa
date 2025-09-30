@@ -50,20 +50,22 @@ if ($stmt = mysqli_prepare($conexion, $sqlCheck)) {
 }
 
 // 2) Insertar en intermedia_a (solo la columna correspondiente)
+$estado = "Pendiente";
+
 if ($tipoAgenda === 'taller') {
     $sqlInsert = "INSERT INTO intermedia_a (id_alumna, id_agenda, estado) VALUES (?, ?, ?)";
     if ($stmt = mysqli_prepare($conexion, $sqlInsert)) {
-        mysqli_stmt_bind_param($stmt, "iis", $id_alumna, $idRel,"Pendiente");
+        mysqli_stmt_bind_param($stmt, "iis", $id_alumna, $idRel, $estado);
         $ok = mysqli_stmt_execute($stmt);
         $err = mysqli_error($conexion);
         mysqli_stmt_close($stmt);
     } else {
         $ok = false; $err = mysqli_error($conexion);
     }
-} else { // curso
+} else { // cursoddddddddddddd
     $sqlInsert = "INSERT INTO intermedia_a (id_alumna, id_agenda_curso, estado) VALUES (?, ?, ?)";
     if ($stmt = mysqli_prepare($conexion, $sqlInsert)) {
-        mysqli_stmt_bind_param($stmt, "iis", $id_alumna, $idRel,"Pendiente");
+        mysqli_stmt_bind_param($stmt, "iis", $id_alumna, $idRel, $estado);
         $ok = mysqli_stmt_execute($stmt);
         $err = mysqli_error($conexion);
         mysqli_stmt_close($stmt);
@@ -71,6 +73,7 @@ if ($tipoAgenda === 'taller') {
         $ok = false; $err = mysqli_error($conexion);
     }
 }
+
 
 // Resultado
 if ($ok) {
