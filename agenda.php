@@ -29,11 +29,28 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <!-- Parche mínimo para botón y modal -->
-  
 </head>
 <body>
+  <?php if (!empty($_SESSION['msg_error'])): ?>
+    <script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '<?php echo addslashes($_SESSION['msg_error']); ?>'
+    });
+    </script>
+    <?php unset($_SESSION['msg_error']); endif; ?>
+
+    <?php if (!empty($_SESSION['msg_ok'])): ?>
+    <script>
+    Swal.fire({
+        icon: 'success',
+        title: '¡Éxito!',
+        text: '<?php echo addslashes($_SESSION['msg_ok']); ?>'
+    });
+    </script>
+  <?php unset($_SESSION['msg_ok']); endif; ?>
+
   <div class="dashboard">
     <!-- Sidebar -->
     <aside class="sidebar">

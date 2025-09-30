@@ -35,9 +35,9 @@ if ($stmt = mysqli_prepare($conexion, $sqlCheck)) {
     mysqli_stmt_bind_param($stmt, "ii", $id_alumna, $idRel);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_store_result($stmt);
+
     if (mysqli_stmt_num_rows($stmt) > 0) {
         mysqli_stmt_close($stmt);
-        echo "<script> alert('La alumna ya está inscrita en esa sesión');</script>";
         $_SESSION['msg_error'] = "La alumna ya está inscrita en esa sesión.";
         header("Location: agenda.php");
         exit;
