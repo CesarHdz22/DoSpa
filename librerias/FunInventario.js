@@ -588,7 +588,8 @@ document.getElementById("btnVistaProducto").addEventListener("click", () => {
 document.getElementById("cerrarModalVistaProducto").addEventListener("click", () => {
   document.getElementById("modalVistaProducto").style.display = "none";
 });
-const tablaUsuarios = new simpleDatatables.DataTable("#TablaProductos", {
+// Inicializar tabla de ventas con Simple-DataTables
+const tablaUsuarios = new simpleDatatables.DataTable("#personasTabla", {
   searchable: true,
   fixedHeight: true,
   perPage: 5
