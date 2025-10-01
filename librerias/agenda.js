@@ -262,3 +262,46 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
+$(document).ready(function () {
+  const modalCalendario = $("#modalCalendario");
+  const btnCerrar = $("#cerrarCalendario");
+
+  // Al hacer click en cualquier ícono con la clase btn-calendario
+  $(document).on("click", ".btn-calendario", function () {
+    modalCalendario.addClass("open");
+
+    // Inicializar FullCalendar si aún no existe
+    if (!modalCalendario.data("initialized")) {
+      const calendarEl = document.getElementById("calendar");
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: "dayGridMonth",
+        locale: "es",
+        height: 600,
+        headerToolbar: {
+          left: "prev,next today",
+          center: "title",
+          right: "dayGridMonth,timeGridWeek,timeGridDay",
+        },
+        events: "eventos.php", // <-- aquí apuntas a tu script PHP que devuelva eventos
+        eventDidMount: function(info) {
+        info.el.setAttribute("title", info.event.title);
+        info.el.style.cursor = "pointer";
+        }
+      });
+      calendar.render();
+      modalCalendario.data("initialized", true);
+    }
+  });
+
+  // Botón de cerrar
+  btnCerrar.on("click", function () {
+    modalCalendario.removeClass("open");
+  });
+
+  // Cerrar al hacer click fuera de la caja
+  $(window).on("click", function (e) {
+    if ($(e.target).is("#modalCalendario")) {
+      modalCalendario.removeClass("open");
+    }
+  });
+});

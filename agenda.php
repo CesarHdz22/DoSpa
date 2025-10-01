@@ -29,6 +29,45 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <style>
+        /* Botón de calendario junto al título */
+    .titulo-agenda-container .btn-calendario {
+        display: inline-flex;       
+        align-items: center;
+        justify-content: center;
+        width: 36px;                
+        height: 36px;
+        padding: 4px;
+        border: 1px solid #fff;
+        border-radius: 8px;
+        background: #fff;
+        cursor: pointer;
+        transition: transform .15s ease, box-shadow .15s ease, background .15s ease, color .15s ease;
+    }
+
+    .titulo-agenda-container .btn-calendario img {
+        width: 20px;
+        height: 20px;
+        vertical-align: middle;
+        pointer-events: none;       
+        transition: transform .15s ease, opacity .15s ease;
+    }
+
+    .titulo-agenda-container .btn-calendario:hover {
+ 
+        color: #fff;
+        
+        transform: translateY(-2px);
+    }
+
+    .titulo-agenda-container .btn-calendario:hover img {
+        transform: translateY(-2px);
+        opacity: 1;
+    }
+
+  </style>
 </head>
 <body>
   <?php if (!empty($_SESSION['msg_error'])): ?>
@@ -77,8 +116,16 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
       </header>
 
       <div class="inventario"><!-- mismas clases para heredar estilos -->
-        <h2 class="titulo-inventario" align="center">AGENDA</h2>
+        <!-- Contenedor del título y botón de calendario -->
+        <div class="titulo-agenda-container" style="display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:20px;">
+          <h2 class="titulo-inventario">AGENDA</h2>
 
+          <!-- Botón de calendario con animación tipo .btn-mini -->
+          <button class="btn-calendario" data-tipo="taller" title="Ver calendario">
+            <img src="img/calendario (1).png" alt="Calendario" width="20">
+          </button>
+        </div>
+      
         <div class="tablas-inventario">
           <!-- TALLERES -->
           <section class="productos">
@@ -89,7 +136,7 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
                 <img src="img/agregar.png" alt="Agregar" class="icon btn-agregar" width="20" data-tipo="taller" title="Agregar sesión de taller">
                 <!-- Ícono EDITAR existente (selección + editar) -->
                 <img src="img/editar.png" alt="Editar" class="icon btn-editar" width="20" data-tipo="taller" title="Editar sesión seleccionada">
-
+                <!-- Ícono LISTAR INSCRITAS -->
                 <img src="img/listar.png" alt="Listar" class="icon btn-listar" width="20" data-tipo="taller" data-id="<?= $idAgenda ?>" title="Listar Alumnas Inscritas">
               </div>
             </div>
@@ -318,6 +365,15 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
   <script src="librerias/tables.js"></script>
   <script src = "librerias/agenda.js"></script>
   
-  
+  <!-- Modal Calendario -->
+<div id="modalCalendario" class="modal" aria-hidden="true">
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="calendarioTitle" style="max-width:1000px;">
+    <header>
+      <h3 id="calendarioTitle">Calendario de Talleres</h3>
+      <button class="close" id="cerrarCalendario" aria-label="Cerrar">&times;</button>
+    </header>
+    <div id="calendar"></div>
+  </div>
+</div>
 </body>
 </html>
