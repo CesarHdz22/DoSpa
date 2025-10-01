@@ -22,7 +22,6 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
   <link rel="stylesheet" href="css/sidebar.css">
   <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/agenda.css">
-  <!-- Reusamos inventario.css para look consistente -->
   <link rel="stylesheet" href="css/inventario.css">
   <link rel="icon" href="img/DO_SPA_logo.png" type="image/png">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

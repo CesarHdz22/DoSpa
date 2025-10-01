@@ -178,3 +178,55 @@ h2{
   from { opacity:0; transform:scale(0.9); }
   to   { opacity:1; transform:scale(1); }
 }
+/* Estilos generales de tablas */
+    table.display {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin-top: 10px;
+      font-size: 14px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    /* Encabezado */
+    table.display thead {
+      background-color: #f9f9f9;
+    }
+
+    table.display th {
+      text-align: left;
+      padding: 10px 14px;
+      font-weight: 600;
+      border-bottom: 2px solid #e0e0e0;
+      color: #333;
+    }
+
+    /* Celdas */
+    table.display td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #eee;
+      color: #444;
+    }
+
+    /* Filas alternas */
+    table.display tbody tr:nth-child(even) {
+      background-color: #fafafa;
+    }
+
+    /* Hover fila */
+    table.display tbody tr:hover {
+      background-color: #E9C6C4; 
+      transition: background 0.2s ease;
+    }
+
+    /*Responsive (pantallas chicas)*/
+    @media screen and (max-width: 600px) {
+      table.display th,
+      table.display td {
+        font-size: 13px;
+        padding: 8px 10px;
+      }
+    }
