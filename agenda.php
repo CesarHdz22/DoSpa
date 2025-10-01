@@ -8,7 +8,7 @@ $Apat   = $_SESSION['apat']   ?? '';
 $Amat   = $_SESSION['amat']   ?? '';
 
 mysqli_set_charset($conexion, 'utf8mb4');
-
+ 
 // Opciones para selects del modal
 $optsTalleres = mysqli_query($conexion, "SELECT id_taller, nombre FROM talleres ORDER BY nombre ASC");
 $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORDER BY nombre ASC");

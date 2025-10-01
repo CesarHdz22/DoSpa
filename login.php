@@ -87,4 +87,4 @@ if (!empty($_POST['user']) && !empty($_POST['pass'])) {
 } else {
     echo "<script>alert('Favor de llenar todos los datos'); window.history.go(-1);</script>";
     exit;
-}
+} 
