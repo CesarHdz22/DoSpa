@@ -24,11 +24,8 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css">
     <style>
-    .sin-stock {
-        color: #943154;
-        font-weight: bold;
-        cursor: pointer;
-    }
+
+
 
     </style>
   </head>
@@ -70,7 +67,8 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                           <div class="section-actions">
                               <img src="img/editar.png" alt="Editar" class="icon btn-editar" width="20" data-tipo="producto">
                               <img src="img/eliminar.png" alt="Poner Stock 0" class="icon btn-stock-cero" width="20" data-tipo="producto">
-                            <img src="img/agregar.png" alt="Agregar" class="icon btn-agregar-producto" width="20" style="cursor:pointer;">
+                              <img src="img/agregar.png" alt="Agregar" class="icon btn-agregar-producto" width="20" style="cursor:pointer;">
+                              <img src="img/vista.png" id="btnVistaProducto" alt="Vista" class="icon" width="20" style="cursor:pointer;">
                           </div>
                       </div>
                       <table id="TablaProductos" class="display">
@@ -297,7 +295,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
               <button id="cerrarModalProducto" class="btn-cerrar" aria-label="Cerrar">&times;</button>
               
               <h3 id="modalAgregarProductoTitle">Agregar Producto</h3>
-              <form id="formAgregarProducto" method="POST" action="guardarProducto.php">
+              <form id="formAgregarProducto" method="POST" action="guardarProducto.php" enctype="multipart/form-data">
                 <div class="form-group">
                   <label for="nombreProducto">Nombre del Producto:</label>
                   <input type="text" id="nombreProducto" name="nombreProducto" required>
@@ -313,6 +311,11 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                   <input type="number" id="stockProducto" name="stockProducto" required min="1">
                 </div>
 
+                <div class="form-group">
+                  <label for="imagenProducto">Imagen:</label>
+                  <input type="file" id="imagenProducto" name="imagenProducto" accept="image/*" required>
+                </div>
+
                 <button type="submit" class="btn-confirmar">Guardar Producto</button>
               </form>
             </div>
@@ -324,7 +327,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
               <button id="cerrarModalEditarProducto" class="btn-cerrar" aria-label="Cerrar">&times;</button>
               
               <h3 id="modalEditarProductoTitle">Editar Producto</h3>
-              <form id="formEditarProducto" method="POST" action="eProductos.php">
+              <form id="formEditarProducto" method="POST" action="eProductos.php" enctype="multipart/form-data">
                 <input type="hidden" name="id" id="editarIdProducto">
 
                 <div class="form-group">
@@ -342,10 +345,43 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                   <input type="number" id="editarStockProducto" name="stock" required min="0">
                 </div>
 
+                <div class="form-group">
+                  <label for="editarImagenProducto">Imagen (opcional):</label>
+                  <input type="file" id="editarImagenProducto" name="editarImagenProducto" accept="image/*">
+                </div>
+
                 <button type="submit" class="btn-confirmar">Guardar Cambios</button>
               </form>
             </div>
           </div>
+
+<!-- Modal Vista Producto -->
+<div id="modalVistaProducto" class="modal" aria-hidden="true" style="display:none;">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalVistaProductoTitle">
+    <button id="cerrarModalVistaProducto" class="btn-cerrar" aria-label="Cerrar">&times;</button>
+
+    <div class="product-card">
+      <div class="card-header">
+        <h3 id="vistaNombreProducto">Título del Producto</h3>
+       <p>Stock: <span id="vistaStockProducto">20</span></p>
+      </div>
+
+      <!-- Precio en círculo -->
+      <div class="price-circle">
+        <span id="vistaPrecioProducto">$00</span>
+      </div>
+
+      <!-- Imagen del producto -->
+      <div class="img-container">
+        <img id="vistaImgProducto" src="" alt="Imagen del producto">
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+
 
 
       </main>
@@ -357,42 +393,6 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
     <script src="librerias/tables.js"></script>
     <script src="librerias/carrito.js"></script>
     <script src="librerias/FunInventario.js"></script>
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-          const tablaProductos = document.querySelector("#TablaProductos");
-          const dataTable = new simpleDatatables.DataTable(tablaProductos);
-
-          function aplicarEstilosStock() {
-              // Recorre todas las filas visibles del tbody
-              const filas = tablaProductos.querySelectorAll("tbody tr");
-              filas.forEach(row => {
-                  const stock = parseInt(row.cells[3].innerText);
-                  if (stock === 0) {
-                      const nombreCell = row.cells[1];
-                      nombreCell.classList.add("sin-stock");
-                      nombreCell.title = "No hay stock disponible";
-                  }
-              });
-          }
-
-          aplicarEstilosStock();
-
-          // Reaplicar después de búsqueda, ordenamiento o cambio de página
-          dataTable.on("datatable.search", aplicarEstilosStock);
-          dataTable.on("datatable.sort", aplicarEstilosStock);
-          dataTable.on("datatable.page", aplicarEstilosStock);
-      });
-    </script>
-    <script>
-    // Inicializar tabla de ventas con Simple-DataTables
-    const tablaUsuarios = new simpleDatatables.DataTable("#personasTabla", {
-      searchable: true,
-      fixedHeight: true,
-      perPage: 5
-    });
-
-  </script>
-    
   </body>
 </html>
 <?php

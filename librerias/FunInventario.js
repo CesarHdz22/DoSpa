@@ -530,3 +530,66 @@ document.getElementById("formEditarKit").addEventListener("submit", function(e){
               });
           }
       });
+
+       document.addEventListener("DOMContentLoaded", function() {
+          const tablaProductos = document.querySelector("#TablaProductos");
+          const dataTable = new simpleDatatables.DataTable(tablaProductos);
+
+          function aplicarEstilosStock() {
+              // Recorre todas las filas visibles del tbody
+              const filas = tablaProductos.querySelectorAll("tbody tr");
+              filas.forEach(row => {
+                  const stock = parseInt(row.cells[3].innerText);
+                  if (stock === 0) {
+                      const nombreCell = row.cells[1];
+                      nombreCell.classList.add("sin-stock");
+                      nombreCell.title = "No hay stock disponible";
+                  }
+              });
+          }
+
+          aplicarEstilosStock();
+
+          // Reaplicar después de búsqueda, ordenamiento o cambio de página
+          dataTable.on("datatable.search", aplicarEstilosStock);
+          dataTable.on("datatable.sort", aplicarEstilosStock);
+          dataTable.on("datatable.page", aplicarEstilosStock);
+      });
+
+
+      // Botón Vista
+document.getElementById("btnVistaProducto").addEventListener("click", () => {
+  const rowSel = document.querySelector("#TablaProductos tbody tr.row-selected");
+  
+  if (!rowSel) {
+    Swal.fire({ icon: "error", title: "Oops...", text: "Selecciona un producto primero." });
+    return;
+  }
+
+  // Agarro los datos de las celdas
+  const id = rowSel.cells[0].textContent;
+  const nombre = rowSel.cells[1].textContent;
+  const precio = rowSel.cells[2].textContent;
+  const stock = rowSel.cells[3].textContent;
+
+  // Llenar el modal
+  document.getElementById("vistaNombreProducto").textContent = nombre;
+  document.getElementById("vistaPrecioProducto").textContent = precio;
+  document.getElementById("vistaStockProducto").textContent = stock;
+  document.getElementById("vistaImgProducto").src = "mostrarImagen.php?id=" + id;
+
+  // Mostrar modal
+  const modalVista = document.getElementById("modalVistaProducto");
+  modalVista.style.display = "flex";
+  modalVista.setAttribute("aria-hidden", "false");
+});
+
+// Cerrar modal
+document.getElementById("cerrarModalVistaProducto").addEventListener("click", () => {
+  document.getElementById("modalVistaProducto").style.display = "none";
+});
+const tablaUsuarios = new simpleDatatables.DataTable("#TablaProductos", {
+  searchable: true,
+  fixedHeight: true,
+  perPage: 5
+});

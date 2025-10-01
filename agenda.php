@@ -31,43 +31,6 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-  <style>
-        /* Botón de calendario junto al título */
-    .titulo-agenda-container .btn-calendario {
-        display: inline-flex;       
-        align-items: center;
-        justify-content: center;
-        width: 36px;                
-        height: 36px;
-        padding: 4px;
-        border: 1px solid #fff;
-        border-radius: 8px;
-        background: #fff;
-        cursor: pointer;
-        transition: transform .15s ease, box-shadow .15s ease, background .15s ease, color .15s ease;
-    }
-
-    .titulo-agenda-container .btn-calendario img {
-        width: 20px;
-        height: 20px;
-        vertical-align: middle;
-        pointer-events: none;       
-        transition: transform .15s ease, opacity .15s ease;
-    }
-
-    .titulo-agenda-container .btn-calendario:hover {
- 
-        color: #fff;
-        
-        transform: translateY(-2px);
-    }
-
-    .titulo-agenda-container .btn-calendario:hover img {
-        transform: translateY(-2px);
-        opacity: 1;
-    }
-
-  </style>
 </head>
 <body>
   <?php if (!empty($_SESSION['msg_error'])): ?>
@@ -116,13 +79,13 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
       </header>
 
       <div class="inventario"><!-- mismas clases para heredar estilos -->
-        <!-- Contenedor del título y botón de calendario -->
+
         <div class="titulo-agenda-container" style="display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:20px;">
           <h2 class="titulo-inventario">AGENDA</h2>
 
-          <!-- Botón de calendario con animación tipo .btn-mini -->
+
           <button class="btn-calendario" data-tipo="taller" title="Ver calendario">
-            <img src="img/calendario (1).png" alt="Calendario" width="20">
+            <img src="img/calendario.png" alt="Calendario" width="20">
           </button>
         </div>
       
