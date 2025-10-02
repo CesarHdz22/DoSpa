@@ -15,24 +15,28 @@ $result = mysqli_query($conexion, $sql);
 
 // Construir tabla
 $html = '
-<table id="personasTabla" class="ventas-tabla display">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Nombre</th>
-            <th>Correo</th>
-        </tr>
-    </thead>
-    <tbody>
+<section class="tipos">
+    <div class="tipos-container">
+        <div class="section-header">
+            <h3>'.ucfirst($tipo).'s</h3>
+            <div class="section-actions">
+                <img src="img/agregar.png" alt="Agregar" class="icon btn-agregar-kit" width="20" style="cursor:pointer;">
+            </div>
+        </div>
+
+        <table id="personasTabla" class="tablaTipos">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                </tr>
+            </thead>
+            <tbody>
 ';
 
 while ($mostrar = mysqli_fetch_array($result)) {
-    if ($tipo == "alumna") {
-        $idPersona = $mostrar['id_alumna'];
-    } else {
-        $idPersona = $mostrar['id_cliente'];
-    }
-
+    $idPersona = ($tipo == "alumna") ? $mostrar['id_alumna'] : $mostrar['id_cliente'];
     $html .= "
         <tr>
             <td>{$idPersona}</td>
@@ -43,8 +47,11 @@ while ($mostrar = mysqli_fetch_array($result)) {
 }
 
 $html .= '
-    </tbody>
-</table>
+            </tbody>
+        </table>
+    </div>
+</section>
 ';
+
 
 echo $html;

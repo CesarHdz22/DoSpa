@@ -214,36 +214,49 @@
       });
 
 
+      let tablaInscritas; // fuera, para mantener la referencia
+
       document.querySelectorAll('.btn-listar').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const tipo = btn.dataset.tipo;
-    const tableId = (tipo === 'curso') ? '#TablaCursos' : '#TablaTalleres';
-    const rowSel = document.querySelector(`${tableId} tbody tr.row-selected`);
+          btn.addEventListener('click', () => {
+              const tipo = btn.dataset.tipo;
+              const tableId = (tipo === 'curso') ? '#TablaCursos' : '#TablaTalleres';
+              const rowSel = document.querySelector(`${tableId} tbody tr.row-selected`);
 
-    if (!rowSel) {
-      Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Selecciona una fila primero."
+              if (!rowSel) {
+                  Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Selecciona una fila primero."
+                  });
+                  return;
+              }
+
+              const id = rowSel.querySelector('td').innerText.trim();
+
+              // AJAX
+              fetch('getInscritas.php', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                  body: `id=${encodeURIComponent(id)}&tipo=${encodeURIComponent(tipo)}`
+              })
+              .then(res => res.text())
+              .then(data => {
+                  document.getElementById('contenidoInscritas').innerHTML = data;
+                  document.getElementById('modalInscritas').style.display = 'flex';
+
+                  // Inicializar tabla de forma segura
+                  if (tablaInscritas) {
+                      tablaInscritas.destroy(); // destruir instancia previa
+                  }
+                  tablaInscritas = new simpleDatatables.DataTable("#inscritasTabla", {
+                      searchable: true,
+                      fixedHeight: true,
+                      perPage: 5
+                  });
+              });
+          });
       });
-      return;
-    }
 
-    const id = rowSel.querySelector('td').innerText.trim();
-
-    // AJAX
-    fetch('getInscritas.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `id=${encodeURIComponent(id)}&tipo=${encodeURIComponent(tipo)}`
-    })
-    .then(res => res.text())
-    .then(data => {
-      document.getElementById('contenidoInscritas').innerHTML = data;
-      document.getElementById('modalInscritas').style.display = 'flex';
-    });
-  });
-});
 
 // Esperar a que cargue el DOM
 document.addEventListener('DOMContentLoaded', function() {

@@ -34,33 +34,7 @@ if (tipoSelect) {
       contenedorTabla.innerHTML = '';
       return;
     }
-
-    // Petición AJAX a PHP para obtener usuarios por tipo
-    $.ajax({
-      url: 'traer_usuarios.php',
-      type: 'POST',
-      data: { tipo },
-      success: function(data) {
-        contenedorTabla.innerHTML = data;
-
-        // Agregar evento a botones de selección
-        contenedorTabla.querySelectorAll('.btn-seleccionar-usuario').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const idComprador = this.dataset.id;
-          const tipoSelect = document.getElementById("tipo");
-          const tipo = tipoSelect ? tipoSelect.value : '';
-          if(!tipo){
-            alert("Selecciona un tipo de comprador");
-            return;
-          }
-          confirmarCompra(idComprador);
-        });
-        });
-      },
-      error: function() {
-        contenedorTabla.innerHTML = '<p>Error al cargar usuarios.</p>';
-      }
-    });
+    
   });
 }
 
@@ -346,7 +320,7 @@ function confirmarCompra(idComprador) {
     tipoCliente: tipo  // coincide con el POST real
   }, function(resp){
     alert(resp);
-    location.reload();
+    location.replace('ventas.php');
   });
 }
 

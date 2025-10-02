@@ -424,96 +424,118 @@ document.getElementById("formEditarKit").addEventListener("submit", function(e){
           mo.observe(kitsSection, { childList: true, subtree: true });
         }
 
-    
-        $(document).ready(function() {
+        
+        // ---- Helpers globales para simple-datatables ----
+        window._sdInstances = window._sdInstances || {};
 
-          // Listener delegado: funciona aunque #tipo esté dentro de modal dinámico
-          $(document).on('change', '#tipo', function() {
-            const tipoSeleccionado = $(this).val();
-            const $contenedor = $('#contenedor-tabla');
-
-            console.log('[DEBUG] cambio tipo ->', tipoSeleccionado);
-
-            if (!tipoSeleccionado) {
-              $contenedor.empty();
-              return;
+        function destroyDataTable(selector) {
+        try {
+            const inst = window._sdInstances[selector];
+            if (inst && typeof inst.destroy === 'function') {
+            inst.destroy();
             }
+        } catch (e) {
+            console.warn('destroyDataTable error', e);
+        } finally {
+            delete window._sdInstances[selector];
+            const el = document.querySelector(selector);
+            if (el && el.dataset) delete el.dataset._datatable;
+        }
+        }
 
-            $contenedor.html('<p>Cargando...</p>');
+        function createDataTable(selector, options = {}) {
+        const el = document.querySelector(selector);
+        if (!el) return null;
+        destroyDataTable(selector);
+        // nota: simpleDatatables puede aceptar elemento o selector string
+        const inst = new simpleDatatables.DataTable(el, options);
+        window._sdInstances[selector] = inst;
+        el.dataset._datatable = '1';
+        return inst;
+        }
 
-            $.ajax({
-              url: 'getTipo.php',
-              type: 'POST',
-              data: { tipo: tipoSeleccionado },
-              dataType: 'html',
-              success: function(respuestaHtml) {
-                console.log('[DEBUG] respuesta recibida length=', respuestaHtml.length);
-                $contenedor.html(respuestaHtml);
+        // ---- Manejo de cambio de tipo (único punto que carga #personasTabla) ----
+        $(document).off('change', '#tipo'); // asegurar que no existan duplicados
+        $(document).on('change', '#tipo', function() {
+        const tipoSeleccionado = $(this).val();
+        const $contenedor = $('#contenedor-tabla');
 
-                // Inicializar simple-datatables si existe la tabla
-                const personaTableEl = document.querySelector('#personasTabla');
-                if (personaTableEl && !personaTableEl.dataset._datatable) {
-                  new simpleDatatables.DataTable("#personasTabla", {
-                    searchable: true,
-                    fixedHeight: true,
-                    perPage: 5
-                  });
-                  personaTableEl.dataset._datatable = '1';
-                }
+        console.log('[DEBUG] cambio tipo ->', tipoSeleccionado);
 
-                // Delegación de click por fila
-                $(document).off('click', '#personasTabla tbody tr'); // evitar duplicados
-                $(document).on('click', '#personasTabla tbody tr', function() {
-                  const idComprador = $(this).find('td').first().text().trim();
-                  console.log('[DEBUG] fila clic id=', idComprador);
+        if (!tipoSeleccionado) {
+            // destruir cualquier datatable previa y limpiar
+            destroyDataTable('#personasTabla');
+            $contenedor.empty();
+            return;
+        }
 
-                  // Obtener carrito
-                  const carrito = window.getCarrito ? window.getCarrito() : [];
-                  if (!carrito || carrito.length === 0) {
-                    alert('El carrito está vacío.');
-                    return;
-                  }
+        $contenedor.html('<p>Cargando...</p>');
 
-                  // Crear formulario dinámico
-                  const form = document.createElement('form');
-                  form.method = 'POST';
-                  form.action = 'confirmar_compra.php'; // Cambiar a tu página destino
-                  form.style.display = 'none';
+        $.ajax({
+            url: 'getTipo.php',
+            type: 'POST',
+            data: { tipo: tipoSeleccionado },
+            dataType: 'html',
+            success: function(respuestaHtml) {
+            console.log('[DEBUG] respuesta recibida length=', respuestaHtml.length);
+            $contenedor.html(respuestaHtml);
 
-                  // Input para id del comprador
-                  const inputId = document.createElement('input');
-                  inputId.type = 'hidden';
-                  inputId.name = 'idComprador';
-                  inputId.value = idComprador;
-                  form.appendChild(inputId);
-
-                  // Input para carrito en JSON
-                  const inputCarrito = document.createElement('input');
-                  inputCarrito.type = 'hidden';
-                  inputCarrito.name = 'carrito';
-                  inputCarrito.value = JSON.stringify(carrito);
-                  form.appendChild(inputCarrito);
-
-                  // Input para tipo de cliente (si quieres mantenerlo en sesión)
-                  const inputTipo = document.createElement('input');
-                  inputTipo.type = 'hidden';
-                  inputTipo.name = 'tipoCliente';
-                  inputTipo.value = tipoSeleccionado;
-                  form.appendChild(inputTipo);
-
-                  document.body.appendChild(form);
-                  form.submit();
+            // Inicializar DataTable de personas (si existe)
+            const personaEl = document.querySelector('#personasTabla');
+            if (personaEl) {
+                createDataTable('#personasTabla', {
+                searchable: true,
+                fixedHeight: true,
+                perPage: 5
                 });
 
-              },
-              error: function(xhr, status, err) {
-                console.error('AJAX getTipo error:', status, err);
-                $contenedor.html('<p style="color:red;">Error al cargar. Revisa la consola (Network).</p>');
-              }
-            });
-          });
+                // Si necesitas refrescar columnas tras render (a veces útil)
+                setTimeout(() => {
+                const inst = window._sdInstances['#personasTabla'];
+                if (inst && typeof inst.refresh === 'function') inst.refresh();
+                }, 120);
+            }
 
+            // Delegación: click en fila -> confirmarCompra (usa la función global de carrito.js)
+            // quitamos handlers antiguos para evitar duplicados
+            $(document).off('click', '#personasTabla tbody tr');
+            $(document).on('click', '#personasTabla tbody tr', function() {
+                const idComprador = $(this).find('td').first().text().trim();
+                console.log('[DEBUG] fila clic id=', idComprador);
+
+                const carrito = window.getCarrito ? window.getCarrito() : [];
+                if (!carrito || carrito.length === 0) {
+                alert('El carrito está vacío.');
+                return;
+                }
+
+                // Reusar confirmarCompra definida en carrito.js
+                if (typeof window.confirmarCompra === 'function') {
+                window.confirmarCompra(idComprador);
+                } else {
+                // Fallback: crear y enviar formulario como antes
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'confirmar_compra.php';
+                form.style.display = 'none';
+                const inputId = document.createElement('input');
+                inputId.type = 'hidden'; inputId.name = 'idComprador'; inputId.value = idComprador; form.appendChild(inputId);
+                const inputCar = document.createElement('input');
+                inputCar.type = 'hidden'; inputCar.name = 'carrito'; inputCar.value = JSON.stringify(carrito); form.appendChild(inputCar);
+                const inputTipo = document.createElement('input');
+                inputTipo.type = 'hidden'; inputTipo.name = 'tipoCliente'; inputTipo.value = tipoSeleccionado; form.appendChild(inputTipo);
+                document.body.appendChild(form);
+                form.submit();
+                }
+            });
+            },
+            error: function(xhr, status, err) {
+            console.error('AJAX getTipo error:', status, err);
+            $contenedor.html('<p style="color:red;">Error al cargar. Revisa la consola (Network).</p>');
+            }
         });
+        });
+
         document.addEventListener("DOMContentLoaded", function() {
           // Ya tienes inicializadas otras tablas, falta esta:
       if ($("#productosSeleccionables").length) {
@@ -587,10 +609,4 @@ document.getElementById("btnVistaProducto").addEventListener("click", () => {
 // Cerrar modal
 document.getElementById("cerrarModalVistaProducto").addEventListener("click", () => {
   document.getElementById("modalVistaProducto").style.display = "none";
-});
-// Inicializar tabla de ventas con Simple-DataTables
-const tablaUsuarios = new simpleDatatables.DataTable("#personasTabla", {
-  searchable: true,
-  fixedHeight: true,
-  perPage: 5
 });

@@ -74,13 +74,14 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
               $actualizarStock = "UPDATE kits_productos SET Stock = Stock - '$cantidad' WHERE id_kit = '$id_seleccion'";
             }
 
-            if($resultado3 = mysqli_query($conexion,$actualizarStock)){
-              echo "<script> window.location.replace('ventas.php');</script>";
-            }
-
+            
           }
         }
       }
+
+            if($resultado3 = mysqli_query($conexion,$actualizarStock)){
+              echo "Venta Realizada";
+            }
 
   
 

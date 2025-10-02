@@ -1,0 +1,55 @@
+.tipos {
+  padding: 30px;
+  background: #f5f6fa; /* fondo suave gris */
+  display: flex;
+  justify-content: center;
+}
+
+.tipos-container {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  width: 90%;
+  max-width: 1000px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.section-header h3 {
+  font-size: 24px;
+  color: #333;
+  font-weight: bold;
+  margin: 0;
+}
+
+.tablaTipos {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tablaTipos thead {
+  background: #333;
+  color: #fff;
+}
+
+.tablaTipos th, 
+.tablaTipos td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+a {
+  color: #943154;
+  text-decoration: none;
+}
+
+.icon {
+  cursor: pointer;
+}

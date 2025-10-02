@@ -19,6 +19,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/inventario.css">
+    <link rel="stylesheet" href="css/getTipo.css">
     <link rel="icon" href="img/DO_SPA_logo.png" type="image/png">
     <!-- Iconos de FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -382,12 +383,11 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
       </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" ></script>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="librerias/tables.js"></script>
     <script src="librerias/carrito.js"></script>
     <script src="librerias/FunInventario.js"></script>
+    
   </body>
 </html>
 <?php

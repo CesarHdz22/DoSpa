@@ -22,7 +22,7 @@ if ($tipo === "taller") {
 
 $result = mysqli_query($conexion, $sql);
 
-$html = '<table class="ventas-tabla"><thead><tr>
+$html = '<table class="ventas-tabla" id="inscritasTabla"><thead><tr>
           <th>ID</th><th>Nombre</th><th>Correo</th></tr></thead><tbody>';
 
 while($row = mysqli_fetch_assoc($result)){
