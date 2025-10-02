@@ -512,7 +512,7 @@
                       <div class="modal" id="modalMaestra">
                         <div class="modal-content">
                           <header>
-                            <h3>Nuev Cliente</h3>
+                            <h3>Nueva Maestra</h3>
                             <button class="close" data-close="#modalMaestra">&times;</button>
                           </header>
                           <form method="post" autocomplete="off">
@@ -1117,7 +1117,7 @@
         });
 
   </script>
-  
+
 
 </body>
 </html>
