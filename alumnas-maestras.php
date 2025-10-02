@@ -52,7 +52,7 @@
           exit;
       }
 
-
+      //Que chistoso - CESAR
       // === Editar Usuario ===
       if ($action === 'edit_usuario' && strcasecmp(trim($Cargo),'Admin')===0) {
           $id = intval(post('Id_Usuario'));
