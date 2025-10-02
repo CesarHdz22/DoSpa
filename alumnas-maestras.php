@@ -52,7 +52,7 @@
           exit;
       }
 
-      //Que chistoso - CESAR
+      //Que chistoso - CESAR 01/10/2025
       // === Editar Usuario ===
       if ($action === 'edit_usuario' && strcasecmp(trim($Cargo),'Admin')===0) {
           $id = intval(post('Id_Usuario'));
