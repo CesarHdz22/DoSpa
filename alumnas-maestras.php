@@ -1,219 +1,4 @@
-<?php
-    session_start();
-    include_once("conexion.php");
-    if (empty($_SESSION['Id_Usuario'])) { header("location: index.html"); exit; }
-
-    /* Normalizar / inicializar variables de sesión — evitar Undefined variable */
-    $Id_Usuario = $_SESSION['Id_Usuario'] ?? $_SESSION['id_usuario'] ?? null;
-    $Nombre     = $_SESSION['nombre']     ?? $_SESSION['Nombre']     ?? '';
-    $Apat       = $_SESSION['apat']       ?? $_SESSION['Apat']       ?? '';
-    $Amat       = $_SESSION['amat']       ?? $_SESSION['Amat']       ?? '';
-    $Cargo      = $_SESSION['Cargo']      ?? $_SESSION['cargo']      ?? '';
-
-    mysqli_set_charset($conexion, 'utf8mb4');
-
-    function e($s){ return htmlspecialchars((string)($s ?? ''), ENT_QUOTES, 'UTF-8'); }
-    function post($k,$d=null){ return $_POST[$k] ?? $d; }
-    function is_post(){ return ($_SERVER['REQUEST_METHOD'] === 'POST'); }
-
-    /* -------------------- INSERTS -------------------- */
-    if (is_post()) {
-      $action = post('action','');
-      // === Eliminar Usuario ===
-      if (is_post() && post('action') === 'delete_usuario' && strcasecmp(trim($Cargo),'Admin')===0) {
-          $id = intval(post('id'));
-          $res = mysqli_query($conexion, "DELETE FROM usuarios WHERE Id_Usuario = $id");
-          header('Content-Type: application/json');
-          echo json_encode(['success' => $res ? true : false]);
-          exit;
-      }
-      // === Eliminar Cliente ===
-      if (is_post() && post('action') === 'delete_cliente') {
-          $id = intval(post('id'));
-          $res = mysqli_query($conexion, "DELETE FROM clientes WHERE id_cliente = $id");
-          header('Content-Type: application/json');
-          echo json_encode(['success' => $res ? true : false]);
-          exit;
-      }
-      // === Eliminar Maestra ===
-      if (is_post() && post('action') === 'delete_maestra') {
-          $id = intval(post('id'));
-          $res = mysqli_query($conexion, "DELETE FROM maestras WHERE id_maestra = $id");
-          header('Content-Type: application/json');
-          echo json_encode(['success' => $res ? true : false]);
-          exit;
-      }
-      // === Eliminar Alumna ===
-      if (is_post() && post('action') === 'delete_alumna') {
-          $id = intval(post('id'));
-          $res = mysqli_query($conexion, "DELETE FROM alumnas WHERE id_alumna = $id");
-          header('Content-Type: application/json');
-          echo json_encode(['success' => $res ? true : false]);
-          exit;
-      }
-
-      //Que chistoso - CESAR 01/10/2025
-      // === Editar Usuario ===
-      if ($action === 'edit_usuario' && strcasecmp(trim($Cargo),'Admin')===0) {
-          $id = intval(post('Id_Usuario'));
-          $sql = "UPDATE usuarios 
-                  SET Nombre=?, Apat=?, Amat=?, Correo=?, User=?, Cargo=?"
-                  . (post('Pass') !== '' ? ", Pass=? " : "") . 
-                  "WHERE Id_Usuario=?";
-          
-          if (post('Pass') !== '') {
-              $pass = password_hash(post('Pass'), PASSWORD_DEFAULT);
-              $stmt = mysqli_prepare($conexion, $sql);
-              mysqli_stmt_bind_param(
-                $stmt, "sssssssi",
-                post('Nombre'), post('Apat'), post('Amat'),
-                post('Correo'), post('User'), post('Cargo'),
-                $pass, $id
-              );
-          } else {
-              $stmt = mysqli_prepare($conexion, $sql);
-              mysqli_stmt_bind_param(
-                $stmt, "ssssssi",
-                post('Nombre'), post('Apat'), post('Amat'),
-                post('Correo'), post('User'), post('Cargo'),
-                $id
-              );
-          }
-          $ok = mysqli_stmt_execute($stmt);
-          $_SESSION['flash_'.($ok?'ok':'err')] = $ok ? 'Usuario actualizado.' : 'Error: '.mysqli_error($conexion);
-          header("Location: alumnas-maestras.php"); exit;
-      }
-      // === Editar Cliente ===
-      if ($action === 'edit_cliente') {
-          $id = intval(post('id_cliente'));
-          $sql = "UPDATE clientes 
-                  SET nombre=?, apat=?, amat=?, correo=?, telefono=?, direccion=?
-                  WHERE id_cliente=?";
-          $stmt = mysqli_prepare($conexion, $sql);
-          mysqli_stmt_bind_param(
-              $stmt, "ssssssi",
-              post('nombre'), post('apat'), post('amat'),
-              post('correo'), post('telefono'), post('direccion'),
-              $id
-          );
-          $ok = mysqli_stmt_execute($stmt);
-          $_SESSION['flash_'.($ok?'ok':'err')] = $ok ? 'Cliente actualizado.' : 'Error: '.mysqli_error($conexion);
-          header("Location: alumnas-maestras.php"); exit;
-      }
-      // === Editar Maestra ===
-      if ($action === 'edit_maestra') {
-          $id = intval(post('id_maestra'));
-          $sql = "UPDATE maestras 
-                  SET nombre=?, base=?, acuerdo=?, gastos=?, porcentaje_ganancia=? 
-                  WHERE id_maestra=?";
-          $stmt = mysqli_prepare($conexion, $sql);
-          mysqli_stmt_bind_param(
-              $stmt, "sssddi",
-              post('nombre'), post('base'), post('acuerdo'),
-              (post('gastos')===''?null:floatval(post('gastos'))),
-              (post('porcentaje_ganancia')===''?null:floatval(post('porcentaje_ganancia'))),
-              $id
-          );
-          $ok = mysqli_stmt_execute($stmt);
-          $_SESSION['flash_'.($ok?'ok':'err')] = $ok ? 'Maestra actualizada.' : 'Error: '.mysqli_error($conexion);
-          header("Location: alumnas-maestras.php"); exit;
-      }
-      // === Editar Alumna ===
-      if ($action === 'edit_alumna') {
-          $id = intval(post('id_alumna'));
-          $sql = "UPDATE alumnas 
-                  SET nombre=?, apat=?, amat=?, telefono=?, correo=?, direccion=?, descuento_aplicado=?, tipo_descuento=? 
-                  WHERE id_alumna=?";
-          $stmt = mysqli_prepare($conexion, $sql);
-          mysqli_stmt_bind_param(
-              $stmt, "sssssisisi",
-              post('nombre'), post('apat'), post('amat'),
-              post('telefono'), post('correo'), post('direccion'),
-              intval(post('descuento_aplicado',0)), post('tipo_descuento'),
-              $id
-          );
-          $ok = mysqli_stmt_execute($stmt);
-          $_SESSION['flash_'.($ok?'ok':'err')] = $ok ? 'Alumna actualizada.' : 'Error: '.mysqli_error($conexion);
-          header("Location: alumnas-maestras.php"); exit;
-      }
-
-      // === Alumna ===
-      if ($action === 'add_alumna') {
-        $sql  = "INSERT INTO alumnas (nombre, apat, amat, telefono, correo, direccion, descuento_aplicado, tipo_descuento)
-                VALUES (?,?,?,?,?,?,?,?)";
-        $stmt = mysqli_prepare($conexion, $sql);
-        $desc_ap = intval(post('descuento_aplicado',0));
-        mysqli_stmt_bind_param(
-          $stmt, "ssssssis",
-          post('nombre'), post('apat'), post('amat'),
-          post('telefono'), post('correo'), post('direccion'),
-          $desc_ap, post('tipo_descuento')
-        );
-        $ok = mysqli_stmt_execute($stmt);
-        $_SESSION['flash_'.($ok?'ok':'err')] = $ok ? 'Alumna agregada.' : 'Error: '.mysqli_error($conexion);
-        header("Location: alumnas-maestras.php"); exit;
-      }
-
-      // === Maestra ===
-      if ($action === 'add_maestra') {
-        $sql  = "INSERT INTO maestras (nombre, base, acuerdo, gastos, porcentaje_ganancia)
-                VALUES (?,?,?,?,?)";
-        $stmt = mysqli_prepare($conexion, $sql);
-        $gastos = (post('gastos','')===''?null:floatval(post('gastos')));
-        $porc   = (post('porcentaje_ganancia','')===''?null:floatval(post('porcentaje_ganancia')));
-        mysqli_stmt_bind_param(
-          $stmt, "sssdd",
-          post('nombre'), post('base'), post('acuerdo'),
-          $gastos, $porc
-        );
-        $ok = mysqli_stmt_execute($stmt);
-        $_SESSION['flash_'.($ok?'ok':'err')] = $ok ? 'Maestra agregada.' : 'Error: '.mysqli_error($conexion);
-        header("Location: alumnas-maestras.php"); exit;
-      }
-
-      // === Cliente ===
-      if ($action === 'add_cliente') {
-        $sql  = "INSERT INTO clientes (nombre, apat, amat, correo, telefono, direccion)
-                VALUES (?,?,?,?,?,?)";
-        $stmt = mysqli_prepare($conexion, $sql);
-        mysqli_stmt_bind_param(
-          $stmt, "ssssss",
-          post('nombre'), post('apat'), post('amat'),
-          post('correo'), post('telefono'), post('direccion')
-        );
-        $ok = mysqli_stmt_execute($stmt);
-        $_SESSION['flash_'.($ok?'ok':'err')] = $ok ? 'Cliente agregado.' : 'Error: '.mysqli_error($conexion);
-        header("Location: alumnas-maestras.php"); exit;
-      }
-
-      // === Usuario ===
-      if ($action === 'add_usuario' && strcasecmp(trim($Cargo),'Admin')===0) {
-        $sql  = "INSERT INTO usuarios (Nombre, Apat, Amat, Correo, User, Pass, Cargo)
-                VALUES (?,?,?,?,?,?,?)";
-        $stmt = mysqli_prepare($conexion, $sql);
-        $pass = password_hash(post('Pass'), PASSWORD_DEFAULT); // 🔐 recomendado
-        mysqli_stmt_bind_param(
-          $stmt, "sssssss",
-          post('Nombre'), post('Apat'), post('Amat'),
-          post('Correo'), post('User'), $pass, post('Cargo')
-        );
-        $ok = mysqli_stmt_execute($stmt);
-        $_SESSION['flash_'.($ok?'ok':'err')] = $ok ? 'Usuario agregado.' : 'Error: '.mysqli_error($conexion);
-        header("Location: alumnas-maestras.php"); exit;
-      }
-    }
-
-    /* -------------------- Listados -------------------- */
-    $sqlAlumnas  = "SELECT id_alumna, nombre, apat, amat, telefono, correo, direccion, descuento_aplicado, tipo_descuento FROM alumnas ORDER BY id_alumna ASC";
-    $sqlMaestras = "SELECT id_maestra, nombre, base, acuerdo, gastos, porcentaje_ganancia FROM maestras ORDER BY id_maestra ASC";
-    $sqlClientes = "SELECT * FROM clientes";
-    $sqlUsuarios = "SELECT * FROM usuarios";
-
-    $alumnas  = mysqli_query($conexion, $sqlAlumnas);
-    $maestras = mysqli_query($conexion, $sqlMaestras);
-    $clientes = mysqli_query($conexion, $sqlClientes);
-    $usuarios = mysqli_query($conexion, $sqlUsuarios);
-?>
+<?php include_once("usuario_controlador.php"); ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -263,8 +48,6 @@
           <a href="muerte.php"><img src="img/logout.png" id="btn-logout" alt="Salir"></a>
         </div>
       </header>
-
-
     <div class="inventario alumnas-maestras">
       <center>
           <div class="grid-2">
@@ -275,6 +58,7 @@
                       <h3>Alumnas</h3>
                       <div class="section-actions">
                         <img src="img/agregar.png" class="btn-mini btn-primary" alt="Agregar" id="btnNuevaAlumna" class="icon btn-agregar" width="20" data-tipo="curso" title="Agregar">
+                        <img src="img/oculto.png" id="btnToggleAlumnas" class="btn-mini btn-secondary" title="Mostrar / ocultar inactivos" width="20">
                       </div>
                     </header>
                     <div class="body">
@@ -314,22 +98,35 @@
                                   <td><?php echo e($a['tipo_descuento']); ?></td>
                                   <td>
                                     <button class="btn-mini btn-edit-alumna"
-                                      data-id="<?php echo e($a['id_alumna']); ?>"
-                                      data-nombre="<?php echo e($a['nombre']); ?>"
-                                      data-apat="<?php echo e($a['apat']); ?>"
-                                      data-amat="<?php echo e($a['amat']); ?>"
-                                      data-telefono="<?php echo e($a['telefono']); ?>"
-                                      data-correo="<?php echo e($a['correo']); ?>"
-                                      data-direccion="<?php echo e($a['direccion']); ?>"
-                                      data-descuento="<?php echo e($a['descuento_aplicado']); ?>"
-                                      data-tipo="<?php echo e($a['tipo_descuento']); ?>">
-                                      <i class="fa fa-edit"></i>
-                                    </button>
-                                    <button class="btn-mini btn-delete-alumna" 
                                             data-id="<?php echo e($a['id_alumna']); ?>"
-                                            title="Eliminar Alumna">
-                                        <i class="fa fa-trash"></i>
+                                            data-nombre="<?php echo e($a['nombre']); ?>"
+                                            data-apat="<?php echo e($a['apat']); ?>"
+                                            data-amat="<?php echo e($a['amat']); ?>"
+                                            data-telefono="<?php echo e($a['telefono']); ?>"
+                                            data-correo="<?php echo e($a['correo']); ?>"
+                                            data-direccion="<?php echo e($a['direccion']); ?>"
+                                            data-descuento="<?php echo e($a['descuento_aplicado']); ?>"
+                                            data-tipo="<?php echo e($a['tipo_descuento']); ?>">
+                                        <i class="fa fa-edit"></i>
                                     </button>
+
+                                    <?php if ($a['estatus'] == 1): ?>
+                                        <!-- Alumna activa: botón eliminar -->
+                                        <button class="btn-mini btn-delete-alumna" 
+                                                data-id="<?php echo e($a['id_alumna']); ?>"
+                                                title="Eliminar Alumna">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    <?php else: ?>
+                                        <!-- Alumna inactiva: botón activar -->
+                                        <form method="post" style="display:inline;">
+                                          <input type="hidden" name="action" value="activate_alumna">
+                                          <input type="hidden" name="id_alumna" value="<?php echo e($a['id_alumna']); ?>">
+                                          <button type="submit" class="btn-mini btn-activate-alumna" title="Activar Alumna">
+                                            <i class="fa fa-check"></i>
+                                          </button>
+                                        </form>
+                                    <?php endif; ?>
                                   </td>
                                 </tr>
                               <?php endwhile; ?>
@@ -452,8 +249,8 @@
                     <header>
                       <h3>Maestras</h3>
                       <div class="section-actions">
-                        <img src="img/agregar.png" class="btn-mini btn-primary" alt="Agregar" id="btnNuevaMaestra"class="icon btn-agregar" width="20" data-tipo="curso" title="Agregar sesión de curso">
-                       
+                        <img src="img/agregar.png" class="btn-mini btn-primary icon btn-agregar" alt="Agregar" id="btnNuevaMaestra" width="20" data-tipo="curso" title="Agregar sesión de curso">
+                        <img src="img/oculto.png" id="btnToggleMaestras" class="btn-mini btn-secondary" title="Mostrar / ocultar inactivos" width="20">
                       </div>
                     </header>
                     <div class="body">
@@ -495,11 +292,23 @@
                                       data-porcentaje="<?php echo e($m['porcentaje_ganancia']); ?>">
                                       <i class="fa fa-edit"></i>
                                     </button>
-                                    <button class="btn-mini btn-delete-maestra" 
-                                            data-id="<?php echo e($m['id_maestra']); ?>"
-                                            title="Eliminar Maestra">
-                                        <i class="fa fa-trash"></i>
-                                    </button>                                    
+                                    <?php if ($m['estatus'] == 1): ?>
+                                        <!-- Maestra activa: botón eliminar -->
+                                        <button class="btn-mini btn-delete-maestra" 
+                                                data-id="<?php echo e($m['id_maestra']); ?>"
+                                                title="Eliminar Maestra">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    <?php else: ?>
+                                        <!-- Maestra inactiva: botón activar -->
+                                        <form method="post" style="display:inline;">
+                                          <input type="hidden" name="action" value="activate_maestra">
+                                          <input type="hidden" name="id_maestra" value="<?php echo e($m['id_maestra']); ?>">
+                                          <button type="submit" class="btn-mini btn-activate-maestra" title="Activar Maestra">
+                                            <i class="fa fa-check"></i>
+                                          </button>
+                                        </form>
+                                    <?php endif; ?>
                                   </td>
                                 </tr>
                               <?php endwhile; ?>
@@ -591,6 +400,7 @@
                       <h3>Clientes</h3>
                       <div class="section-actions">
                         <img src="img/agregar.png" class="btn-mini btn-primary" alt="Agregar" id="btnNuevoCliente" class="icon btn-agregar" width="20" data-tipo="cliente" title="Agregar cliente">
+                        <img src="img/oculto.png" class="btn-mini btn-secondary" alt="Mostrar Inactivos" id="btnToggleClientes" width="20" title="Mostrar clientes inactivos">
                       </div>
                     </header>
                     <div class="body">
@@ -720,11 +530,15 @@
                                       data-direccion="<?php echo e($c['direccion']); ?>">
                                       <i class="fa fa-edit"></i>
                                     </button>
-                                    <button class="btn-mini btn-delete-cliente" 
-                                            data-id="<?php echo e($c['id_cliente']); ?>"
-                                            title="Eliminar Cliente">
-                                        <i class="fa fa-trash"></i>
-                                    </button>                                    
+                                    <?php if($c['estatus'] == 1): ?>
+                                        <button class="btn-mini btn-delete-cliente" data-id="<?php echo e($c['id_cliente']); ?>">
+                                          <i class="fa fa-trash"></i>
+                                        </button>
+                                      <?php else: ?>
+                                        <button class="btn-mini btn-activate-cliente" data-id="<?php echo e($c['id_cliente']); ?>">
+                                          <i class="fa fa-check"></i>
+                                        </button>
+                                      <?php endif; ?>                                   
                                   </td>
                                 </tr>
                               <?php endwhile; ?>
@@ -789,11 +603,18 @@
                                     </button>
 
                                     <!-- Botón Eliminar -->
+                                     <?php
+                                      if ($u['Id_Usuario'] != $Id_Usuario) {
+                                        ?>
                                     <button class="btn-mini btn-delete" 
                                       data-id="<?php echo e($u['Id_Usuario']); ?>"
                                       title="Eliminar Usuario">
                                       <i class="fa fa-trash"></i>
-                                    </button>
+                                    </button>    
+                                    <?php
+                                      }
+                                      ?>
+
                                   </td>
                                 </tr>
                               <?php endwhile; ?>
@@ -906,216 +727,40 @@
   <script src="librerias/tables.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" ></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>   
+  <script src="librerias/usuarios.js"></script>
+
+  <!-- Messages -->
+  <?php if (!empty($_SESSION['flash_ok'])): ?>
   <script>
-        document.addEventListener('DOMContentLoaded', () => {
-          const openModal = (id) => document.querySelector(id)?.classList.add('open');
-          const closeModal = (id) => document.querySelector(id)?.classList.remove('open');
-
-          // Alumna
-          document.getElementById('btnNuevaAlumna')?.addEventListener('click', () => openModal('#modalAlumna'));
-
-          // Maestra
-          document.getElementById('btnNuevaMaestra')?.addEventListener('click', () => openModal('#modalMaestra'));
-
-          // Cliente
-          document.getElementById('btnNuevoCliente')?.addEventListener('click', () => openModal('#modalClientes'));
-
-          // Usuario
-          document.getElementById('btnNuevoUsuario')?.addEventListener('click', () => openModal('#modalUsuarios'));
-
-          // Botones cerrar (X)
-          document.querySelectorAll('.modal .close').forEach(btn => {
-            btn.addEventListener('click', () => {
-              const target = btn.getAttribute('data-close');
-              closeModal(target);
-            });
-          });
-          
-
-          // Cerrar al hacer clic fuera del contenido
-          document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', (e) => {
-              if (e.target === modal) modal.classList.remove('open');
-            });
-          });
-        });
-
-        document.addEventListener("DOMContentLoaded", () => {
-            new simpleDatatables.DataTable("#tablaAlumnas");
-            new simpleDatatables.DataTable("#tablaMaestras");
-            new simpleDatatables.DataTable("#tablaClientes");
-            new simpleDatatables.DataTable("#tablaUsuarios");
-        });
-        
-        document.addEventListener("DOMContentLoaded", () => {
-
-          function delegarEdicion(tbodySelector, btnClass, modalSelector, mapping) {
-            const tbody = document.querySelector(tbodySelector);
-            if (!tbody) return;
-
-            tbody.addEventListener("click", (e) => {
-              const btn = e.target.closest(btnClass);
-              if (!btn) return;
-
-              for (const [datasetKey, inputId] of Object.entries(mapping)) {
-                const input = document.getElementById(inputId);
-                if (input) {
-                  input.value = btn.dataset[datasetKey] ?? '';
-                }
-              }
-
-              document.querySelector(modalSelector)?.classList.add("open");
-            });
-          }
-
-          // Usuarios
-          delegarEdicion(
-            "#tablaUsuarios tbody",
-            ".btn-edit",
-            "#modalEditarUsuario",
-            {
-              id: "edit_Id_Usuario",
-              nombre: "edit_Nombre",
-              apat: "edit_Apat",
-              amat: "edit_Amat",
-              correo: "edit_Correo",
-              user: "edit_User",
-              cargo: "edit_Cargo",
-              pass: "edit_Pass" // si quieres dejarla vacía, después puedes hacer input.value=''
-            }
-          );
-
-          // Clientes
-          delegarEdicion(
-            "#tablaClientes tbody",
-            ".btn-edit-cliente",
-            "#modalEditarCliente",
-            {
-              id: "edit_id_cliente",
-              nombre: "edit_nombre",
-              apat: "edit_apat",
-              amat: "edit_amat",
-              correo: "edit_correo",
-              telefono: "edit_telefono",
-              direccion: "edit_direccion"
-            }
-          );
-
-          // Maestras
-          delegarEdicion(
-            "#tablaMaestras tbody",
-            ".btn-edit-maestra",
-            "#modalEditarMaestra",
-            {
-              id: "edit_id_maestra",
-              nombre: "edit_nombre_maestra",
-              base: "edit_base_maestra",
-              acuerdo: "edit_acuerdo_maestra",
-              gastos: "edit_gastos_maestra",
-              porcentaje: "edit_porcentaje_maestra"
-            }
-          );
-
-          // Alumnas
-          delegarEdicion(
-            "#tablaAlumnas tbody",
-            ".btn-edit-alumna",
-            "#modalEditarAlumna",
-            {
-              id: "edit_id_alumna",
-              nombre: "edit_nombre_alumna",
-              apat: "edit_apat_alumna",
-              amat: "edit_amat_alumna",
-              telefono: "edit_telefono_alumna",
-              correo: "edit_correo_alumna",
-              direccion: "edit_direccion_alumna",
-              descuento: "edit_descuento_alumna",
-              tipo: "edit_tipo_descuento_alumna"
-            }
-          );
-
-        });
-
-
-        document.addEventListener("DOMContentLoaded", () => {
-          <?php if (!empty($_SESSION['flash_ok'])): ?>
-            Swal.fire({
-              title: "<?php echo addslashes($_SESSION['flash_ok']); ?>",
-              icon: "success",
-              draggable: true,
-              timer: 2500,
-              timerProgressBar: true,
-              toast: true,
-              position: "top-end",
-              showConfirmButton: false
-            });
-            <?php unset($_SESSION['flash_ok']); ?>
-          <?php endif; ?>
-
-          <?php if (!empty($_SESSION['flash_err'])): ?>
-            Swal.fire({
-              title: "<?php echo addslashes($_SESSION['flash_err']); ?>",
-              icon: "error",
-              draggable: true,
-              timer: 2500,
-              timerProgressBar: true,
-              toast: true,
-              position: "top-end",
-              showConfirmButton: false
-            });
-            <?php unset($_SESSION['flash_err']); ?>
-          <?php endif; ?>
-        });
-
-        function setupDeleteButtons(tablaSelector, claseBoton, actionName, textoSingular) {
-            const tabla = document.querySelector(tablaSelector + " tbody");
-            if (!tabla) return;
-
-            tabla.addEventListener("click", (e) => {
-                const btn = e.target.closest(claseBoton);
-                if (!btn) return;
-
-                const id = btn.dataset.id;
-
-                Swal.fire({
-                    title: '¿Estás seguro?',
-                    text: "¡No podrás revertir esto!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Sí, eliminar',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        fetch("", {
-                            method: "POST",
-                            headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                            body: `action=${actionName}&id=${id}`
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success) {
-                                Swal.fire('Eliminado!', `El ${textoSingular} ha sido eliminado.`, 'success');
-                                btn.closest("tr").remove();
-                            } else {
-                                Swal.fire('Error', `No se pudo eliminar el ${textoSingular}.`, 'error');
-                            }
-                        });
-                    }
-                });
-            });
-        }
-
-        // Configuración de todas las tablas
-        document.addEventListener("DOMContentLoaded", () => {
-            setupDeleteButtons("#tablaUsuarios", ".btn-delete", "delete_usuario", "usuario");
-            setupDeleteButtons("#tablaClientes", ".btn-delete-cliente", "delete_cliente", "cliente");
-            setupDeleteButtons("#tablaMaestras", ".btn-delete-maestra", "delete_maestra", "maestra");
-            setupDeleteButtons("#tablaAlumnas", ".btn-delete-alumna", "delete_alumna", "alumna");
-        });
-
+    document.addEventListener("DOMContentLoaded", () => {
+      Swal.fire({
+        title: "<?php echo addslashes($_SESSION['flash_ok']); ?>",
+        icon: "success",
+        timer: 2500,
+        timerProgressBar: true,
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false
+      });
+    });
   </script>
+  <?php unset($_SESSION['flash_ok']); endif; ?>
+
+  <?php if (!empty($_SESSION['flash_err'])): ?>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      Swal.fire({
+        title: "<?php echo addslashes($_SESSION['flash_err']); ?>",
+        icon: "error",
+        timer: 2500,
+        timerProgressBar: true,
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false
+      });
+    });
+  </script>
+  <?php unset($_SESSION['flash_err']); endif; ?>
 </body>
 </html>
