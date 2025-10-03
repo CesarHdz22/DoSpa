@@ -20,7 +20,12 @@ $html = '
         <div class="section-header">
             <h3>'.ucfirst($tipo).'s</h3>
             <div class="section-actions">
-                <img src="img/agregar.png" alt="Agregar" class="icon btn-agregar-kit" width="20" style="cursor:pointer;">
+                <img src="img/agregar.png" 
+                    alt="Agregar" 
+                    class="icon btn-agregar-kit" 
+                    width="20" 
+                    style="cursor:pointer;"
+                    data-tipo="'.$tipo.'">
             </div>
         </div>
 

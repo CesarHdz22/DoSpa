@@ -15,11 +15,12 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DO SPA - Base</title>
-    <link rel="stylesheet" href="css/inventario_modal.css">
+
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/inventario.css">
     <link rel="stylesheet" href="css/getTipo.css">
+        <link rel="stylesheet" href="css/inventario_modal.css">
     <link rel="icon" href="img/DO_SPA_logo.png" type="image/png">
     <!-- Iconos de FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -351,43 +352,254 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
             </div>
           </div>
 
-<!-- Modal Vista Producto -->
-<div id="modalVistaProducto" class="modal" aria-hidden="true" style="display:none;">
-  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalVistaProductoTitle">
-    <button id="cerrarModalVistaProducto" class="btn-cerrar" aria-label="Cerrar">&times;</button>
+          <!-- Modal Vista Producto -->
+          <div id="modalVistaProducto" class="modal" aria-hidden="true" style="display:none;">
+            <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalVistaProductoTitle">
+              <button id="cerrarModalVistaProducto" class="btn-cerrar" aria-label="Cerrar">&times;</button>
 
-    <div class="product-card">
-      <div class="card-header">
-        <h3 id="vistaNombreProducto">Título del Producto</h3>
-       <p>Stock: <span id="vistaStockProducto">20</span></p>
-      </div>
+              <div class="product-card">
+                <div class="card-header">
+                  <h3 id="vistaNombreProducto">Título del Producto</h3>
+                <p>Stock: <span id="vistaStockProducto">20</span></p>
+                </div>
 
-      <!-- Precio en círculo -->
-      <div class="price-circle">
-        <span id="vistaPrecioProducto">$00</span>
-      </div>
+                <!-- Precio en círculo -->
+                <div class="price-circle">
+                  <span id="vistaPrecioProducto">$00</span>
+                </div>
 
-      <!-- Imagen del producto -->
-      <div class="img-container">
-        <img id="vistaImgProducto" src="" alt="Imagen del producto">
-      </div>
+                <!-- Imagen del producto -->
+                <div class="img-container">
+                  <img id="vistaImgProducto" src="" alt="Imagen del producto">
+                </div>
 
 
-    </div>
-  </div>
-</div>
+              </div>
+            </div>
+          </div>
 
 
 
 
       </main>
     </div>
+                          <!-- Modal Clientes -->
+                      <div class="modal" id="modalClientes">
+                        <div class="modal-content">
+                          <header>
+                            <h3>Nuevo Cliente</h3>
+                            <button class="close" data-close="#modalClientes">&times;</button>
+                          </header>
+                          <form method="post" autocomplete="off" action="usuario_controlador.php">
+                            <input type="hidden" name="action" value="add_cliente">
+                            <div class="form-grid">
+                              <div class="form-control">
+                                <label>Nombre *</label>
+                                <input type="text" name="nombre" required>
+                              </div>
+                              <div class="form-control">
+                                <label>Apellido Paterno</label>
+                                <input type="text" name="apat">
+                              </div>
+                              <div class="form-control">
+                                <label>Apellido Materno</label>
+                                <input type="text" name="amat">
+                              </div>
+                              <div class="form-control">
+                                <label>Correo</label>
+                                <input type="email" name="correo">
+                              </div>
+                              <div class="form-control">
+                                <label>Teléfono</label>
+                                <input type="text" name="telefono">
+                              </div>
+                              <div class="form-control">
+                                <label>Dirección</label>
+                                <input type="text" name="direccion">
+                              </div>
+                            </div>
+                            <div class="form-actions">
+                              <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i></button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+
+                      <!-- Modal Alumna -->
+                      <div class="modal" id="modalAlumna">
+                        <div class="modal-content">
+                          <header>
+                            <h3>Nueva alumna</h3>
+                            <button class="close" data-close="#modalAlumna">&times;</button>
+                          </header>
+                          <form method="post" autocomplete="off" action="usuario_controlador.php">
+                            <input type="hidden" name="action" value="add_alumna">
+                            <div class="form-grid">
+                              <div class="form-control">
+                                <label>Nombre *</label>
+                                <input type="text" name="nombre" required>
+                              </div>
+                              <div class="form-control">
+                                <label>Apellido paterno</label>
+                                <input type="text" name="apat">
+                              </div>
+                              <div class="form-control">
+                                <label>Apellido materno</label>
+                                <input type="text" name="amat">
+                              </div>
+                              <div class="form-control">
+                                <label>Teléfono</label>
+                                <input type="text" name="telefono">
+                              </div>
+                              <div class="form-control">
+                                <label>Correo</label>
+                                <input type="email" name="correo">
+                              </div>
+                              <div class="form-control">
+                                <label>Dirección</label>
+                                <input type="text" name="direccion">
+                              </div>
+                              <div class="form-control">
+                                <label>Descuento aplicado</label>
+                                <select name="descuento_aplicado">
+                                  <option value="0">No</option>
+                                  <option value="1">Sí</option>
+                                </select>
+                              </div>
+                              <div class="form-control">
+                                <label>Tipo de descuento</label>
+                                <input type="text" name="tipo_descuento">
+                              </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i></button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="librerias/tables.js"></script>
     <script src="librerias/carrito.js"></script>
     <script src="librerias/FunInventario.js"></script>
-    
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const openModal = (modal) => {
+    if (!modal) return;
+    // cerrar otros abiertos
+    document.querySelectorAll('.modal.open').forEach(m => {
+      m.classList.remove('open');
+      m.setAttribute('aria-hidden','true');
+    });
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeModal = (modal) => {
+    if (!modal) return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  };
+
+  document.addEventListener('click', (e) => {
+    // 1) botones de agregar
+    const btnAgregarKit = e.target.closest('.btn-agregar-kit');
+    const btnAgregarProducto = e.target.closest('.btn-agregar-producto');
+
+    if (btnAgregarKit) {
+      const tipo = btnAgregarKit.getAttribute('data-tipo');
+      if (tipo) {
+        if (tipo === 'alumna') openModal(document.getElementById('modalAlumna'));
+        else if (tipo === 'cliente') openModal(document.getElementById('modalClientes'));
+      } else {
+        openModal(document.getElementById('modalAgregarKit'));
+      }
+      return;
+    }
+
+    if (btnAgregarProducto) {
+      openModal(document.getElementById('modalAgregarProducto'));
+      return;
+    }
+
+    // 2) cierre por botones (data-close o btn-cerrar / close)
+    const botonClose = e.target.closest('[data-close], .btn-cerrar, .close');
+    if (botonClose) {
+      const selector = botonClose.getAttribute('data-close');
+      if (selector) {
+        const modal = document.querySelector(selector);
+        closeModal(modal);
+      } else {
+        const modal = botonClose.closest('.modal');
+        closeModal(modal);
+      }
+      return;
+    }
+
+    // 3) clic directo sobre el overlay (fondo) -> cerrar
+    const clickedModal = e.target.closest('.modal');
+    if (clickedModal && e.target === clickedModal) closeModal(clickedModal);
+  });
+
+  // 4) ESC para cerrar
+  window.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape') {
+      document.querySelectorAll('.modal.open').forEach(m => closeModal(m));
+    }
+  });
+
+  // ------------------------------
+  // 5) Enviar formularios por AJAX (sin romper apertura de modales)
+  const enviarFormulario = (form, modal) => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      try {
+        const res = await fetch('usuario_controlador.php', {
+          method: 'POST',
+          body: formData
+        });
+        let data;
+        try { data = await res.json(); } catch(err){ data = null; }
+
+        Swal.fire({
+          icon: res.ok ? 'success' : 'error',
+          title: res.ok ? '¡Listo!' : 'Error',
+          text: res.ok ? 'Operación exitosa.' : 'Hubo un error',
+          timer: 1500,
+          showConfirmButton: false
+        });
+
+        if (res.ok) {
+          closeModal(modal);
+          setTimeout(()=>location.reload(), 1600);
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire('Error', 'No se pudo conectar con el servidor.', 'error');
+      }
+    });
+  };
+
+  // Formularios de usuario
+  const formularios = [
+    {id: 'formAgregarCliente', modal: 'modalClientes'},
+    {id: 'formAgregarAlumna', modal: 'modalAlumna'}
+  ];
+
+  formularios.forEach(f => {
+    const form = document.getElementById(f.id);
+    const modal = document.getElementById(f.modal);
+    if (form && modal) enviarFormulario(form, modal);
+  });
+
+});
+
+</script>
+
   </body>
 </html>
 <?php
