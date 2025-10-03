@@ -308,7 +308,12 @@ function confirmarCompra(idComprador) {
   const tipo = tipoSelect ? tipoSelect.value.trim().toLowerCase() : '';
   
   if(!tipo){
-    alert("Selecciona un tipo de comprador");
+    Swal.fire({
+      title: "Atención",
+      text: "Selecciona un tipo de comprador",
+      icon: "warning",
+      confirmButtonText: "Entendido"
+    });
     return;
   }
 
@@ -319,8 +324,14 @@ function confirmarCompra(idComprador) {
     carrito: JSON.stringify(window.getCarrito()),
     tipoCliente: tipo  // coincide con el POST real
   }, function(resp){
-    alert(resp);
-    location.replace('ventas.php');
+    Swal.fire({
+      title: "Compra realizada",
+      text: resp,
+      icon: "success",
+      confirmButtonText: "Aceptar"
+    }).then(() => {
+      location.replace('ventas.php');
+    });
   });
 }
 
