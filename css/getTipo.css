@@ -53,3 +53,8 @@ a {
 .icon {
   cursor: pointer;
 }
+#personasTabla td {
+  padding: 7px 12px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}

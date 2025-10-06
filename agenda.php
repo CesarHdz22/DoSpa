@@ -114,7 +114,8 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
                   <th>Hora fin</th>
                   <th>Ubicación</th>
                   <th>Variación</th>
-                  <th>Alumnas</th>
+                  <th>Inscritas</th>
+                  <th>Interesadas</th>
                   <th>Acción</th>
                 </tr>
               </thead>
@@ -122,7 +123,7 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
               <?php
                 $sqlT = "SELECT a.id_agenda, a.id_taller,
                                 COALESCE(t.nombre,'') AS nombre,
-                                a.fecha, a.hora_inicio, a.hora_fin, a.ubicacion, a.variacion, a.cant_alum
+                                a.fecha, a.hora_inicio, a.hora_fin, a.ubicacion, a.variacion, a.cant_inscritas, a.cant_interesadas
                          FROM agenda a
                          LEFT JOIN talleres t ON t.id_taller = a.id_taller
                          ORDER BY a.fecha DESC, a.hora_inicio ASC";
@@ -137,7 +138,8 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
                       <td><?php echo htmlspecialchars($row['ubicacion'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
                       
                       <td><?php echo htmlspecialchars($row['variacion'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                      <td><?php echo htmlspecialchars($row['cant_alum'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                      <td><?php echo htmlspecialchars($row['cant_inscritas'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                      <td><?php echo htmlspecialchars($row['cant_interesadas'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
                       <td>
                         <button type="button" class="btn-mini btn-agendar-row" data-tipo="taller" data-idrel="<?php echo (int)$row['id_agenda']; ?>">
                           Inscribir
@@ -174,7 +176,8 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
                   <th>Hora fin</th>
                   <th>Ubicación</th>
                   <th>Variación</th>
-                  <th>Alumnas</th>
+                  <th>Inscritas</th>
+                  <th>Interesadas</th>
                   <th>Acción</th>
                 </tr>
               </thead>
@@ -182,7 +185,7 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
               <?php
                 $sqlC = "SELECT ac.id_agenda_curso, ac.id_curso,
                                 COALESCE(c.nombre,'') AS nombre,
-                                ac.fecha, ac.hora_inicio, ac.hora_fin, ac.ubicacion, ac.variacion, ac.cant_alum
+                                ac.fecha, ac.hora_inicio, ac.hora_fin, ac.ubicacion, ac.variacion, ac.cant_inscritas, ac.cant_interesadas
                          FROM agenda_cursos ac
                          LEFT JOIN cursos c ON c.id_curso = ac.id_curso
                          ORDER BY ac.fecha DESC, ac.hora_inicio ASC";
@@ -196,7 +199,8 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
                       <td><?php echo htmlspecialchars(substr((string)($row['hora_fin'] ?? ''),0,5), ENT_QUOTES, 'UTF-8'); ?></td>
                       <td><?php echo htmlspecialchars($row['ubicacion'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
                       <td><?php echo htmlspecialchars($row['variacion'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
-                      <td><?php echo htmlspecialchars($row['cant_alum'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                      <td><?php echo htmlspecialchars($row['cant_inscritas'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                      <td><?php echo htmlspecialchars($row['cant_interesadas'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
                       <td>
                         <button type="button" class="btn-mini btn-agendar-row" data-tipo="curso" data-idrel="<?php echo (int)$row['id_agenda_curso']; ?>">
                           Inscribir
@@ -298,7 +302,7 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
         </div>
         <div id="resultadoPersonas"></div>
 
-        <form id="formInscribir" action="agendar_inscripcion.php" method="post">
+        <form id="formInscribir" method="post">
           <!-- campo obligatorio que pide getTipo.php -->
           <input type="hidden" name="tipo" value="alumna">
           <!-- id del taller/curso (relacion) -->
@@ -309,7 +313,8 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
 
           <div style="margin-top:10px; display:flex; gap:8px; align-items:center;">
             <div id="ins_selected_info" style="flex:1; font-size:14px; color:#333;"></div>
-            <button type="submit" class="btn-mini btn-primary" id="confirmarInscripcion" disabled>Inscribir</button>
+            <button type="submit" class="btn-mini btn-primary" id="confirmarInteresada" data-action="agendar_interesada.php" disabled>Interesada</button>
+            <button type="submit" class="btn-mini btn-primary" id="confirmarInscripcion" data-action="agendar_inscripcion.php" disabled>Inscribir</button>
             <button type="button" class="btn-mini" id="cancelarInscribir">Cancelar</button>
           </div>
         </form>

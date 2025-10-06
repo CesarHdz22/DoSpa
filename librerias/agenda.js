@@ -62,7 +62,8 @@
         // limpiar selección previa
         $('#ins_id_persona').val('');
         $('#ins_selected_info').text('');
-        $('#confirmarInscripcion').prop('disabled', true);
+        $('#confirmarInscripcion').prop('disabled', true),
+        $('#confirmarInteresada').prop('disabled', true);
 
         // abrir modal
         $('#modalInscribir').addClass('open');
@@ -94,7 +95,8 @@
               $('#ins_id_persona').val(id);
               // mostrar info y habilitar boton confirmar
               $('#ins_selected_info').text('Seleccionada: #' + id + ' — ' + nombre);
-              $('#confirmarInscripcion').prop('disabled', false);
+              $('#confirmarInscripcion').prop('disabled', false),
+              $('#confirmarInteresada').prop('disabled', false);
             });
           },
           error: function(xhr, status, err){
@@ -316,5 +318,16 @@ $(document).ready(function () {
     if ($(e.target).is("#modalCalendario")) {
       modalCalendario.removeClass("open");
     }
+  });
+});
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('formInscribir');
+  const botones = form.querySelectorAll('button[type="submit"]');
+
+  botones.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      // cambia la acción del formulario dependiendo del botón presionado
+      form.action = this.dataset.action;
+    });
   });
 });
