@@ -230,4 +230,6 @@ h2{
         padding: 8px 10px;
       }
     }
- 
+ a{
+  text-decoration: none;
+ }
