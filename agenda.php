@@ -206,11 +206,16 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
                           Inscribir
                         </button>
                         <button type="button"
-                                class="btn-mini btn-modulo"
-                                data-idcurso="<?php echo (int)$row['id_curso']; ?>">
-                          Módulos
+                                class="btn-mini btn-ver-modulos"
+                                data-idcurso="<?= (int)$row['id_curso']; ?>">
+                          Ver
                         </button>
 
+                        <button type="button"
+                                class="btn-mini btn-agregar-modulo"
+                                data-idcurso="<?= (int)$row['id_curso']; ?>">
+                          + Modulo
+                        </button>
                       </td>
                     </tr>
               <?php
@@ -276,7 +281,20 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
                 </form>
               </div>
             </div>
-    
+            <!-- MODAL VER MÓDULOS -->
+            <div class="modal" id="modalVerModulos" aria-hidden="true">
+              <div class="box" style="max-width:800px;">
+                <header>
+                  <h3>Módulos del curso</h3>
+                  <button class="close" id="cerrarVerModulos">&times;</button>
+                </header>
+
+                <div id="contenedorModulos">
+                  <p style="text-align:center;">Cargando módulos...</p>
+                </div>
+              </div>
+            </div>
+
           </section>
         </div>
       </div>
@@ -406,134 +424,139 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
     </header>
     <div id="calendar"></div>
   </div>
-</div>
-<script>
-document.addEventListener('click', function (e) {
+</div><script>
+document.addEventListener('DOMContentLoaded', () => {
 
-  /* ===== ABRIR MODAL MÓDULO ===== */
-  const btnModulo = e.target.closest('.btn-modulo');
+  /* ===============================
+     CLICK GLOBAL (modales)
+  =============================== */
+  document.addEventListener('click', function (e) {
 
-  if (btnModulo) {
-    const idCurso = btnModulo.dataset.idcurso;
+    /* ===== AGREGAR MÓDULO ===== */
+    const btnAgregar = e.target.closest('.btn-agregar-modulo');
+    if (btnAgregar) {
+      const idCurso = btnAgregar.dataset.idcurso;
+      if (!idCurso) return;
 
-    if (!idCurso) {
-      console.error('ID de curso no recibido');
+      document.getElementById('id_curso_modulo').value = idCurso;
+      document.getElementById('formModulo').reset();
+      document.getElementById('status_modulo').value = 'activo';
+
+      document.getElementById('modalModulo').classList.add('open');
       return;
     }
 
-    // Asignar curso al formulario
-    document.getElementById('id_curso_modulo').value = idCurso;
+    /* ===== VER MÓDULOS ===== */
+    const btnVer = e.target.closest('.btn-ver-modulos');
+    if (btnVer) {
+      const idCurso = btnVer.dataset.idcurso;
+      const contenedor = document.getElementById('contenedorModulos');
 
-    // Limpiar campos (sin borrar el id_curso)
-    document.getElementById('nombre_modulo').value = '';
-    document.getElementById('descripcion_modulo').value = '';
-    document.getElementById('fecha_modulo').value = '';
-    document.getElementById('hora_inicio_modulo').value = '';
-    document.getElementById('hora_fin_modulo').value = '';
-    document.getElementById('status_modulo').value = 'activo';
+      contenedor.innerHTML = '<p style="text-align:center;">Cargando módulos...</p>';
+      document.getElementById('modalVerModulos').classList.add('open');
 
-    // Mostrar modal
-    document.getElementById('modalModulo').classList.add('open');
-    return;
-  }
+      fetch(`get_modulos_curso.php?id_curso=${idCurso}`)
+        .then(res => res.json())
+        .then(data => {
 
-  /* ===== CERRAR MODAL ===== */
-  if (
-    e.target.id === 'cerrarModulo' ||
-    e.target.id === 'cancelarModulo' ||
-    e.target.id === 'modalModulo'
-  ) {
-    document.getElementById('modalModulo').classList.remove('open');
-  }
-});
-</script>
+          if (!data.ok || data.modulos.length === 0) {
+            contenedor.innerHTML = '<p>No hay módulos registrados</p>';
+            return;
+          }
 
-<script>
-document.getElementById('formModulo').addEventListener('submit', function (e) {
+          let html = `
+            <table class="display">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Fecha</th>
+                  <th>Horario</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+          `;
 
-  const horaInicio = document.getElementById('hora_inicio_modulo').value;
-  const horaFin    = document.getElementById('hora_fin_modulo').value;
+          data.modulos.forEach(m => {
+            html += `
+              <tr>
+                <td>${m.nombre}</td>
+                <td>${m.fecha}</td>
+                <td>${m.hora_inicio.substr(0,5)} - ${m.hora_fin.substr(0,5)}</td>
+                <td>${m.status}</td>
+              </tr>
+            `;
+          });
 
-  // Si por alguna razón vienen vacías (HTML ya valida, pero por si acaso)
-  if (!horaInicio || !horaFin) {
-    Swal.fire({
-      icon: 'warning',
-      title: 'Horario incompleto',
-      text: 'Debes seleccionar hora de inicio y hora de fin.'
-    });
-    e.preventDefault();
-    return;
-  }
+          html += '</tbody></table>';
+          contenedor.innerHTML = html;
+        });
 
-  // Convertir HH:MM a minutos
-  const [hiH, hiM] = horaInicio.split(':').map(Number);
-  const [hfH, hfM] = horaFin.split(':').map(Number);
-
-  const inicioMin = hiH * 60 + hiM;
-  const finMin    = hfH * 60 + hfM;
-
-  // Validación lógica
-  if (finMin <= inicioMin) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Horario inválido',
-      text: 'La hora de fin debe ser mayor que la hora de inicio.'
-    });
-
-    e.preventDefault();
-    return;
-  }
-
-});
-</script>
-<script>
-document.getElementById('formModulo').addEventListener('submit', function (e) {
-  e.preventDefault(); // 🚫 evita que se recargue la página
-
-  const form = this;
-  const formData = new FormData(form);
-
-  fetch('alta_modulo.php', {
-    method: 'POST',
-    body: formData
-  })
-  .then(res => res.json())
-  .then(data => {
-
-    if (data.ok) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Módulo registrado',
-        text: 'El módulo se agregó correctamente al curso',
-      });
-
-      // Cerrar modal
-      document.getElementById('modalModulo').classList.remove('open');
-
-      // Limpiar formulario
-      form.reset();
-
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: data.error || 'Ocurrió un error al guardar el módulo'
-      });
+      return;
     }
 
-  })
-  .catch(err => {
-    Swal.fire({
-      icon: 'error',
-      title: 'Error de conexión',
-      text: 'No se pudo comunicar con el servidor'
-    });
-    console.error(err);
+    /* ===== CERRAR MODALES ===== */
+    if (
+      e.target.id === 'cerrarModulo' ||
+      e.target.id === 'cancelarModulo' ||
+      e.target.id === 'modalModulo'
+    ) {
+      document.getElementById('modalModulo').classList.remove('open');
+    }
+
+    if (
+      e.target.id === 'cerrarVerModulos' ||
+      e.target.id === 'modalVerModulos'
+    ) {
+      document.getElementById('modalVerModulos').classList.remove('open');
+    }
+
   });
+
+  /* ===============================
+     SUBMIT FORM MÓDULO
+  =============================== */
+  document.getElementById('formModulo').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const horaInicio = document.getElementById('hora_inicio_modulo').value;
+    const horaFin    = document.getElementById('hora_fin_modulo').value;
+
+    if (!horaInicio || !horaFin) {
+      Swal.fire('Horario incompleto', 'Selecciona hora inicio y fin', 'warning');
+      return;
+    }
+
+    const [hiH, hiM] = horaInicio.split(':').map(Number);
+    const [hfH, hfM] = horaFin.split(':').map(Number);
+
+    if ((hfH * 60 + hfM) <= (hiH * 60 + hiM)) {
+      Swal.fire('Horario inválido', 'La hora fin debe ser mayor', 'error');
+      return;
+    }
+
+    const formData = new FormData(this);
+
+    fetch('alta_modulo.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.ok) {
+        Swal.fire('Éxito', 'Módulo registrado correctamente', 'success');
+        document.getElementById('modalModulo').classList.remove('open');
+        this.reset();
+      } else {
+        Swal.fire('Error', data.error || 'No se pudo guardar', 'error');
+      }
+    })
+    .catch(() => {
+      Swal.fire('Error', 'Error de conexión con el servidor', 'error');
+    });
+  });
+
 });
 </script>
-
-
-
 </body>
 </html>
