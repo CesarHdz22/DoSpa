@@ -171,4 +171,154 @@ th{
   background: #651E35;
 }
 
-/* ====== Panel de Detalles ====== */
+/* ===== MODAL FONDO ===== */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* ===== CONTENEDOR ===== */
+.modal-content {
+  background: #ffffff;
+  width: 700px;
+  max-width: 95%;
+  border-radius: 14px;
+  padding: 25px 30px;
+  box-shadow: 0 15px 40px rgba(0,0,0,.25);
+}
+
+/* ===== HEADER ===== */
+.modal-content h3 {
+  margin: 0 0 20px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ===== FORM GRID ===== */
+.modal-content form,
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px 20px;
+}
+
+/* ===== LABELS ===== */
+.modal-content label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ===== INPUTS ===== */
+.modal-content input,
+.modal-content select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border .2s, box-shadow .2s;
+}
+
+.modal-content input:focus,
+.modal-content select:focus {
+  border-color: #6c63ff;
+  box-shadow: 0 0 0 2px rgba(108,99,255,.15);
+}
+
+/* ===== INPUT FILE ===== */
+.modal-content input[type="file"] {
+  padding: 6px;
+}
+
+/* ===== FULL WIDTH ===== */
+.modal-full {
+  grid-column: 1 / -1;
+}
+
+/* ===== FOOTER ===== */
+.modal-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+/* ===== BOTONES ===== */
+.modal-actions button {
+  padding: 9px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background .2s, transform .1s;
+}
+
+.modal-actions button:active {
+  transform: scale(.97);
+}
+
+/* Guardar */
+#btnGuardarCambios {
+  background: #000;
+  color: #fff;
+}
+
+#btnGuardarCambios:hover {
+  background: #222;
+}
+
+/* Cancelar */
+#btnCerrarModal {
+  background: #f1f1f1;
+  color: #333;
+}
+
+#btnCerrarModal:hover {
+  background: #e0e0e0;
+}
+
+/* Botón mini editar (estilo dashboard) */
+.btn-editar {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+/* Ícono */
+.btn-editar i {
+  font-size: 14px;
+  color: #111;
+}
+
+/* Hover */
+.btn-editar:hover {
+  background: #f5f5f5;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+/* Click */
+.btn-editar:active {
+  transform: scale(0.95);
+}

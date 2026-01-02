@@ -331,3 +331,152 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+function verDescripcion(descripcion) {
+  Swal.fire({
+    title: 'Descripción del módulo',
+    text: descripcion,
+    icon: 'info',
+    confirmButtonText: 'Cerrar'
+  });
+}
+  document.addEventListener('DOMContentLoaded', () => {
+
+    /* ===============================
+      CLICK GLOBAL (modales)
+    =============================== */
+    document.addEventListener('click', function (e) {
+
+      /* ===== AGREGAR MÓDULO ===== */
+      const btnAgregar = e.target.closest('.btn-agregar-modulo');
+      if (btnAgregar) {
+        const idCurso = btnAgregar.dataset.idcurso;
+        if (!idCurso) return;
+
+        document.getElementById('id_curso_modulo').value = idCurso;
+        document.getElementById('formModulo').reset();
+        document.getElementById('status_modulo').value = 'activo';
+
+        document.getElementById('modalModulo').classList.add('open');
+        return;
+      }
+
+      /* ===== VER MÓDULOS ===== */
+      const btnVer = e.target.closest('.btn-ver-modulos');
+      if (btnVer) {
+        const idCurso = btnVer.dataset.idcurso;
+        const contenedor = document.getElementById('contenedorModulos');
+
+        contenedor.innerHTML = '<p style="text-align:center;">Cargando módulos...</p>';
+        document.getElementById('modalVerModulos').classList.add('open');
+
+        fetch(`get_modulos_curso.php?id_curso=${idCurso}`)
+          .then(res => res.json())
+          .then(data => {
+
+            if (!data.ok || data.modulos.length === 0) {
+              contenedor.innerHTML = '<p>No hay módulos registrados</p>';
+              return;
+            }
+
+            let html = `
+              <table class="display">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Fecha</th>
+                    <th>Horario</th>
+                    <th>Status</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+            `;
+
+            data.modulos.forEach(m => {
+              html += `
+                <tr>
+                  <td>${m.nombre}</td>
+                  <td>${m.fecha}</td>
+                  <td>${m.hora_inicio.substr(0,5)} - ${m.hora_fin.substr(0,5)}</td>
+                  <td>${m.status}</td>
+                  <td>
+                    <button class="btn-mini btn-info"
+                      onclick="verDescripcion(${JSON.stringify(m.descripcion || 'Sin descripción').replace(/"/g,'&quot;')})">
+                      Descripción
+                    </button>
+                  </td>
+                </tr>
+              `;
+            });
+
+            html += '</tbody></table>';
+            contenedor.innerHTML = html;
+
+          });
+
+        return;
+      }
+
+      /* ===== CERRAR MODALES ===== */
+      if (
+        e.target.id === 'cerrarModulo' ||
+        e.target.id === 'cancelarModulo' ||
+        e.target.id === 'modalModulo'
+      ) {
+        document.getElementById('modalModulo').classList.remove('open');
+      }
+
+      if (
+        e.target.id === 'cerrarVerModulos' ||
+        e.target.id === 'modalVerModulos'
+      ) {
+        document.getElementById('modalVerModulos').classList.remove('open');
+      }
+
+    });
+
+
+    /* ===============================
+      SUBMIT FORM MÓDULO
+    =============================== */
+    document.getElementById('formModulo').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const horaInicio = document.getElementById('hora_inicio_modulo').value;
+      const horaFin    = document.getElementById('hora_fin_modulo').value;
+
+      if (!horaInicio || !horaFin) {
+        Swal.fire('Horario incompleto', 'Selecciona hora inicio y fin', 'warning');
+        return;
+      }
+
+      const [hiH, hiM] = horaInicio.split(':').map(Number);
+      const [hfH, hfM] = horaFin.split(':').map(Number);
+
+      if ((hfH * 60 + hfM) <= (hiH * 60 + hiM)) {
+        Swal.fire('Horario inválido', 'La hora fin debe ser mayor', 'error');
+        return;
+      }
+
+      const formData = new FormData(this);
+
+      fetch('alta_modulo.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.ok) {
+          Swal.fire('Éxito', 'Módulo registrado correctamente', 'success');
+          document.getElementById('modalModulo').classList.remove('open');
+          this.reset();
+        } else {
+          Swal.fire('Error', data.error || 'No se pudo guardar', 'error');
+        }
+      })
+      .catch(() => {
+        Swal.fire('Error', 'Error de conexión con el servidor', 'error');
+      });
+    });
+    
+ });
