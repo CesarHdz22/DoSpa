@@ -97,14 +97,14 @@
                                             </a>
                                           </td>';
 
-                                    // Imagen
-                                    if (!empty($a['imagen'])) {
-                                        $base64 = base64_encode($a['imagen']); 
-                                        $mime = 'image/jpeg';
-                                        echo '<td><img src="data:' . $mime . ';base64,' . $base64 . '" width="50" height="50" alt="Imagen de ' . htmlspecialchars($a['nombre']) . '"></td>';
-                                    } else {
-                                        echo '<td>No disponible</td>';
-                                    }
+                                    // Imagen (BLOB)
+                                    echo '<td>
+                                            <img src="ver_imagen_alumna.php?id=' . $a['id_alumna'] . '"
+                                                width="50" height="50"
+                                                style="object-fit:cover;border-radius:6px"
+                                                alt="Imagen de ' . htmlspecialchars($a['nombre']) . '">
+                                          </td>';
+
 
                                     echo '<td>' . htmlspecialchars($a['nombre']) . '</td>';
                                     echo '<td>' . htmlspecialchars($a['apat']) . '</td>';
@@ -152,6 +152,145 @@
                           ?>
                           </tbody>
                         </table>
+                      </div>
+                      <!-- Modal Nueva Alumna -->
+                      <div class="modal" id="modalAlumna">
+                        <div class="modal-content">
+                          <header>
+                            <h3>Nueva Alumna</h3>
+                            <button class="close" data-close="#modalAlumna">&times;</button>
+                          </header>
+
+                          <form method="post" enctype="multipart/form-data" autocomplete="off">
+                            <input type="hidden" name="action" value="add_alumna">
+
+                            <div class="form-grid">
+                              <div class="form-control">
+                                <label>Nombre *</label>
+                                <input type="text" name="nombre" required>
+                              </div>
+
+                              <div class="form-control">
+                                <label>Apellido Paterno *</label>
+                                <input type="text" name="apat" required>
+                              </div>
+
+                              <div class="form-control">
+                                <label>Apellido Materno</label>
+                                <input type="text" name="amat">
+                              </div>
+
+                              <div class="form-control">
+                                <label>Teléfono</label>
+                                <input type="text" name="telefono">
+                              </div>
+
+                              <div class="form-control">
+                                <label>Correo</label>
+                                <input type="email" name="correo">
+                              </div>
+
+                              <div class="form-control">
+                                <label>Dirección</label>
+                                <input type="text" name="direccion">
+                              </div>
+
+                              <div class="form-control">
+                                <label>Imagen</label>
+                                <input type="file" name="imagen" accept="image/*">
+                              </div>
+
+                              <div class="form-control">
+                                <label>Descuento aplicado</label>
+                                <select name="descuento_aplicado">
+                                  <option value="0">No</option>
+                                  <option value="1">Sí</option>
+                                </select>
+                              </div>
+
+                              <div class="form-control">
+                                <label>Tipo de descuento</label>
+                                <input type="text" name="tipo_descuento">
+                              </div>
+                            </div>
+
+                            <div class="form-actions">
+                              <button class="btn btn-primary" type="submit">
+                                <i class="fa fa-save"></i>
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                      <!-- Modal Editar Alumna -->
+                      <div class="modal" id="modalEditarAlumna">
+                        <div class="modal-content">
+                          <header>
+                            <h3>Editar Alumna</h3>
+                            <button class="close" data-close="#modalEditarAlumna">&times;</button>
+                          </header>
+
+                          <form method="post" enctype="multipart/form-data" autocomplete="off">
+                            <input type="hidden" name="action" value="edit_alumna">
+                            <input type="hidden" name="id_alumna" id="edit_alumna_id">
+
+                            <div class="form-grid">
+                              <div class="form-control">
+                                <label>Nombre *</label>
+                                <input type="text" name="nombre" id="edit_alumna_nombre" required>
+                              </div>
+
+                              <div class="form-control">
+                                <label>Apellido Paterno *</label>
+                                <input type="text" name="apat" id="edit_alumna_apat" required>
+                              </div>
+
+                              <div class="form-control">
+                                <label>Apellido Materno</label>
+                                <input type="text" name="amat" id="edit_alumna_amat">
+                              </div>
+
+                              <div class="form-control">
+                                <label>Teléfono</label>
+                                <input type="text" name="telefono" id="edit_alumna_telefono">
+                              </div>
+
+                              <div class="form-control">
+                                <label>Correo</label>
+                                <input type="email" name="correo" id="edit_alumna_correo">
+                              </div>
+
+                              <div class="form-control">
+                                <label>Dirección</label>
+                                <input type="text" name="direccion" id="edit_alumna_direccion">
+                              </div>
+
+                              <div class="form-control">
+                                <label>Actualizar imagen</label>
+                                <input type="file" name="imagen" accept="image/*">
+                              </div>
+
+                              <div class="form-control">
+                                <label>Descuento aplicado</label>
+                                <select name="descuento_aplicado" id="edit_alumna_descuento">
+                                  <option value="0">No</option>
+                                  <option value="1">Sí</option>
+                                </select>
+                              </div>
+
+                              <div class="form-control">
+                                <label>Tipo de descuento</label>
+                                <input type="text" name="tipo_descuento" id="edit_alumna_tipo">
+                              </div>
+                            </div>
+
+                            <div class="form-actions">
+                              <button class="btn btn-primary" type="submit">
+                                <i class="fa fa-save"></i>
+                              </button>
+                            </div>
+                          </form>
+                        </div>
                       </div>
                     </div>
                   </section>

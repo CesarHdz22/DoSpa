@@ -118,19 +118,19 @@ document.addEventListener("DOMContentLoaded", () => {
     gastos: "edit_gastos_maestra",
     porcentaje: "edit_porcentaje_maestra"
   });
-
   // Alumnas
   delegarEdicion("#tablaAlumnas tbody", ".btn-edit-alumna", "#modalEditarAlumna", {
-    id: "edit_id_alumna",
-    nombre: "edit_nombre_alumna",
-    apat: "edit_apat_alumna",
-    amat: "edit_amat_alumna",
-    telefono: "edit_telefono_alumna",
-    correo: "edit_correo_alumna",
-    direccion: "edit_direccion_alumna",
-    descuento: "edit_descuento_alumna",
-    tipo: "edit_tipo_descuento_alumna"
+    id: "edit_alumna_id",
+    nombre: "edit_alumna_nombre",
+    apat: "edit_alumna_apat",
+    amat: "edit_alumna_amat",
+    telefono: "edit_alumna_telefono",
+    correo: "edit_alumna_correo",
+    direccion: "edit_alumna_direccion",
+    descuento: "edit_alumna_descuento",
+    tipo: "edit_alumna_tipo"
   });
+
 });
 
 // Configurar botones de eliminar con SweetAlert
