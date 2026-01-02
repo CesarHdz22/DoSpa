@@ -114,6 +114,7 @@ $optsMaestras = mysqli_query($conexion, "SELECT id_maestra, nombre FROM maestras
                 <!-- DAR DE ALTA Curso -->
                 <img src="img/agregar.png" alt="Agregar" class="icon btn-alta" width="20" data-tipo="curso" title="Dar de alta Curso">
               </div>
+              
             </div>
 
             <table id="TablaCursos" class="display">
@@ -143,6 +144,7 @@ $optsMaestras = mysqli_query($conexion, "SELECT id_maestra, nombre FROM maestras
               <?php endwhile; mysqli_free_result($rC); endif; ?>
               </tbody>
             </table>
+            
           </section>
         </div>
       </div>

@@ -205,6 +205,12 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
                         <button type="button" class="btn-mini btn-agendar-row" data-tipo="curso" data-idrel="<?php echo (int)$row['id_agenda_curso']; ?>">
                           Inscribir
                         </button>
+                        <button type="button"
+                                class="btn-mini btn-modulo"
+                                data-idcurso="<?php echo (int)$row['id_curso']; ?>">
+                          Módulos
+                        </button>
+
                       </td>
                     </tr>
               <?php
@@ -213,6 +219,64 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
               ?>
               </tbody>
             </table>
+
+            <!-- MODAL AGREGAR MÓDULO -->
+            <div class="modal" id="modalModulo" aria-hidden="true">
+              <div class="box">
+                <header>
+                  <h3>Agregar módulo al curso</h3>
+                  <button class="close" id="cerrarModulo">&times;</button>
+                </header>
+
+                <form action="alta_modulo.php" method="post" id="formModulo">
+                  <!-- Curso -->
+                  <input type="hidden" name="id_curso" id="id_curso_modulo">
+
+                  <div class="grid">
+                    <div style="grid-column:1 / -1;">
+                      <label for="nombre_modulo">Nombre del módulo</label>
+                      <input type="text" name="nombre" id="nombre_modulo" required>
+                    </div>
+
+                    <div style="grid-column:1 / -1;">
+                      <label for="descripcion_modulo">Descripción</label>
+                      <textarea name="descripcion" id="descripcion_modulo" rows="4"
+                        placeholder="Qué se verá en este módulo"></textarea>
+                    </div>
+
+                    <div>
+                      <label for="fecha_modulo">Fecha</label>
+                      <input type="date" name="fecha" id="fecha_modulo" required>
+                    </div>
+
+                    <div>
+                      <label for="hora_inicio_modulo">Hora inicio</label>
+                      <input type="time" name="hora_inicio" id="hora_inicio_modulo" required>
+                    </div>
+
+                    <div>
+                      <label for="hora_fin_modulo">Hora fin</label>
+                      <input type="time" name="hora_fin" id="hora_fin_modulo" required>
+                    </div>
+
+                    <div>
+                      <label for="status_modulo">Status</label>
+                      <select name="status" id="status_modulo">
+                        <option value="activo">Activo</option>
+                        <option value="cancelado">Cancelado</option>
+                        <option value="reprogramado">Reprogramado</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="actions">
+                    <button type="submit" class="btn-mini btn-primary">Guardar módulo</button>
+                    <button type="button" class="btn-mini" id="cancelarModulo">Cancelar</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+    
           </section>
         </div>
       </div>
@@ -343,5 +407,133 @@ $optsCursos   = mysqli_query($conexion, "SELECT id_curso, nombre FROM cursos ORD
     <div id="calendar"></div>
   </div>
 </div>
+<script>
+document.addEventListener('click', function (e) {
+
+  /* ===== ABRIR MODAL MÓDULO ===== */
+  const btnModulo = e.target.closest('.btn-modulo');
+
+  if (btnModulo) {
+    const idCurso = btnModulo.dataset.idcurso;
+
+    if (!idCurso) {
+      console.error('ID de curso no recibido');
+      return;
+    }
+
+    // Asignar curso al formulario
+    document.getElementById('id_curso_modulo').value = idCurso;
+
+    // Limpiar campos (sin borrar el id_curso)
+    document.getElementById('nombre_modulo').value = '';
+    document.getElementById('descripcion_modulo').value = '';
+    document.getElementById('fecha_modulo').value = '';
+    document.getElementById('hora_inicio_modulo').value = '';
+    document.getElementById('hora_fin_modulo').value = '';
+    document.getElementById('status_modulo').value = 'activo';
+
+    // Mostrar modal
+    document.getElementById('modalModulo').classList.add('open');
+    return;
+  }
+
+  /* ===== CERRAR MODAL ===== */
+  if (
+    e.target.id === 'cerrarModulo' ||
+    e.target.id === 'cancelarModulo' ||
+    e.target.id === 'modalModulo'
+  ) {
+    document.getElementById('modalModulo').classList.remove('open');
+  }
+});
+</script>
+
+<script>
+document.getElementById('formModulo').addEventListener('submit', function (e) {
+
+  const horaInicio = document.getElementById('hora_inicio_modulo').value;
+  const horaFin    = document.getElementById('hora_fin_modulo').value;
+
+  // Si por alguna razón vienen vacías (HTML ya valida, pero por si acaso)
+  if (!horaInicio || !horaFin) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Horario incompleto',
+      text: 'Debes seleccionar hora de inicio y hora de fin.'
+    });
+    e.preventDefault();
+    return;
+  }
+
+  // Convertir HH:MM a minutos
+  const [hiH, hiM] = horaInicio.split(':').map(Number);
+  const [hfH, hfM] = horaFin.split(':').map(Number);
+
+  const inicioMin = hiH * 60 + hiM;
+  const finMin    = hfH * 60 + hfM;
+
+  // Validación lógica
+  if (finMin <= inicioMin) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Horario inválido',
+      text: 'La hora de fin debe ser mayor que la hora de inicio.'
+    });
+
+    e.preventDefault();
+    return;
+  }
+
+});
+</script>
+<script>
+document.getElementById('formModulo').addEventListener('submit', function (e) {
+  e.preventDefault(); // 🚫 evita que se recargue la página
+
+  const form = this;
+  const formData = new FormData(form);
+
+  fetch('alta_modulo.php', {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+
+    if (data.ok) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Módulo registrado',
+        text: 'El módulo se agregó correctamente al curso',
+      });
+
+      // Cerrar modal
+      document.getElementById('modalModulo').classList.remove('open');
+
+      // Limpiar formulario
+      form.reset();
+
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: data.error || 'Ocurrió un error al guardar el módulo'
+      });
+    }
+
+  })
+  .catch(err => {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error de conexión',
+      text: 'No se pudo comunicar con el servidor'
+    });
+    console.error(err);
+  });
+});
+</script>
+
+
+
 </body>
 </html>
