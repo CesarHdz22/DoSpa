@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once "conexion.php";
-if (empty($_SESSION['Id_Usuario'])) { header("location: index.html"); exit; }
+if (empty($_SESSION['Id_Usuario'])) { header("location: index.html");}
 
 $Nombre = $_SESSION['nombre'] ?? '';
 $Apat   = $_SESSION['apat']   ?? '';
