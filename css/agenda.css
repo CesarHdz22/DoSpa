@@ -89,6 +89,7 @@
       .tablas-inventario .display {
         width: 100% !important;
         table-layout: auto;
+        text-align: center;
       }
 
       /* Pequeño ajuste visual para botones/icons si es necesario */

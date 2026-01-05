@@ -1,0 +1,30 @@
+.perfil-alumna {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  border-radius: 12px;
+  padding: 15px;
+}
+.foto-alumna {
+    flex-shrink: 0;
+    padding: 0px 31px 0px 0px;
+}
+.foto-alumna img {
+    border-radius: 28%;
+    width: 65%;
+    height: 200px;
+    object-fit: cover;
+    border: 2px solid #ddd;
+}
+
+.info-alumna p {
+  margin: 4px 0;
+}
+.activo {
+  color: #22c55e;
+  font-weight: bold;
+}
+.inactivo {
+  color: #ef4444;
+  font-weight: bold;
+}

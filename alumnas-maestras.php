@@ -57,7 +57,7 @@
                     <header>
                       <h3>Alumnas</h3>
                       <div class="section-actions">
-                        <img src="img/agregar.png" class="btn-mini btn-primary" alt="Agregar" id="btnNuevaAlumna" class="icon btn-agregar" width="20" data-tipo="curso" title="Agregar">
+                        <img src="img/agregar.png" class="btn-mini btn-primary" alt="Agregar" id="btnNuevaAlumna" width="20" title="Agregar">
                         <img src="img/oculto.png" id="btnToggleAlumnas" class="btn-mini btn-secondary" title="Mostrar / ocultar inactivos" width="20">
                       </div>
                     </header>
@@ -68,6 +68,7 @@
                           <thead>
                             <tr>
                               <th>ID</th>
+                              <th>Imagen</th>
                               <th>Nombre</th>
                               <th>Apellido Paterno</th>
                               <th>Apellido Materno</th>
@@ -80,94 +81,125 @@
                             </tr>
                           </thead>
                           <tbody>
-                            <?php if ($alumnas === false): ?>
-                              <tr><td colspan="9">Error SQL (alumnas): <?php echo e(mysqli_error($conexion)); ?></td></tr>
-                            <?php elseif (mysqli_num_rows($alumnas) === 0): ?>
-                              <tr><td colspan="9">Sin alumnas</td></tr>
-                            <?php else: ?>
-                              <?php while ($a = mysqli_fetch_assoc($alumnas)): ?>
-                                <tr>
-                                  <td><?php echo e($a['id_alumna']); ?></td>
-                                  <td><?php echo e($a['nombre']); ?></td>
-                                  <td><?php echo e($a['apat']); ?></td>
-                                  <td><?php echo e($a['amat']); ?></td>
-                                  <td><?php echo e($a['telefono']); ?></td>
-                                  <td><?php echo e($a['correo']); ?></td>
-                                  <td><?php echo e($a['direccion']); ?></td>
-                                  <td><?php echo $a['descuento_aplicado'] ? 'Sí' : 'No'; ?></td>
-                                  <td><?php echo e($a['tipo_descuento']); ?></td>
-                                  <td>
-                                    <button class="btn-mini btn-edit-alumna"
-                                            data-id="<?php echo e($a['id_alumna']); ?>"
-                                            data-nombre="<?php echo e($a['nombre']); ?>"
-                                            data-apat="<?php echo e($a['apat']); ?>"
-                                            data-amat="<?php echo e($a['amat']); ?>"
-                                            data-telefono="<?php echo e($a['telefono']); ?>"
-                                            data-correo="<?php echo e($a['correo']); ?>"
-                                            data-direccion="<?php echo e($a['direccion']); ?>"
-                                            data-descuento="<?php echo e($a['descuento_aplicado']); ?>"
-                                            data-tipo="<?php echo e($a['tipo_descuento']); ?>">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
+                          <?php
+                            if ($alumnas === false) {
+                                echo '<tr><td colspan="11">Error SQL (alumnas): ' . mysqli_error($conexion) . '</td></tr>';
+                            } elseif (mysqli_num_rows($alumnas) === 0) {
+                                echo '<tr><td colspan="11">Sin alumnas</td></tr>';
+                            } else {
+                                while ($a = mysqli_fetch_assoc($alumnas)) {
+                                    echo '<tr>';
 
-                                    <?php if ($a['estatus'] == 1): ?>
-                                        <!-- Alumna activa: botón eliminar -->
-                                        <button class="btn-mini btn-delete-alumna" 
-                                                data-id="<?php echo e($a['id_alumna']); ?>"
-                                                title="Eliminar Alumna">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    <?php else: ?>
-                                        <!-- Alumna inactiva: botón activar -->
-                                        <form method="post" style="display:inline;">
-                                          <input type="hidden" name="action" value="activate_alumna">
-                                          <input type="hidden" name="id_alumna" value="<?php echo e($a['id_alumna']); ?>">
-                                          <button type="submit" class="btn-mini btn-activate-alumna" title="Activar Alumna">
-                                            <i class="fa fa-check"></i>
-                                          </button>
-                                        </form>
-                                    <?php endif; ?>
-                                  </td>
-                                </tr>
-                              <?php endwhile; ?>
-                            <?php endif; ?>
+                                    // 🔹 Enlace corregido — usa "id_alumna" para coincidir con $_GET['id_alumna'] en perfil_alumnas.php
+                                    echo '<td>
+                                            <a href="perfil_alumnas.php?id_alumna=' . urlencode($a['id_alumna']) . '" title="Ver perfil">
+                                              ' . htmlspecialchars($a['id_alumna']) . '
+                                            </a>
+                                          </td>';
+
+                                    // Imagen (BLOB)
+                                    echo '<td>
+                                            <img src="ver_imagen_alumna.php?id=' . $a['id_alumna'] . '"
+                                                width="50" height="50"
+                                                style="object-fit:cover;border-radius:6px"
+                                                alt="Imagen de ' . htmlspecialchars($a['nombre']) . '">
+                                          </td>';
+
+
+                                    echo '<td>' . htmlspecialchars($a['nombre']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($a['apat']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($a['amat']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($a['telefono']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($a['correo']) . '</td>';
+                                    echo '<td>' . htmlspecialchars($a['direccion']) . '</td>';
+                                    echo '<td>' . ($a['descuento_aplicado'] ? 'Sí' : 'No') . '</td>';
+                                    echo '<td>' . htmlspecialchars($a['tipo_descuento']) . '</td>';
+
+                                    // Acciones
+                                    echo '<td>';
+                                    echo '<button class="btn-mini btn-edit-alumna"
+                                                data-id="' . htmlspecialchars($a['id_alumna']) . '"
+                                                data-nombre="' . htmlspecialchars($a['nombre']) . '"
+                                                data-apat="' . htmlspecialchars($a['apat']) . '"
+                                                data-amat="' . htmlspecialchars($a['amat']) . '"
+                                                data-telefono="' . htmlspecialchars($a['telefono']) . '"
+                                                data-correo="' . htmlspecialchars($a['correo']) . '"
+                                                data-direccion="' . htmlspecialchars($a['direccion']) . '"
+                                                data-descuento="' . htmlspecialchars($a['descuento_aplicado']) . '"
+                                                data-tipo="' . htmlspecialchars($a['tipo_descuento']) . '">
+                                            <i class="fa fa-edit"></i>
+                                          </button>';
+
+                                    if ($a['estatus'] == 1) {
+                                        echo '<button class="btn-mini btn-delete-alumna" 
+                                                    data-id="' . htmlspecialchars($a['id_alumna']) . '" title="Eliminar Alumna">
+                                                <i class="fa fa-trash"></i>
+                                              </button>';
+                                    } else {
+                                        echo '<form method="post" style="display:inline;">
+                                                <input type="hidden" name="action" value="activate_alumna">
+                                                <input type="hidden" name="id_alumna" value="' . htmlspecialchars($a['id_alumna']) . '">
+                                                <button type="submit" class="btn-mini btn-activate-alumna" title="Activar Alumna">
+                                                    <i class="fa fa-check"></i>
+                                                </button>
+                                              </form>';
+                                    }
+
+                                    echo '</td>';
+                                    echo '</tr>';
+                                }
+                            }
+                          ?>
                           </tbody>
                         </table>
                       </div>
-                      <!-- Modal Alumna -->
+                      <!-- Modal Nueva Alumna -->
                       <div class="modal" id="modalAlumna">
                         <div class="modal-content">
                           <header>
-                            <h3>Nueva alumna</h3>
+                            <h3>Nueva Alumna</h3>
                             <button class="close" data-close="#modalAlumna">&times;</button>
                           </header>
-                          <form method="post" autocomplete="off">
+
+                          <form method="post" enctype="multipart/form-data" autocomplete="off">
                             <input type="hidden" name="action" value="add_alumna">
+
                             <div class="form-grid">
                               <div class="form-control">
                                 <label>Nombre *</label>
                                 <input type="text" name="nombre" required>
                               </div>
+
                               <div class="form-control">
-                                <label>Apellido paterno</label>
-                                <input type="text" name="apat">
+                                <label>Apellido Paterno *</label>
+                                <input type="text" name="apat" required>
                               </div>
+
                               <div class="form-control">
-                                <label>Apellido materno</label>
+                                <label>Apellido Materno</label>
                                 <input type="text" name="amat">
                               </div>
+
                               <div class="form-control">
                                 <label>Teléfono</label>
                                 <input type="text" name="telefono">
                               </div>
+
                               <div class="form-control">
                                 <label>Correo</label>
                                 <input type="email" name="correo">
                               </div>
+
                               <div class="form-control">
                                 <label>Dirección</label>
                                 <input type="text" name="direccion">
                               </div>
+
+                              <div class="form-control">
+                                <label>Imagen</label>
+                                <input type="file" name="imagen" accept="image/*">
+                              </div>
+
                               <div class="form-control">
                                 <label>Descuento aplicado</label>
                                 <select name="descuento_aplicado">
@@ -175,13 +207,17 @@
                                   <option value="1">Sí</option>
                                 </select>
                               </div>
+
                               <div class="form-control">
                                 <label>Tipo de descuento</label>
                                 <input type="text" name="tipo_descuento">
                               </div>
                             </div>
+
                             <div class="form-actions">
-                              <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i></button>
+                              <button class="btn btn-primary" type="submit">
+                                <i class="fa fa-save"></i>
+                              </button>
                             </div>
                           </form>
                         </div>
@@ -193,56 +229,72 @@
                             <h3>Editar Alumna</h3>
                             <button class="close" data-close="#modalEditarAlumna">&times;</button>
                           </header>
-                          <form method="post" autocomplete="off">
+
+                          <form method="post" enctype="multipart/form-data" autocomplete="off">
                             <input type="hidden" name="action" value="edit_alumna">
-                            <input type="hidden" name="id_alumna" id="edit_id_alumna">
+                            <input type="hidden" name="id_alumna" id="edit_alumna_id">
 
                             <div class="form-grid">
                               <div class="form-control">
                                 <label>Nombre *</label>
-                                <input type="text" name="nombre" id="edit_nombre_alumna" required>
+                                <input type="text" name="nombre" id="edit_alumna_nombre" required>
                               </div>
+
                               <div class="form-control">
-                                <label>Apellido Paterno</label>
-                                <input type="text" name="apat" id="edit_apat_alumna">
+                                <label>Apellido Paterno *</label>
+                                <input type="text" name="apat" id="edit_alumna_apat" required>
                               </div>
+
                               <div class="form-control">
                                 <label>Apellido Materno</label>
-                                <input type="text" name="amat" id="edit_amat_alumna">
+                                <input type="text" name="amat" id="edit_alumna_amat">
                               </div>
+
                               <div class="form-control">
                                 <label>Teléfono</label>
-                                <input type="text" name="telefono" id="edit_telefono_alumna">
+                                <input type="text" name="telefono" id="edit_alumna_telefono">
                               </div>
+
                               <div class="form-control">
                                 <label>Correo</label>
-                                <input type="email" name="correo" id="edit_correo_alumna">
+                                <input type="email" name="correo" id="edit_alumna_correo">
                               </div>
+
                               <div class="form-control">
                                 <label>Dirección</label>
-                                <input type="text" name="direccion" id="edit_direccion_alumna">
+                                <input type="text" name="direccion" id="edit_alumna_direccion">
                               </div>
+
+                              <div class="form-control">
+                                <label>Actualizar imagen</label>
+                                <input type="file" name="imagen" accept="image/*">
+                              </div>
+
                               <div class="form-control">
                                 <label>Descuento aplicado</label>
-                                <select name="descuento_aplicado" id="edit_descuento_alumna">
+                                <select name="descuento_aplicado" id="edit_alumna_descuento">
                                   <option value="0">No</option>
                                   <option value="1">Sí</option>
                                 </select>
                               </div>
+
                               <div class="form-control">
                                 <label>Tipo de descuento</label>
-                                <input type="text" name="tipo_descuento" id="edit_tipo_descuento_alumna">
+                                <input type="text" name="tipo_descuento" id="edit_alumna_tipo">
                               </div>
                             </div>
 
                             <div class="form-actions">
-                              <button class="btn btn-primary" type="submit"><i class="fa fa-save"></i></button>
+                              <button class="btn btn-primary" type="submit">
+                                <i class="fa fa-save"></i>
+                              </button>
                             </div>
                           </form>
                         </div>
                       </div>
                     </div>
                   </section>
+
 
                   <!-- ================== Card Maestras ================== -->
                   <section class="card">

@@ -67,6 +67,7 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                     <th>Taller</th>
                     <th>Total</th>
                     <th>Estado</th>
+                    <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -94,6 +95,17 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                     <td><?php echo $mostrar['id_taller'] ?></td>
                     <td><?php echo "$".$mostrar['total'] ?></td>
                     <td><?php echo $mostrar['estado'] ?></td>
+                    <td>
+                      <button 
+                        class="btn-editar"
+                        data-id="<?= $mostrar['idVenta'] ?>"
+                        data-total="<?= $mostrar['total'] ?>"
+                        data-estado="<?= $mostrar['estado'] ?>"
+                        data-taller="<?= $mostrar['id_taller'] ?>"
+                      >
+                        <i class="fa-solid fa-pen-to-square"></i>
+                      </button>
+                    </td>
                 </tr> 
                 <?php
                     }
@@ -109,6 +121,32 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
       
     </main>
   </div>
+  <div id="modalEditarVenta" class="modal">
+  <div class="modal-content">
+    <h3>Editar Venta</h3>
+
+    <input type="hidden" id="edit_idVenta">
+
+    <label>Total</label>
+    <input type="number" id="edit_total">
+
+    <label>Estado</label>
+    <select id="edit_estado">
+      <option value="Pagado">Pagado</option>
+      <option value="Pendiente">Pendiente</option>
+      <option value="Cancelado">Cancelado</option>
+    </select>
+
+    <label>Taller</label>
+    <input type="text" id="edit_taller">
+
+    <div class="modal-actions">
+      <button id="btnGuardarCambios">Guardar</button>
+      <button id="btnCerrarModal">Cancelar</button>
+    </div>
+  </div>
+</div>
+
   <script src="librerias/tables.js"></script>
   
 
@@ -121,6 +159,29 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
     });
 
   </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('click', function (e) {
+
+  if (e.target.closest('.btn-editar')) {
+
+    const btn = e.target.closest('.btn-editar');
+
+    document.getElementById('edit_idVenta').value = btn.dataset.id;
+    document.getElementById('edit_total').value   = btn.dataset.total;
+    document.getElementById('edit_estado').value  = btn.dataset.estado;
+    document.getElementById('edit_taller').value  = btn.dataset.taller;
+
+    document.getElementById('modalEditarVenta').style.display = 'flex';
+  }
+
+  if (e.target.id === 'btnCerrarModal') {
+    document.getElementById('modalEditarVenta').style.display = 'none';
+  }
+
+});
+</script>
 
 
 

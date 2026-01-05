@@ -142,14 +142,44 @@ if (is_post()) {
 
     if ($action === 'edit_alumna') {
         $id = intval(post('id_alumna'));
-        $sql = "UPDATE alumnas SET nombre=?, apat=?, amat=?, telefono=?, correo=?, direccion=?, descuento_aplicado=?, tipo_descuento=? WHERE id_alumna=?";
-        $stmt = mysqli_prepare($conexion, $sql);
-        mysqli_stmt_bind_param($stmt, "sssssisisi",
-            post('nombre'), post('apat'), post('amat'),
-            post('telefono'), post('correo'), post('direccion'),
-            intval(post('descuento_aplicado',0)), post('tipo_descuento'),
-            $id
-        );
+        $imagen = null;
+        $tieneImagenNueva = isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK;
+
+        if ($tieneImagenNueva) {
+            $imagen = file_get_contents($_FILES['imagen']['tmp_name']);
+            $sql = "UPDATE alumnas 
+                    SET nombre=?, apat=?, amat=?, telefono=?, correo=?, direccion=?, descuento_aplicado=?, tipo_descuento=?, imagen=? 
+                    WHERE id_alumna=?";
+            $stmt = mysqli_prepare($conexion, $sql);
+            $nombre = post('nombre');
+            $apat = post('apat');
+            $amat = post('amat');
+            $telefono = post('telefono');
+            $correo = post('correo');
+            $direccion = post('direccion');
+            $desc_ap = intval(post('descuento_aplicado',0));
+            $tipo_descuento = post('tipo_descuento');
+
+            mysqli_stmt_bind_param($stmt, "sssssisibi",
+                $nombre, $apat, $amat,
+                $telefono, $correo, $direccion,
+                $desc_ap, $tipo_descuento, $imagen, $id
+            );
+
+            mysqli_stmt_send_long_data($stmt, 8, $imagen);
+        } else {
+            $sql = "UPDATE alumnas 
+                    SET nombre=?, apat=?, amat=?, telefono=?, correo=?, direccion=?, descuento_aplicado=?, tipo_descuento=? 
+                    WHERE id_alumna=?";
+            $stmt = mysqli_prepare($conexion, $sql);
+            mysqli_stmt_bind_param($stmt, "sssssisisi",
+                post('nombre'), post('apat'), post('amat'),
+                post('telefono'), post('correo'), post('direccion'),
+                intval(post('descuento_aplicado',0)), post('tipo_descuento'),
+                $id
+            );
+        }
+
         $ok = mysqli_stmt_execute($stmt);
         $_SESSION['flash_'.($ok?'ok':'err')] = $ok ? 'Alumna actualizada.' : 'Error: '.mysqli_error($conexion);
         header("Location: $redirect"); exit;
@@ -157,14 +187,37 @@ if (is_post()) {
 
     // ==================== AGREGAR ====================
     if ($action === 'add_alumna') {
-        $sql = "INSERT INTO alumnas (nombre, apat, amat, telefono, correo, direccion, descuento_aplicado, tipo_descuento) VALUES (?,?,?,?,?,?,?,?)";
+        // --- Manejo de imagen (BLOB) ---
+        $imagen = null;
+        if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+            $imagen = file_get_contents($_FILES['imagen']['tmp_name']);
+        }
+
+        // --- Insertar con imagen ---
+        $sql = "INSERT INTO alumnas (nombre, apat, amat, telefono, correo, direccion, descuento_aplicado, tipo_descuento, imagen) 
+                VALUES (?,?,?,?,?,?,?,?,?)";
         $stmt = mysqli_prepare($conexion, $sql);
         $desc_ap = intval(post('descuento_aplicado',0));
-        mysqli_stmt_bind_param($stmt, "ssssssis",
-            post('nombre'), post('apat'), post('amat'),
-            post('telefono'), post('correo'), post('direccion'),
-            $desc_ap, post('tipo_descuento')
+        $nombre  = post('nombre');
+        $apat    = post('apat');
+        $amat    = post('amat');
+        $telefono = post('telefono');
+        $correo  = post('correo');
+        $direccion = post('direccion');
+        $tipo_descuento = post('tipo_descuento');
+
+        mysqli_stmt_bind_param($stmt, "ssssssisb",
+            $nombre, $apat, $amat,
+            $telefono, $correo, $direccion,
+            $desc_ap, $tipo_descuento, $imagen
         );
+
+
+        // ⚠️ Tipo 'b' es para datos binarios → usa send_long_data
+        if ($imagen !== null) {
+            mysqli_stmt_send_long_data($stmt, 8, $imagen); // el índice 8 es la posición del parámetro blob
+        }
+
         $ok = mysqli_stmt_execute($stmt);
         $_SESSION['flash_'.($ok?'ok':'err')] = $ok ? 'Alumna agregada.' : 'Error: '.mysqli_error($conexion);
         header("Location: $redirect"); exit;
@@ -215,7 +268,10 @@ $mostrar_alumnas  = isset($_GET['alumnas'])  ? intval($_GET['alumnas'])  : 1;
 $mostrar_maestras = isset($_GET['maestras']) ? intval($_GET['maestras']) : 1;
 $mostrar_clientes = isset($_GET['clientes']) ? intval($_GET['clientes']) : 1;
 
-$sqlAlumnas  = "SELECT id_alumna, nombre, apat, amat, telefono, correo, direccion, descuento_aplicado, tipo_descuento, estatus FROM alumnas WHERE estatus=$mostrar_alumnas ORDER BY id_alumna ASC";
+$sqlAlumnas = "SELECT id_alumna, nombre, apat, amat, telefono, correo, direccion, descuento_aplicado, tipo_descuento, imagen, estatus 
+               FROM alumnas 
+               WHERE estatus=$mostrar_alumnas 
+               ORDER BY id_alumna ASC";
 $sqlMaestras = "SELECT id_maestra, nombre, base, acuerdo, gastos, porcentaje_ganancia, estatus FROM maestras WHERE estatus=$mostrar_maestras ORDER BY id_maestra ASC";
 $sqlClientes = "SELECT * FROM clientes WHERE estatus=$mostrar_clientes ORDER BY id_cliente ASC";
 $sqlUsuarios = "SELECT * FROM usuarios";
