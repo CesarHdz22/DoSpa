@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.2
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 02-01-2026 a las 21:01:45
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.0.30
+-- Servidor: localhost:3306
+-- Tiempo de generación: 17-01-2026 a las 22:25:08
+-- Versión del servidor: 11.4.9-MariaDB-cll-lve
+-- Versión de PHP: 8.3.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `instituto_dos`
+-- Base de datos: `hykuueix_DO_Spa_Test`
 --
 
 -- --------------------------------------------------------
@@ -676,6 +676,27 @@ INSERT INTO `productos_kits` (`id_kit`, `id_producto`, `cantidad`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `sucursales`
+--
+
+CREATE TABLE `sucursales` (
+  `id_sucursal` int(11) NOT NULL,
+  `nombre_sucursal` varchar(100) NOT NULL,
+  `calle` varchar(100) NOT NULL,
+  `numero` varchar(100) NOT NULL,
+  `colonia` varchar(100) NOT NULL,
+  `ciudad` varchar(100) NOT NULL,
+  `estado` varchar(100) NOT NULL,
+  `codigo_postal` varchar(100) NOT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `correo_electronico` varchar(100) DEFAULT NULL,
+  `fecha_apertura` date DEFAULT NULL,
+  `estado_sucursal` enum('Activa','Inactiva') DEFAULT 'Activa'
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `talleres`
 --
 
@@ -912,6 +933,12 @@ ALTER TABLE `productos_kits`
   ADD KEY `id_producto` (`id_producto`);
 
 --
+-- Indices de la tabla `sucursales`
+--
+ALTER TABLE `sucursales`
+  ADD PRIMARY KEY (`id_sucursal`);
+
+--
 -- Indices de la tabla `talleres`
 --
 ALTER TABLE `talleres`
@@ -1039,6 +1066,12 @@ ALTER TABLE `modulos`
 --
 ALTER TABLE `productos`
   MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `sucursales`
+--
+ALTER TABLE `sucursales`
+  MODIFY `id_sucursal` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `talleres`
