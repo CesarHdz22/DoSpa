@@ -1,34 +1,33 @@
 # DoSpa - Sistema de Gestión Instituto DO
 
-**DoSpa** es una Single Page Application (SPA) diseñada para la administración integral del **Instituto DO**. Este sistema centraliza el control de alumnas, procesos de inscripción, gestión de inventarios y seguimiento de talleres.
+**DoSpa** es una aplicación web tipo Single Page Application (SPA) diseñada para centralizar la administración del **Instituto DO**. Permite gestionar desde el registro de alumnas hasta el control de inventarios y flujos de ventas.
 
 ## Stack Tecnológico
-* [cite_start]**Backend:** PHP (Scripts modulares para procesamiento de datos)[cite: 2, 3].
-* [cite_start]**Frontend:** HTML5, CSS3 y JavaScript[cite: 4, 5, 6].
-* [cite_start]**Base de Datos:** MySQL (Dump incluido)[cite: 4].
-* [cite_start]**Formatos de Datos:** Soporte para .csv y .xlsx[cite: 3, 4].
+* **Backend:** PHP para procesamiento de datos y lógica de servidor.
+* **Frontend:** Interfaz dinámica construida con HTML5, CSS3 y JavaScript.
+* **Base de Datos:** MySQL (Esquema incluido en la carpeta `/bd`).
+* **Datos Externos:** Capacidad de manejo de archivos .csv y .xlsx para importación masiva.
 
 ## Estructura del Proyecto
-[cite_start]El proyecto está organizado de la siguiente manera[cite: 1]:
+Basado en el listado de archivos, el proyecto se organiza así:
 
-* [cite_start]**Raíz (`/`):** Controladores y vistas principales como `main.php`, `inventario.php` y `ventas.php`[cite: 2, 3].
-* [cite_start]**`bd/`:** Contiene el esquema `hykuueix_DO_Spa_Test.sql`[cite: 4].
-* [cite_start]**`css/`:** Estilos específicos (ej. `agenda.css`, `login.css`, `perfil_alumna.css`)[cite: 4, 5].
-* [cite_start]**`img/`:** Recursos visuales como `DO_SPA_logo.png`[cite: 5, 6].
-* [cite_start]**`librerias/`:** Lógica de negocio en JS (`agenda.js`, `carrito.js`, `FunInventario.js`)[cite: 6].
+* **Controladores Principales:** Archivos PHP en la raíz para ventas, inventario y agenda.
+* **Base de Datos (`/bd`):** Script SQL `hykuueix_DO_Spa_Test.sql` para montaje rápido.
+* **Estilos (`/css`):** Diseño modular (login, agenda, tablas, etc.).
+* **Lógica JS (`/librerias`):** Scripts para el carrito, manejo de tablas y usuarios.
+* **Recursos (`/img`):** Iconografía y logos oficiales.
 
-## Funcionalidades Clave
-* [cite_start]**Gestión Académica:** Registro de inscripciones y perfiles de alumnas[cite: 2, 3].
-* [cite_start]**Sistema de Agenda:** Programación de citas para inscripciones e interesadas[cite: 2].
-* [cite_start]**Control de Inventario:** Gestión de stock, edición de productos y kits[cite: 2, 3].
-* [cite_start]**Módulo de Ventas:** Flujo de compra, registro de pagos y detalle de ventas[cite: 2, 3].
-* [cite_start]**Seguridad:** Control de acceso mediante `login.php` y controlador de usuarios[cite: 3].
+## Funcionalidades Principales
+* **Administración Académica:** Perfiles de alumnas/maestras y control de inscripciones a talleres.
+* **Agenda:** Gestión de citas para interesadas y seguimiento de eventos.
+* **Punto de Venta e Inventario:** Manejo de stock, creación de kits de productos y registro de pagos.
+* **Seguridad:** Autenticación de usuarios y controladores de acceso.
 
-## Instalación
-1. **Descargar:** Clona el repositorio en tu servidor local (XAMPP/Apache).
-2. [cite_start]**Base de Datos:** Importa el archivo en `/bd/hykuueix_DO_Spa_Test.sql`[cite: 4].
-3. [cite_start]**Configuración:** Ajusta las credenciales en `conexion.php`[cite: 2].
-4. [cite_start]**Acceso:** Inicia desde `index.html` o `login.php`[cite: 2, 3].
+## Instalación Rápida
+1. **Clonar:** Descarga el repositorio en tu servidor local.
+2. **DB:** Importa el archivo SQL de la carpeta `/bd`.
+3. **Conexión:** Configura tus credenciales en `conexion.php`.
+4. **Inicio:** Ejecuta `login.php` en tu navegador.
 
 ---
-*Desarrollado para el control administrativo de Instituto DO.*
+*Desarrollado para la optimización administrativa de Instituto DO.*
