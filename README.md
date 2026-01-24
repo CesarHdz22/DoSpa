@@ -1,68 +1,34 @@
-DoSpa - Sistema de Gestión Instituto DO
+# DoSpa - Sistema de Gestión Instituto DO
 
-DoSpa es una aplicación web tipo SPA (Single Page Application) diseñada para la administración integral del Instituto DO. El sistema facilita el control de alumnas, procesos de inscripción, gestión de inventarios y seguimiento de talleres.
+**DoSpa** es una Single Page Application (SPA) diseñada para la administración integral del **Instituto DO**. Este sistema centraliza el control de alumnas, procesos de inscripción, gestión de inventarios y seguimiento de talleres.
 
+## Stack Tecnológico
+* [cite_start]**Backend:** PHP (Scripts modulares para procesamiento de datos)[cite: 2, 3].
+* [cite_start]**Frontend:** HTML5, CSS3 y JavaScript[cite: 4, 5, 6].
+* [cite_start]**Base de Datos:** MySQL (Dump incluido)[cite: 4].
+* [cite_start]**Formatos de Datos:** Soporte para .csv y .xlsx[cite: 3, 4].
 
+## Estructura del Proyecto
+[cite_start]El proyecto está organizado de la siguiente manera[cite: 1]:
 
-🛠️ Stack Tecnológico
+* [cite_start]**Raíz (`/`):** Controladores y vistas principales como `main.php`, `inventario.php` y `ventas.php`[cite: 2, 3].
+* [cite_start]**`bd/`:** Contiene el esquema `hykuueix_DO_Spa_Test.sql`[cite: 4].
+* [cite_start]**`css/`:** Estilos específicos (ej. `agenda.css`, `login.css`, `perfil_alumna.css`)[cite: 4, 5].
+* [cite_start]**`img/`:** Recursos visuales como `DO_SPA_logo.png`[cite: 5, 6].
+* [cite_start]**`librerias/`:** Lógica de negocio en JS (`agenda.js`, `carrito.js`, `FunInventario.js`)[cite: 6].
 
-Backend: PHP (Arquitectura basada en scripts modulares para procesamiento de datos).
+## Funcionalidades Clave
+* [cite_start]**Gestión Académica:** Registro de inscripciones y perfiles de alumnas[cite: 2, 3].
+* [cite_start]**Sistema de Agenda:** Programación de citas para inscripciones e interesadas[cite: 2].
+* [cite_start]**Control de Inventario:** Gestión de stock, edición de productos y kits[cite: 2, 3].
+* [cite_start]**Módulo de Ventas:** Flujo de compra, registro de pagos y detalle de ventas[cite: 2, 3].
+* [cite_start]**Seguridad:** Control de acceso mediante `login.php` y controlador de usuarios[cite: 3].
 
+## Instalación
+1. **Descargar:** Clona el repositorio en tu servidor local (XAMPP/Apache).
+2. [cite_start]**Base de Datos:** Importa el archivo en `/bd/hykuueix_DO_Spa_Test.sql`[cite: 4].
+3. [cite_start]**Configuración:** Ajusta las credenciales en `conexion.php`[cite: 2].
+4. [cite_start]**Acceso:** Inicia desde `index.html` o `login.php`[cite: 2, 3].
 
-Frontend: HTML5, CSS3 (Diseño modular) y JavaScript.
-
-
-
-Base de Datos: MySQL (Incluye dump SQL para pruebas).
-
-
-Librerías: Scripts personalizados para manejo de agendas, carritos de compra y tablas dinámicas.
-
-📁 Estructura del Proyecto
-El proyecto está organizado de la siguiente manera:
-
-
-Raíz (/): Contiene los controladores de lógica y vistas principales como main.php, inventario.php, y ventas.php.
-
-
-bd/: Contiene el script SQL hykuueix_DO_Spa_Test.sql para la estructura de la base de datos.
-
-
-css/: Hojas de estilo específicas para cada módulo (ej. agenda.css, login.css, perfil_alumna.css).
-
-
-img/: Iconografía y logotipos del sistema (ej. DO_SPA_logo.png).
-
-
-librerias/: Lógica de negocio en el cliente, incluyendo agenda.js y carrito.js.
-
-
-Archivos muestra.../: Documentación de apoyo y bases de datos de ejemplo en formatos .csv y .xlsx para alumnas, ingresos y egresos.
-
-🚀 Funcionalidades Clave
-
-Gestión Académica: Registro de inscripciones, perfiles de alumnas/maestras y control de módulos de curso.
-
-
-Sistema de Agenda: Programación de citas para inscripciones e interesadas.
-
-
-Control de Inventario: Gestión de stock, edición de productos y configuración de kits.
-
-
-Módulo de Ventas: Flujo de compra, registro de pagos y visualización de detalles de venta.
-
-
-Seguridad: Control de acceso mediante login.php y gestión de usuarios.
-
-⚙️ Instalación
-Clonar el repositorio: Descarga los archivos en tu servidor local (Apache/PHP).
-
-
-Configurar Base de Datos: Importa el archivo ubicado en /bd/hykuueix_DO_Spa_Test.sql.
-
-
-Conexión: Ajusta los parámetros en conexion.php para apuntar a tu servidor local.
-
-
-Ejecutar: Abre index.html o login.php en tu navegador.
+---
+*Desarrollado para el control administrativo de Instituto DO.*
