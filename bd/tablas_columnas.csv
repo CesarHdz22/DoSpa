@@ -1,0 +1,10 @@
+tabla,columna,tipo,clave
+agenda,id_agenda,int,PK
+agenda,id_taller,int,FK
+agenda,fecha,date,
+agenda,hora_inicio,time,
+agenda,hora_fin,time,
+agenda,ubicacion,varchar,
+agenda,variacion,varchar,
+agenda,cant_inscritas,int,
+agenda,cant_interesadas,int,

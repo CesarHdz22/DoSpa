@@ -1,0 +1,7 @@
+tabla,fk_columna,tabla_referenciada,pk_columna
+agenda,id_taller,talleres,id_taller
+agenda_cursos,id_curso,cursos,id_curso
+descuentos,id_alumna,alumnas,id_alumna
+detalle_venta,id_producto,productos,id_producto
+detalle_venta,id_kit,kits_productos,id_kit
+detalle_venta,idVenta,venta,idVenta
