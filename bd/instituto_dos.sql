@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: localhost:3306
--- Tiempo de generación: 17-01-2026 a las 22:25:08
--- Versión del servidor: 11.4.9-MariaDB-cll-lve
--- Versión de PHP: 8.3.29
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 01-02-2026 a las 07:22:22
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `hykuueix_DO_Spa_Test`
+-- Base de datos: `instituto_dos`
 --
 
 -- --------------------------------------------------------
@@ -36,18 +36,21 @@ CREATE TABLE `agenda` (
   `ubicacion` varchar(255) DEFAULT NULL,
   `variacion` varchar(100) DEFAULT NULL,
   `cant_inscritas` int(11) NOT NULL,
-  `cant_interesadas` int(11) NOT NULL
+  `cant_interesadas` int(11) NOT NULL,
+  `ingreso_total` decimal(12,2) DEFAULT 0.00,
+  `gastos_totales` decimal(12,2) DEFAULT 0.00,
+  `id_sucursal` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `agenda`
 --
 
-INSERT INTO `agenda` (`id_agenda`, `id_taller`, `fecha`, `hora_inicio`, `hora_fin`, `ubicacion`, `variacion`, `cant_inscritas`, `cant_interesadas`) VALUES
-(1, 1, '2025-09-10', '10:00:00', '13:00:00', 'Aula 101', 'Matutino', 3, 0),
-(2, 2, '2025-09-15', '15:00:00', '18:00:00', 'Sala Principal', 'Vespertino', 3, 0),
-(3, 3, '2025-09-20', '09:00:00', '12:00:00', 'Salón Creativo', 'Fin de semana', 3, 0),
-(4, 3, '2025-12-02', '15:00:00', '18:00:00', 'Victoria', '', 3, 2);
+INSERT INTO `agenda` (`id_agenda`, `id_taller`, `fecha`, `hora_inicio`, `hora_fin`, `ubicacion`, `variacion`, `cant_inscritas`, `cant_interesadas`, `ingreso_total`, `gastos_totales`, `id_sucursal`) VALUES
+(1, 1, '2025-09-10', '10:00:00', '13:00:00', 'Aula 101', 'Matutino', 3, 0, 0.00, 0.00, NULL),
+(2, 2, '2025-09-15', '15:00:00', '18:00:00', 'Sala Principal', 'Vespertino', 3, 0, 0.00, 0.00, NULL),
+(3, 3, '2025-09-20', '09:00:00', '12:00:00', 'Salón Creativo', 'Fin de semana', 3, 0, 0.00, 0.00, NULL),
+(4, 3, '2025-12-02', '15:00:00', '18:00:00', 'Victoria', '', 3, 2, 0.00, 0.00, NULL);
 
 -- --------------------------------------------------------
 
@@ -64,17 +67,20 @@ CREATE TABLE `agenda_cursos` (
   `ubicacion` varchar(255) DEFAULT NULL,
   `variacion` varchar(100) DEFAULT NULL,
   `cant_inscritas` int(11) NOT NULL,
-  `cant_interesadas` int(11) NOT NULL
+  `cant_interesadas` int(11) NOT NULL,
+  `ingreso_total` decimal(12,2) DEFAULT 0.00,
+  `gastos_totales` decimal(12,2) DEFAULT 0.00,
+  `id_sucursal` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `agenda_cursos`
 --
 
-INSERT INTO `agenda_cursos` (`id_agenda_curso`, `id_curso`, `fecha`, `hora_inicio`, `hora_fin`, `ubicacion`, `variacion`, `cant_inscritas`, `cant_interesadas`) VALUES
-(1, 1, '2025-09-25', '09:00:00', '12:00:00', 'Aula 201', 'Matutino', 2, 0),
-(2, 2, '2025-09-30', '16:00:00', '19:00:00', 'Laboratorio A', 'Vespertino', 2, 0),
-(3, 3, '2025-10-05', '10:00:00', '13:00:00', 'Sala B', 'Fin de semana', 2, 0);
+INSERT INTO `agenda_cursos` (`id_agenda_curso`, `id_curso`, `fecha`, `hora_inicio`, `hora_fin`, `ubicacion`, `variacion`, `cant_inscritas`, `cant_interesadas`, `ingreso_total`, `gastos_totales`, `id_sucursal`) VALUES
+(1, 1, '2025-09-25', '09:00:00', '12:00:00', 'Aula 201', 'Matutino', 2, 0, 0.00, 0.00, NULL),
+(2, 2, '2025-09-30', '16:00:00', '19:00:00', 'Laboratorio A', 'Vespertino', 2, 0, 0.00, 0.00, NULL),
+(3, 3, '2025-10-05', '10:00:00', '13:00:00', 'Sala B', 'Fin de semana', 2, 0, 0.00, 0.00, NULL);
 
 -- --------------------------------------------------------
 
@@ -154,17 +160,20 @@ CREATE TABLE `cursos` (
   `status` varchar(50) DEFAULT NULL,
   `ingreso_bruto` decimal(10,2) DEFAULT NULL,
   `gastos` decimal(10,2) DEFAULT NULL,
-  `precio_preferencial` tinyint(1) DEFAULT 0
+  `precio_preferencial` tinyint(1) DEFAULT 0,
+  `ingreso_total` decimal(12,2) DEFAULT 0.00,
+  `gastos_totales` decimal(12,2) DEFAULT 0.00,
+  `id_sucursal` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `cursos`
 --
 
-INSERT INTO `cursos` (`id_curso`, `nombre`, `id_maestra`, `costo_base`, `status`, `ingreso_bruto`, `gastos`, `precio_preferencial`) VALUES
-(1, 'Curso de Inglés', 0, 2500.00, 'activo', 7500.00, 2000.00, 0),
-(2, 'Curso de Programación', 0, 3000.00, 'activo', 9000.00, 3000.00, 1),
-(3, 'Curso de Fotografía', 0, 2000.00, 'pendiente', 0.00, 0.00, 0);
+INSERT INTO `cursos` (`id_curso`, `nombre`, `id_maestra`, `costo_base`, `status`, `ingreso_bruto`, `gastos`, `precio_preferencial`, `ingreso_total`, `gastos_totales`, `id_sucursal`) VALUES
+(1, 'Curso de Inglés', 0, 2500.00, 'activo', 7500.00, 2000.00, 0, 0.00, 0.00, NULL),
+(2, 'Curso de Programación', 0, 3000.00, 'activo', 9000.00, 3000.00, 1, 0.00, 0.00, NULL),
+(3, 'Curso de Fotografía', 0, 2000.00, 'pendiente', 0.00, 0.00, 0, 0.00, 0.00, NULL);
 
 -- --------------------------------------------------------
 
@@ -201,72 +210,89 @@ CREATE TABLE `detalle_venta` (
   `id_kit` int(11) DEFAULT NULL,
   `cantidad` int(11) NOT NULL,
   `precio_unitario` decimal(10,2) NOT NULL,
-  `subtotal` decimal(10,2) NOT NULL
+  `subtotal` decimal(10,2) NOT NULL,
+  `id_sucursal` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `detalle_venta`
 --
 
-INSERT INTO `detalle_venta` (`idDetalle`, `idVenta`, `id_producto`, `id_kit`, `cantidad`, `precio_unitario`, `subtotal`) VALUES
-(1, 1, 1, NULL, 1, 500.00, 500.00),
-(2, 1, 2, NULL, 1, 800.00, 800.00),
-(3, 1, 3, NULL, 1, 300.00, 300.00),
-(4, 2, 1, NULL, 1, 500.00, 500.00),
-(5, 2, 3, NULL, 1, 300.00, 300.00),
-(6, 5, 1, NULL, 1, 500.00, 500.00),
-(7, 5, 2, NULL, 2, 800.00, 1600.00),
-(8, 5, 3, NULL, 1, 300.00, 300.00),
-(9, 5, NULL, 2, 1, 1500.00, 1500.00),
-(10, 6, 3, NULL, 1, 300.00, 300.00),
-(11, 6, 2, NULL, 1, 800.00, 800.00),
-(12, 6, 1, NULL, 5, 500.00, 2500.00),
-(13, 7, 1, NULL, 3, 500.00, 1500.00),
-(14, 8, 2, NULL, 1, 800.00, 800.00),
-(15, 8, 1, NULL, 1, 500.00, 500.00),
-(16, 8, NULL, 2, 1, 1500.00, 1500.00),
-(17, 8, NULL, 3, 1, 1000.00, 1000.00),
-(18, 9, 1, NULL, 1, 500.00, 500.00),
-(19, 9, 2, NULL, 1, 800.00, 800.00),
-(20, 9, 3, NULL, 1, 300.00, 300.00),
-(23, 10, 1, NULL, 1, 500.00, 500.00),
-(24, 10, NULL, 1, 1, 1200.00, 1200.00),
-(25, 10, NULL, 2, 1, 1500.00, 1500.00),
-(26, 10, NULL, 3, 1, 1000.00, 1000.00),
-(27, 11, 1, NULL, 3, 500.00, 1500.00),
-(28, 11, 3, NULL, 1, 300.00, 300.00),
-(29, 11, NULL, 3, 1, 1000.00, 1000.00),
-(30, 11, NULL, 1, 1, 1200.00, 1200.00),
-(31, 12, 2, NULL, 1, 800.00, 800.00),
-(58, 13, 1, NULL, 1, 500.00, 500.00),
-(59, 13, 2, NULL, 2, 800.00, 1600.00),
-(60, 14, 3, NULL, 1, 300.00, 300.00),
-(61, 14, 1, NULL, 1, 500.00, 500.00),
-(62, 15, 2, NULL, 1, 800.00, 800.00),
-(63, 15, 1, NULL, 1, 500.00, 500.00),
-(64, 16, 3, NULL, 1, 300.00, 300.00),
-(65, 16, 2, NULL, 2, 800.00, 1600.00),
-(66, 17, 1, NULL, 1, 500.00, 500.00),
-(67, 17, 3, NULL, 1, 300.00, 300.00),
-(68, 17, 2, NULL, 1, 800.00, 800.00),
-(69, 18, 1, NULL, 1, 500.00, 500.00),
-(70, 18, 2, NULL, 1, 800.00, 800.00),
-(71, 18, 3, NULL, 1, 300.00, 300.00),
-(72, 19, NULL, 3, 1, 1000.00, 1000.00),
-(73, 19, NULL, 2, 1, 1500.00, 1500.00),
-(74, 19, 3, NULL, 1, 300.00, 300.00),
-(75, 20, NULL, 2, 3, 1500.00, 4500.00),
-(76, 21, 2, NULL, 2, 800.00, 1600.00),
-(77, 22, 1, NULL, 1, 500.00, 500.00),
-(78, 23, 1, NULL, 1, 500.00, 500.00),
-(79, 24, 2, NULL, 1, 800.00, 800.00),
-(80, 24, 1, NULL, 1, 500.00, 500.00),
-(81, 24, 3, NULL, 1, 300.00, 300.00),
-(85, 25, 3, NULL, 1, 300.00, 300.00),
-(86, 26, 3, NULL, 1, 300.00, 300.00),
-(87, 27, 2, NULL, 1, 800.00, 800.00),
-(88, 28, 2, NULL, 1, 800.00, 800.00),
-(89, 29, 2, NULL, 1, 800.00, 800.00);
+INSERT INTO `detalle_venta` (`idDetalle`, `idVenta`, `id_producto`, `id_kit`, `cantidad`, `precio_unitario`, `subtotal`, `id_sucursal`) VALUES
+(1, 1, 1, NULL, 1, 500.00, 500.00, NULL),
+(2, 1, 2, NULL, 1, 800.00, 800.00, NULL),
+(3, 1, 3, NULL, 1, 300.00, 300.00, NULL),
+(4, 2, 1, NULL, 1, 500.00, 500.00, NULL),
+(5, 2, 3, NULL, 1, 300.00, 300.00, NULL),
+(6, 5, 1, NULL, 1, 500.00, 500.00, NULL),
+(7, 5, 2, NULL, 2, 800.00, 1600.00, NULL),
+(8, 5, 3, NULL, 1, 300.00, 300.00, NULL),
+(9, 5, NULL, 2, 1, 1500.00, 1500.00, NULL),
+(10, 6, 3, NULL, 1, 300.00, 300.00, NULL),
+(11, 6, 2, NULL, 1, 800.00, 800.00, NULL),
+(12, 6, 1, NULL, 5, 500.00, 2500.00, NULL),
+(13, 7, 1, NULL, 3, 500.00, 1500.00, NULL),
+(14, 8, 2, NULL, 1, 800.00, 800.00, NULL),
+(15, 8, 1, NULL, 1, 500.00, 500.00, NULL),
+(16, 8, NULL, 2, 1, 1500.00, 1500.00, NULL),
+(17, 8, NULL, 3, 1, 1000.00, 1000.00, NULL),
+(18, 9, 1, NULL, 1, 500.00, 500.00, NULL),
+(19, 9, 2, NULL, 1, 800.00, 800.00, NULL),
+(20, 9, 3, NULL, 1, 300.00, 300.00, NULL),
+(23, 10, 1, NULL, 1, 500.00, 500.00, NULL),
+(24, 10, NULL, 1, 1, 1200.00, 1200.00, NULL),
+(25, 10, NULL, 2, 1, 1500.00, 1500.00, NULL),
+(26, 10, NULL, 3, 1, 1000.00, 1000.00, NULL),
+(27, 11, 1, NULL, 3, 500.00, 1500.00, NULL),
+(28, 11, 3, NULL, 1, 300.00, 300.00, NULL),
+(29, 11, NULL, 3, 1, 1000.00, 1000.00, NULL),
+(30, 11, NULL, 1, 1, 1200.00, 1200.00, NULL),
+(31, 12, 2, NULL, 1, 800.00, 800.00, NULL),
+(58, 13, 1, NULL, 1, 500.00, 500.00, NULL),
+(59, 13, 2, NULL, 2, 800.00, 1600.00, NULL),
+(60, 14, 3, NULL, 1, 300.00, 300.00, NULL),
+(61, 14, 1, NULL, 1, 500.00, 500.00, NULL),
+(62, 15, 2, NULL, 1, 800.00, 800.00, NULL),
+(63, 15, 1, NULL, 1, 500.00, 500.00, NULL),
+(64, 16, 3, NULL, 1, 300.00, 300.00, NULL),
+(65, 16, 2, NULL, 2, 800.00, 1600.00, NULL),
+(66, 17, 1, NULL, 1, 500.00, 500.00, NULL),
+(67, 17, 3, NULL, 1, 300.00, 300.00, NULL),
+(68, 17, 2, NULL, 1, 800.00, 800.00, NULL),
+(69, 18, 1, NULL, 1, 500.00, 500.00, NULL),
+(70, 18, 2, NULL, 1, 800.00, 800.00, NULL),
+(71, 18, 3, NULL, 1, 300.00, 300.00, NULL),
+(72, 19, NULL, 3, 1, 1000.00, 1000.00, NULL),
+(73, 19, NULL, 2, 1, 1500.00, 1500.00, NULL),
+(74, 19, 3, NULL, 1, 300.00, 300.00, NULL),
+(75, 20, NULL, 2, 3, 1500.00, 4500.00, NULL),
+(76, 21, 2, NULL, 2, 800.00, 1600.00, NULL),
+(77, 22, 1, NULL, 1, 500.00, 500.00, NULL),
+(78, 23, 1, NULL, 1, 500.00, 500.00, NULL),
+(79, 24, 2, NULL, 1, 800.00, 800.00, NULL),
+(80, 24, 1, NULL, 1, 500.00, 500.00, NULL),
+(81, 24, 3, NULL, 1, 300.00, 300.00, NULL),
+(85, 25, 3, NULL, 1, 300.00, 300.00, NULL),
+(86, 26, 3, NULL, 1, 300.00, 300.00, NULL),
+(87, 27, 2, NULL, 1, 800.00, 800.00, NULL),
+(88, 28, 2, NULL, 1, 800.00, 800.00, NULL),
+(89, 29, 2, NULL, 1, 800.00, 800.00, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `egresos`
+--
+
+CREATE TABLE `egresos` (
+  `id_egreso` int(11) NOT NULL,
+  `id_agenda` int(11) DEFAULT NULL,
+  `id_agenda_curso` int(11) DEFAULT NULL,
+  `concepto` varchar(255) NOT NULL,
+  `monto` decimal(10,0) NOT NULL,
+  `id_sucursal` int(11) NOT NULL,
+  `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -282,7 +308,7 @@ CREATE TABLE `historial_pagos` (
   `saldo_pendiente` decimal(10,2) DEFAULT NULL,
   `fecha_pago` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `metodo_pago` enum('efectivo','tarjeta','transferencia','depósito','otros') DEFAULT 'efectivo',
-  `tipo_servicio` varchar(30) DEFAULT 'servicio',
+  `concepto` varchar(100) DEFAULT 'servicio',
   `comprobante` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -290,7 +316,7 @@ CREATE TABLE `historial_pagos` (
 -- Volcado de datos para la tabla `historial_pagos`
 --
 
-INSERT INTO `historial_pagos` (`id_pago`, `idVenta`, `id_intermedia`, `monto_pagado`, `saldo_pendiente`, `fecha_pago`, `metodo_pago`, `tipo_servicio`, `comprobante`) VALUES
+INSERT INTO `historial_pagos` (`id_pago`, `idVenta`, `id_intermedia`, `monto_pagado`, `saldo_pendiente`, `fecha_pago`, `metodo_pago`, `concepto`, `comprobante`) VALUES
 (4, 1, NULL, 500.00, 1100.00, '2025-09-17 05:20:26', 'transferencia', 'venta', ''),
 (5, 1, NULL, 300.00, 800.00, '2025-09-18 05:20:26', 'transferencia', 'venta', ''),
 (6, 2, NULL, 300.00, 500.00, '2025-09-10 05:25:32', 'transferencia', 'venta', ''),
@@ -301,7 +327,11 @@ INSERT INTO `historial_pagos` (`id_pago`, `idVenta`, `id_intermedia`, `monto_pag
 (13, 1, NULL, 200.00, 600.00, '2025-09-26 06:58:24', 'tarjeta', 'Taller', 'https://drive.google.com/file/d/1uXPuC1KvnEo0InWHSKKz-0CHWfRSCIbp/view?usp=drive_link'),
 (14, 1, NULL, 200.00, 400.00, '2025-09-26 07:01:26', 'efectivo', 'Taller', 'https://drive.google.com/file/d/1uXPuC1KvnEo0InWHSKKz-0CHWfRSCIbp/view?usp=drive_link'),
 (15, NULL, 1, 200.00, 0.00, '2025-09-26 07:02:25', 'tarjeta', 'inscripcion', 'https://drive.google.com/file/d/1uXPuC1KvnEo0InWHSKKz-0CHWfRSCIbp/view?usp=drive_link'),
-(16, 25, NULL, 200.00, 100.00, '2025-09-26 08:59:03', 'tarjeta', 'venta', 'https://drive.google.com/file/d/1uXPuC1KvnEo0InWHSKKz-0CHWfRSCIbp/view?usp=drive_link');
+(16, 25, NULL, 200.00, 100.00, '2025-09-26 08:59:03', 'tarjeta', 'venta', 'https://drive.google.com/file/d/1uXPuC1KvnEo0InWHSKKz-0CHWfRSCIbp/view?usp=drive_link'),
+(17, 27, NULL, 1.00, 799.00, '2026-02-01 06:04:49', '', '', ''),
+(18, 29, NULL, 122.00, 678.00, '2026-02-01 06:09:11', '', 'venta', ''),
+(19, 29, NULL, 1.00, 677.00, '2026-02-01 06:09:29', '', 'venta', ''),
+(20, 29, NULL, 11.00, 666.00, '2026-02-01 06:13:51', 'efectivo', 'venta', '');
 
 --
 -- Disparadores `historial_pagos`
@@ -404,32 +434,33 @@ CREATE TABLE `intermedia_a` (
   `id_agenda_curso` int(11) DEFAULT NULL,
   `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `estado` varchar(30) NOT NULL,
-  `total` decimal(10,2) NOT NULL
+  `total` decimal(10,2) NOT NULL,
+  `id_sucursal` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `intermedia_a`
 --
 
-INSERT INTO `intermedia_a` (`id_intermedia`, `id_alumna`, `id_agenda`, `id_agenda_curso`, `fecha`, `estado`, `total`) VALUES
-(1, 1, 3, NULL, '2025-09-26 07:02:25', 'Pagado', 500.00),
-(2, 2, NULL, 3, '2025-09-25 08:10:51', 'Pagado', 600.00),
-(3, 2, 3, NULL, '2025-09-25 07:27:45', '', 800.00),
-(4, 2, 2, NULL, '2025-09-22 01:01:57', '', 0.00),
-(5, 3, 1, NULL, '2025-09-22 01:02:01', '', 0.00),
-(6, 3, 3, NULL, '2025-09-22 01:04:15', '', 0.00),
-(7, 1, 4, NULL, '2025-09-22 01:07:07', '', 0.00),
-(8, 3, NULL, 1, '2025-09-22 01:08:26', '', 0.00),
-(9, 3, NULL, 3, '2025-09-22 01:08:30', '', 0.00),
-(10, 2, NULL, 2, '2025-09-22 01:08:33', '', 0.00),
-(11, 2, 4, NULL, '2025-09-22 01:58:19', '', 0.00),
-(12, 3, 4, NULL, '2025-09-22 02:17:52', '', 0.00),
-(13, 3, NULL, 2, '2025-09-26 21:21:31', 'Pendiente', 0.00),
-(14, 2, 1, NULL, '2025-09-26 21:24:07', 'Pendiente', 0.00),
-(15, 2, NULL, 1, '2025-09-26 21:24:15', 'Pendiente', 0.00),
-(16, 3, 2, NULL, '2025-09-30 20:55:16', 'Pendiente', 0.00),
-(17, 1, 2, NULL, '2025-09-30 20:55:24', 'Pendiente', 0.00),
-(21, 4, 1, NULL, '2025-10-06 05:16:53', 'Pendiente', 0.00);
+INSERT INTO `intermedia_a` (`id_intermedia`, `id_alumna`, `id_agenda`, `id_agenda_curso`, `fecha`, `estado`, `total`, `id_sucursal`) VALUES
+(1, 1, 3, NULL, '2025-09-26 07:02:25', 'Pagado', 500.00, NULL),
+(2, 2, NULL, 3, '2025-09-25 08:10:51', 'Pagado', 600.00, NULL),
+(3, 2, 3, NULL, '2025-09-25 07:27:45', '', 800.00, NULL),
+(4, 2, 2, NULL, '2025-09-22 01:01:57', '', 0.00, NULL),
+(5, 3, 1, NULL, '2025-09-22 01:02:01', '', 0.00, NULL),
+(6, 3, 3, NULL, '2025-09-22 01:04:15', '', 0.00, NULL),
+(7, 1, 4, NULL, '2025-09-22 01:07:07', '', 0.00, NULL),
+(8, 3, NULL, 1, '2025-09-22 01:08:26', '', 0.00, NULL),
+(9, 3, NULL, 3, '2025-09-22 01:08:30', '', 0.00, NULL),
+(10, 2, NULL, 2, '2025-09-22 01:08:33', '', 0.00, NULL),
+(11, 2, 4, NULL, '2025-09-22 01:58:19', '', 0.00, NULL),
+(12, 3, 4, NULL, '2025-09-22 02:17:52', '', 0.00, NULL),
+(13, 3, NULL, 2, '2025-09-26 21:21:31', 'Pendiente', 0.00, NULL),
+(14, 2, 1, NULL, '2025-09-26 21:24:07', 'Pendiente', 0.00, NULL),
+(15, 2, NULL, 1, '2025-09-26 21:24:15', 'Pendiente', 0.00, NULL),
+(16, 3, 2, NULL, '2025-09-30 20:55:16', 'Pendiente', 0.00, NULL),
+(17, 1, 2, NULL, '2025-09-30 20:55:24', 'Pendiente', 0.00, NULL),
+(21, 4, 1, NULL, '2025-10-06 05:16:53', 'Pendiente', 0.00, NULL);
 
 --
 -- Disparadores `intermedia_a`
@@ -578,6 +609,19 @@ INSERT INTO `maestras` (`id_maestra`, `nombre`, `base`, `acuerdo`, `gastos`, `po
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `maestras_asignadas`
+--
+
+CREATE TABLE `maestras_asignadas` (
+  `id_asignacion` int(11) NOT NULL,
+  `id_maestra` int(11) NOT NULL,
+  `id_agenda` int(11) DEFAULT NULL,
+  `id_agenda_curso` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `modulos`
 --
 
@@ -692,7 +736,7 @@ CREATE TABLE `sucursales` (
   `correo_electronico` varchar(100) DEFAULT NULL,
   `fecha_apertura` date DEFAULT NULL,
   `estado_sucursal` enum('Activa','Inactiva') DEFAULT 'Activa'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
@@ -706,21 +750,22 @@ CREATE TABLE `talleres` (
   `id_maestra` int(11) DEFAULT NULL,
   `costo_base` decimal(10,2) DEFAULT NULL,
   `status` varchar(50) DEFAULT NULL,
-  `ingreso_bruto` decimal(10,2) DEFAULT NULL,
-  `gastos` decimal(10,2) DEFAULT NULL,
   `porcentaje_delia` decimal(5,2) DEFAULT NULL,
   `porcentaje_caro` decimal(5,2) DEFAULT NULL,
-  `precio_preferencial` tinyint(1) DEFAULT 0
+  `precio_preferencial` tinyint(1) DEFAULT 0,
+  `ingreso_total` decimal(12,2) DEFAULT 0.00,
+  `gastos_totales` decimal(12,2) DEFAULT 0.00,
+  `id_sucursal` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `talleres`
 --
 
-INSERT INTO `talleres` (`id_taller`, `nombre`, `id_maestra`, `costo_base`, `status`, `ingreso_bruto`, `gastos`, `porcentaje_delia`, `porcentaje_caro`, `precio_preferencial`) VALUES
-(1, 'Taller de Repostería', 1, 1500.00, 'activo', 5000.00, 2000.00, 40.00, 60.00, 0),
-(2, 'Taller de Maquillaje', 2, 2000.00, 'activo', 6000.00, 2500.00, 50.00, 50.00, 1),
-(3, 'Taller de Manualidades', NULL, 1000.00, 'pendiente', 0.00, 0.00, 30.00, 70.00, 0);
+INSERT INTO `talleres` (`id_taller`, `nombre`, `id_maestra`, `costo_base`, `status`, `porcentaje_delia`, `porcentaje_caro`, `precio_preferencial`, `ingreso_total`, `gastos_totales`, `id_sucursal`) VALUES
+(1, 'Taller de Repostería', 1, 1500.00, 'activo', 40.00, 60.00, 0, 0.00, 0.00, NULL),
+(2, 'Taller de Maquillaje', 2, 2000.00, 'activo', 50.00, 50.00, 1, 0.00, 0.00, NULL),
+(3, 'Taller de Manualidades', NULL, 1000.00, 'pendiente', 30.00, 70.00, 0, 0.00, 0.00, NULL);
 
 -- --------------------------------------------------------
 
@@ -761,41 +806,42 @@ CREATE TABLE `venta` (
   `id_cliente` int(11) DEFAULT NULL,
   `id_taller` int(11) DEFAULT NULL,
   `total` decimal(10,2) NOT NULL,
-  `estado` varchar(30) NOT NULL
+  `estado` varchar(30) NOT NULL,
+  `id_sucursal` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `venta`
 --
 
-INSERT INTO `venta` (`idVenta`, `fecha`, `comprador_tipo`, `id_alumna`, `id_cliente`, `id_taller`, `total`, `estado`) VALUES
-(1, '2025-09-17 23:28:46', 'Cliente', NULL, 1, 2, 1600.00, 'Pendiente'),
-(2, '2025-09-18 04:00:31', 'Alumna', 1, NULL, 1, 800.00, 'Pendiente'),
-(5, '2025-09-19 15:25:27', 'Alumna', 3, NULL, NULL, 3900.00, 'Pendiente'),
-(6, '2025-09-19 16:07:47', 'alumna', 2, NULL, NULL, 3600.00, 'Pendiente'),
-(7, '2025-09-19 16:08:46', 'alumna', 1, NULL, NULL, 1500.00, 'Pendiente'),
-(8, '2025-09-19 16:09:34', 'alumna', 1, NULL, NULL, 3800.00, 'Pendiente'),
-(9, '2025-09-19 16:10:53', 'alumna', 2, NULL, NULL, 1600.00, 'Pendiente'),
-(10, '2025-09-19 16:14:14', 'alumna', 1, NULL, NULL, 4200.00, 'Pendiente'),
-(11, '2025-09-19 17:38:20', 'alumna', 3, NULL, NULL, 4000.00, 'Pendiente'),
-(12, '2025-09-19 18:08:25', 'alumna', 2, NULL, NULL, 800.00, 'Pendiente'),
-(13, '2025-09-21 01:56:11', 'Alumna', 3, NULL, NULL, 2100.00, 'Pendiente'),
-(14, '2025-09-21 01:56:19', 'Cliente', NULL, 2, NULL, 800.00, 'Pendiente'),
-(15, '2025-09-21 02:20:00', 'Cliente', NULL, 2, NULL, 1300.00, 'Pendiente'),
-(16, '2025-09-21 02:20:17', 'Cliente', NULL, 1, NULL, 1900.00, 'Pendiente'),
-(17, '2025-09-21 02:20:35', 'Cliente', NULL, 1, NULL, 1600.00, 'Pendiente'),
-(18, '2025-09-21 02:20:52', 'Alumna', 2, NULL, NULL, 1600.00, 'Pendiente'),
-(19, '2025-09-21 02:21:06', 'Cliente', NULL, 1, NULL, 2800.00, 'Pendiente'),
-(20, '2025-09-21 07:04:33', 'Alumna', 1, NULL, NULL, 4500.00, 'Pendiente'),
-(21, '2025-09-21 07:05:18', 'Cliente', NULL, 1, NULL, 1600.00, 'Pendiente'),
-(22, '2025-09-21 07:14:52', 'cliente', NULL, 3, NULL, 500.00, 'Pendiente'),
-(23, '2025-09-22 02:02:00', 'alumna', 2, NULL, NULL, 500.00, 'Pendiente'),
-(24, '2025-09-22 07:41:14', 'alumna', 2, NULL, NULL, 1600.00, 'Pendiente'),
-(25, '2025-09-26 08:58:16', 'alumna', 3, NULL, NULL, 300.00, 'Pendiente'),
-(26, '2025-09-26 21:02:39', 'alumna', 1, NULL, NULL, 300.00, 'Pendiente'),
-(27, '2025-10-01 01:30:52', 'cliente', NULL, 2, NULL, 800.00, 'Pendiente'),
-(28, '2025-10-02 23:22:00', 'alumna', 3, NULL, NULL, 800.00, 'Pendiente'),
-(29, '2025-10-03 06:24:53', 'cliente', NULL, 5, NULL, 800.00, 'Pendiente');
+INSERT INTO `venta` (`idVenta`, `fecha`, `comprador_tipo`, `id_alumna`, `id_cliente`, `id_taller`, `total`, `estado`, `id_sucursal`) VALUES
+(1, '2025-09-17 23:28:46', 'Cliente', NULL, 1, 2, 1600.00, 'Pendiente', NULL),
+(2, '2025-09-18 04:00:31', 'Alumna', 1, NULL, 1, 800.00, 'Pendiente', NULL),
+(5, '2025-09-19 15:25:27', 'Alumna', 3, NULL, NULL, 3900.00, 'Pendiente', NULL),
+(6, '2025-09-19 16:07:47', 'alumna', 2, NULL, NULL, 3600.00, 'Pendiente', NULL),
+(7, '2025-09-19 16:08:46', 'alumna', 1, NULL, NULL, 1500.00, 'Pendiente', NULL),
+(8, '2025-09-19 16:09:34', 'alumna', 1, NULL, NULL, 3800.00, 'Pendiente', NULL),
+(9, '2025-09-19 16:10:53', 'alumna', 2, NULL, NULL, 1600.00, 'Pendiente', NULL),
+(10, '2025-09-19 16:14:14', 'alumna', 1, NULL, NULL, 4200.00, 'Pendiente', NULL),
+(11, '2025-09-19 17:38:20', 'alumna', 3, NULL, NULL, 4000.00, 'Pendiente', NULL),
+(12, '2025-09-19 18:08:25', 'alumna', 2, NULL, NULL, 800.00, 'Pendiente', NULL),
+(13, '2025-09-21 01:56:11', 'Alumna', 3, NULL, NULL, 2100.00, 'Pendiente', NULL),
+(14, '2025-09-21 01:56:19', 'Cliente', NULL, 2, NULL, 800.00, 'Pendiente', NULL),
+(15, '2025-09-21 02:20:00', 'Cliente', NULL, 2, NULL, 1300.00, 'Pendiente', NULL),
+(16, '2025-09-21 02:20:17', 'Cliente', NULL, 1, NULL, 1900.00, 'Pendiente', NULL),
+(17, '2025-09-21 02:20:35', 'Cliente', NULL, 1, NULL, 1600.00, 'Pendiente', NULL),
+(18, '2025-09-21 02:20:52', 'Alumna', 2, NULL, NULL, 1600.00, 'Pendiente', NULL),
+(19, '2025-09-21 02:21:06', 'Cliente', NULL, 1, NULL, 2800.00, 'Pendiente', NULL),
+(20, '2025-09-21 07:04:33', 'Alumna', 1, NULL, NULL, 4500.00, 'Pendiente', NULL),
+(21, '2025-09-21 07:05:18', 'Cliente', NULL, 1, NULL, 1600.00, 'Pendiente', NULL),
+(22, '2025-09-21 07:14:52', 'cliente', NULL, 3, NULL, 500.00, 'Pendiente', NULL),
+(23, '2025-09-22 02:02:00', 'alumna', 2, NULL, NULL, 500.00, 'Pendiente', NULL),
+(24, '2025-09-22 07:41:14', 'alumna', 2, NULL, NULL, 1600.00, 'Pendiente', NULL),
+(25, '2025-09-26 08:58:16', 'alumna', 3, NULL, NULL, 300.00, 'Pendiente', NULL),
+(26, '2025-09-26 21:02:39', 'alumna', 1, NULL, NULL, 300.00, 'Pendiente', NULL),
+(27, '2025-10-01 01:30:52', 'cliente', NULL, 2, NULL, 800.00, 'Pendiente', NULL),
+(28, '2025-10-02 23:22:00', 'alumna', 3, NULL, NULL, 800.00, 'Pendiente', NULL),
+(29, '2025-10-03 06:24:53', 'cliente', NULL, 5, NULL, 800.00, 'Pendiente', NULL);
 
 --
 -- Índices para tablas volcadas
@@ -806,14 +852,16 @@ INSERT INTO `venta` (`idVenta`, `fecha`, `comprador_tipo`, `id_alumna`, `id_clie
 --
 ALTER TABLE `agenda`
   ADD PRIMARY KEY (`id_agenda`),
-  ADD KEY `id_taller` (`id_taller`);
+  ADD KEY `id_taller` (`id_taller`),
+  ADD KEY `fk_agenda_id_sucursal_1` (`id_sucursal`);
 
 --
 -- Indices de la tabla `agenda_cursos`
 --
 ALTER TABLE `agenda_cursos`
   ADD PRIMARY KEY (`id_agenda_curso`),
-  ADD KEY `id_curso` (`id_curso`);
+  ADD KEY `id_curso` (`id_curso`),
+  ADD KEY `fk_agenda_cursos_id_sucursal_1` (`id_sucursal`);
 
 --
 -- Indices de la tabla `alumnas`
@@ -831,7 +879,8 @@ ALTER TABLE `clientes`
 -- Indices de la tabla `cursos`
 --
 ALTER TABLE `cursos`
-  ADD PRIMARY KEY (`id_curso`);
+  ADD PRIMARY KEY (`id_curso`),
+  ADD KEY `fk_cursos_sucursal_fk` (`id_sucursal`);
 
 --
 -- Indices de la tabla `descuentos`
@@ -847,7 +896,17 @@ ALTER TABLE `detalle_venta`
   ADD PRIMARY KEY (`idDetalle`),
   ADD KEY `fk_detalle_venta_venta` (`idVenta`),
   ADD KEY `fk_detalle_venta_producto` (`id_producto`),
-  ADD KEY `fk_detalle_venta_kit` (`id_kit`);
+  ADD KEY `fk_detalle_venta_kit` (`id_kit`),
+  ADD KEY `fk_detalle_venta_id_sucursal_1` (`id_sucursal`);
+
+--
+-- Indices de la tabla `egresos`
+--
+ALTER TABLE `egresos`
+  ADD PRIMARY KEY (`id_egreso`),
+  ADD KEY `id_agenda` (`id_agenda`),
+  ADD KEY `id_agenda_curso` (`id_agenda_curso`),
+  ADD KEY `id_sucursal` (`id_sucursal`);
 
 --
 -- Indices de la tabla `historial_pagos`
@@ -879,7 +938,8 @@ ALTER TABLE `intermedia_a`
   ADD PRIMARY KEY (`id_intermedia`),
   ADD KEY `idx_intermedia_alumna` (`id_alumna`),
   ADD KEY `idx_intermedia_agenda` (`id_agenda`),
-  ADD KEY `idx_intermedia_curso` (`id_agenda_curso`);
+  ADD KEY `idx_intermedia_curso` (`id_agenda_curso`),
+  ADD KEY `fk_intermedia_a_id_sucursal_1` (`id_sucursal`);
 
 --
 -- Indices de la tabla `inventario`
@@ -910,6 +970,15 @@ ALTER TABLE `kits_productos`
 --
 ALTER TABLE `maestras`
   ADD PRIMARY KEY (`id_maestra`);
+
+--
+-- Indices de la tabla `maestras_asignadas`
+--
+ALTER TABLE `maestras_asignadas`
+  ADD PRIMARY KEY (`id_asignacion`),
+  ADD KEY `id_maestra` (`id_maestra`),
+  ADD KEY `id_agenda` (`id_agenda`),
+  ADD KEY `id_agenda_curso` (`id_agenda_curso`);
 
 --
 -- Indices de la tabla `modulos`
@@ -944,7 +1013,8 @@ ALTER TABLE `sucursales`
 ALTER TABLE `talleres`
   ADD PRIMARY KEY (`id_taller`),
   ADD KEY `id_maestra` (`id_maestra`),
-  ADD KEY `idx_talleres_id_maestra` (`id_maestra`);
+  ADD KEY `idx_talleres_id_maestra` (`id_maestra`),
+  ADD KEY `fk_talleres_sucursal` (`id_sucursal`);
 
 --
 -- Indices de la tabla `usuarios`
@@ -959,7 +1029,8 @@ ALTER TABLE `venta`
   ADD PRIMARY KEY (`idVenta`),
   ADD KEY `fk_venta_taller` (`id_taller`),
   ADD KEY `id_alumna` (`id_alumna`),
-  ADD KEY `id_cliente` (`id_cliente`);
+  ADD KEY `id_cliente` (`id_cliente`),
+  ADD KEY `fk_venta_id_sucursal_1` (`id_sucursal`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -1008,10 +1079,16 @@ ALTER TABLE `detalle_venta`
   MODIFY `idDetalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
 
 --
+-- AUTO_INCREMENT de la tabla `egresos`
+--
+ALTER TABLE `egresos`
+  MODIFY `id_egreso` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `historial_pagos`
 --
 ALTER TABLE `historial_pagos`
-  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `institutos`
@@ -1054,6 +1131,12 @@ ALTER TABLE `kits_productos`
 --
 ALTER TABLE `maestras`
   MODIFY `id_maestra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT de la tabla `maestras_asignadas`
+--
+ALTER TABLE `maestras_asignadas`
+  MODIFY `id_asignacion` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `modulos`
@@ -1099,13 +1182,25 @@ ALTER TABLE `venta`
 -- Filtros para la tabla `agenda`
 --
 ALTER TABLE `agenda`
-  ADD CONSTRAINT `agenda_ibfk_1` FOREIGN KEY (`id_taller`) REFERENCES `talleres` (`id_taller`);
+  ADD CONSTRAINT `agenda_ibfk_1` FOREIGN KEY (`id_taller`) REFERENCES `talleres` (`id_taller`),
+  ADD CONSTRAINT `fk_agenda_id_sucursal_1` FOREIGN KEY (`id_sucursal`) REFERENCES `sucursales` (`id_sucursal`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_agenda_sucursal` FOREIGN KEY (`id_sucursal`) REFERENCES `sucursales` (`id_sucursal`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `agenda_cursos`
 --
 ALTER TABLE `agenda_cursos`
-  ADD CONSTRAINT `fk_agenda_cursos__cursos` FOREIGN KEY (`id_curso`) REFERENCES `cursos` (`id_curso`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_agenda_cursos__cursos` FOREIGN KEY (`id_curso`) REFERENCES `cursos` (`id_curso`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_agenda_cursos_id_sucursal_1` FOREIGN KEY (`id_sucursal`) REFERENCES `sucursales` (`id_sucursal`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_agenda_cursos_sucursal` FOREIGN KEY (`id_sucursal`) REFERENCES `sucursales` (`id_sucursal`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `cursos`
+--
+ALTER TABLE `cursos`
+  ADD CONSTRAINT `fk_cursos_id_sucursal_1` FOREIGN KEY (`id_sucursal`) REFERENCES `sucursales` (`id_sucursal`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_cursos_sucursal` FOREIGN KEY (`id_sucursal`) REFERENCES `sucursales` (`id_sucursal`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_cursos_sucursal_fk` FOREIGN KEY (`id_sucursal`) REFERENCES `sucursales` (`id_sucursal`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `descuentos`
@@ -1117,9 +1212,19 @@ ALTER TABLE `descuentos`
 -- Filtros para la tabla `detalle_venta`
 --
 ALTER TABLE `detalle_venta`
+  ADD CONSTRAINT `fk_detalle_venta_id_sucursal_1` FOREIGN KEY (`id_sucursal`) REFERENCES `sucursales` (`id_sucursal`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_detalle_venta_kit` FOREIGN KEY (`id_kit`) REFERENCES `kits_productos` (`id_kit`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_detalle_venta_producto` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_detalle_venta_sucursal` FOREIGN KEY (`id_sucursal`) REFERENCES `sucursales` (`id_sucursal`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_detalle_venta_venta` FOREIGN KEY (`idVenta`) REFERENCES `venta` (`idVenta`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `egresos`
+--
+ALTER TABLE `egresos`
+  ADD CONSTRAINT `egresos_ibfk_1` FOREIGN KEY (`id_agenda`) REFERENCES `agenda` (`id_agenda`),
+  ADD CONSTRAINT `egresos_ibfk_2` FOREIGN KEY (`id_agenda_curso`) REFERENCES `agenda_cursos` (`id_agenda_curso`),
+  ADD CONSTRAINT `egresos_ibfk_3` FOREIGN KEY (`id_sucursal`) REFERENCES `sucursales` (`id_sucursal`);
 
 --
 -- Filtros para la tabla `historial_pagos`
@@ -1142,7 +1247,9 @@ ALTER TABLE `interesadas`
 ALTER TABLE `intermedia_a`
   ADD CONSTRAINT `fk_intermediaA_agenda` FOREIGN KEY (`id_agenda`) REFERENCES `agenda` (`id_agenda`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_intermediaA_alumna` FOREIGN KEY (`id_alumna`) REFERENCES `alumnas` (`id_alumna`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_intermediaA_curso` FOREIGN KEY (`id_agenda_curso`) REFERENCES `agenda_cursos` (`id_agenda_curso`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_intermediaA_curso` FOREIGN KEY (`id_agenda_curso`) REFERENCES `agenda_cursos` (`id_agenda_curso`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_intermedia_a_id_sucursal_1` FOREIGN KEY (`id_sucursal`) REFERENCES `sucursales` (`id_sucursal`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_intermedia_a_sucursal` FOREIGN KEY (`id_sucursal`) REFERENCES `sucursales` (`id_sucursal`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `inventario`
@@ -1157,6 +1264,18 @@ ALTER TABLE `inventario`
 ALTER TABLE `inventario_stock`
   ADD CONSTRAINT `fk_stock__institutos` FOREIGN KEY (`id_instituto`) REFERENCES `institutos` (`id_instituto`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_stock__productos` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `maestras_asignadas`
+--
+ALTER TABLE `maestras_asignadas`
+  ADD CONSTRAINT `maestras_asignadas_ibfk_1` FOREIGN KEY (`id_maestra`) REFERENCES `maestras` (`id_maestra`),
+  ADD CONSTRAINT `maestras_asignadas_ibfk_2` FOREIGN KEY (`id_agenda`) REFERENCES `agenda` (`id_agenda`),
+  ADD CONSTRAINT `maestras_asignadas_ibfk_3` FOREIGN KEY (`id_maestra`) REFERENCES `maestras` (`id_maestra`),
+  ADD CONSTRAINT `maestras_asignadas_ibfk_4` FOREIGN KEY (`id_agenda`) REFERENCES `agenda` (`id_agenda`),
+  ADD CONSTRAINT `maestras_asignadas_ibfk_5` FOREIGN KEY (`id_maestra`) REFERENCES `maestras` (`id_maestra`),
+  ADD CONSTRAINT `maestras_asignadas_ibfk_6` FOREIGN KEY (`id_agenda`) REFERENCES `agenda` (`id_agenda`),
+  ADD CONSTRAINT `maestras_asignadas_ibfk_7` FOREIGN KEY (`id_agenda_curso`) REFERENCES `agenda_cursos` (`id_agenda_curso`);
 
 --
 -- Filtros para la tabla `modulos`
@@ -1175,12 +1294,15 @@ ALTER TABLE `productos_kits`
 -- Filtros para la tabla `talleres`
 --
 ALTER TABLE `talleres`
-  ADD CONSTRAINT `fk_talleres_maestras` FOREIGN KEY (`id_maestra`) REFERENCES `maestras` (`id_maestra`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_talleres_maestras` FOREIGN KEY (`id_maestra`) REFERENCES `maestras` (`id_maestra`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_talleres_sucursal` FOREIGN KEY (`id_sucursal`) REFERENCES `sucursales` (`id_sucursal`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `venta`
 --
 ALTER TABLE `venta`
+  ADD CONSTRAINT `fk_venta_id_sucursal_1` FOREIGN KEY (`id_sucursal`) REFERENCES `sucursales` (`id_sucursal`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_venta_sucursal` FOREIGN KEY (`id_sucursal`) REFERENCES `sucursales` (`id_sucursal`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_venta_taller` FOREIGN KEY (`id_taller`) REFERENCES `talleres` (`id_taller`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `venta_ibfk_1` FOREIGN KEY (`id_alumna`) REFERENCES `alumnas` (`id_alumna`),
   ADD CONSTRAINT `venta_ibfk_2` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id_cliente`);

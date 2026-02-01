@@ -149,13 +149,12 @@ if(empty($_SESSION['Id_Usuario'])){header("location: index.html");}else{
                     <option value="tarjeta">Tarjeta</option>
                     <option value="transferencia">Transferencia</option>
                     <option value="depósito">Depósito</option>
-                    <option value="otros">Otros</option>
                 </select>
             </div>
 
             <div>
                 <label for="comprobante">Comprobante (link de Drive):</label>
-                <input type="text" id="comprobante" name="comprobante" required>
+                <input type="text" id="comprobante" name="comprobante">
             </div>
             <center>
               <button type="submit">Registrar Pago</button>
@@ -189,13 +188,15 @@ function validarPago(event) {
         return false;
     }
 
-    if (!regexDrive.test(comprobante)) {
+    if (metodo != "efectivo"){
+
+      if (!regexDrive.test(comprobante)) {
         Swal.fire("Enlace inválido", "El comprobante debe ser un enlace válido de Google Drive", "error");
         event.preventDefault();
         return false;
+      } 
     }
 
-    // ✅ si todo está bien, el formulario se envía normalmente
     return true;
 }
 </script>

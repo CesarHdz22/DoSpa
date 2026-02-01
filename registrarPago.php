@@ -50,9 +50,9 @@ if($saldo_pendiente < 0){
     $sql = "INSERT INTO historial_pagos";
 
     if($tipo == "inscripcion"){
-        $sql .= " (id_intermedia,monto_pagado,saldo_pendiente,metodo_pago,tipo_servicio,comprobante) VALUES ('$idI','$monto','$saldo_pendiente','$metodo_pago','$tipo','$comprobante')";
+        $sql .= " (id_intermedia,monto_pagado,saldo_pendiente,metodo_pago,concepto,comprobante) VALUES ('$idI','$monto','$saldo_pendiente','$metodo_pago','$tipo','$comprobante')";
     }else{
-        $sql .= " (idVenta,monto_pagado,saldo_pendiente,metodo_pago,tipo_servicio,comprobante) VALUES ('$idI','$monto','$saldo_pendiente','$metodo_pago','$tipo','$comprobante')";
+        $sql .= " (idVenta,monto_pagado,saldo_pendiente,metodo_pago,concepto,comprobante) VALUES ('$idI','$monto','$saldo_pendiente','$metodo_pago','$tipo','$comprobante')";
     }
 
     if($r = mysqli_query($conexion,$sql)){
